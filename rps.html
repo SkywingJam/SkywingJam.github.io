@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock Paper Scissors</title>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            font-family: "Trebuchet MS", Tahoma, sans-serif;
+            color: white;
+            background-image: url('https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=en-US');
+            background-size: auto;
+            background-position: top center;
+            background-repeat: no-repeat;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            z-index: 0;
+        }
+        .top-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+        }
+        .main-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            z-index: 1;
+        }
+        .camera-container, .system-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 49%;
+        }
+        video {
+            display: none;
+        }
+        canvas {
+            width: 100%;
+            height: auto;
+            transform: scaleX(-1);
+        }
+        .result-container {
+            z-index: 1;
+        }
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+        .system-gesture {
+            width: 100%;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 100px;
+            margin-top: auto;
+        }
+        .bottom-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            z-index: 1;
+        }
+        #countdown {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #startButton {
+            font-size: 18px;
+            cursor: pointer;
+        }
+        #gesture {
+            height: 24px;
+            font-size: 24px;
+        }
+        #systemResult {
+            height: 24px;
+            font-size: 24px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="top-container">
+        <h1>Rock Paper Scissors</h1>
+        <p id="countdown"></p>
+    </div>
+    <div class="main-container">
+        <div class="camera-container">
+            <video id="video" autoplay muted playsinline></video>
+            <canvas id="canvas" width="960" height="540"></canvas>
+            <p id="gesture" class="result"></p>
+        </div>
+        <div class="system-container">
+            <div class="system-gesture" id="systemGestureImage">❓</div>
+            <p id="systemResult" class="result"></p>
+        </div>
+    </div>
+    <div class="bottom-container">
+        <button id="startButton">Play</button>
+    </div>
+    <div class="result-container">
+        <p id="result" class="result"></p>
+    </div>
+
+    <script>
+        const videoElement = document.getElementById('video');
+        const canvasElement = document.getElementById('canvas');
+        const canvasCtx = canvasElement.getContext('2d');
+        const cameraContainer = document.querySelector('.camera-container');
+        const gestureElement = document.getElementById('gesture');
+        const countdownElement = document.getElementById('countdown');
+        const startButton = document.getElementById('startButton');
+        const systemResultElement = document.getElementById('systemResult');
+        const resultElement = document.getElementById('result');
+        const systemGestureImage = document.getElementById('systemGestureImage');
+
+        let isCountingDown = false;
+        let recording = false;
+        let gestureResults = [];
+        let lastGesture = '';
+        let systemGesture = '';
+        let userGestureHistory = [];
+
+        const hands = new Hands({
+            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`
+        });
+
+        // get webpage height and width
+        const width = window.innerWidth;
+        const height = window.innerHeight;
+        let isVertical = false;
+        if (height > width) {
+            isVertical = true;
+        }
+
+        hands.setOptions({
+            maxNumHands: 1,
+            modelComplexity: 1,
+            minDetectionConfidence: 0.5,
+            minTrackingConfidence: 0.5
+        });
+
+        hands.onResults(onResults);
+
+        async function startCamera() {
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                alert('Camera API is not supported in this browser.');
+                return;
+            }
+            try {
+                const camera = new Camera(videoElement, {
+                    onFrame: async () => {
+                        await hands.send({image: videoElement});
+                    },
+                    width: isVertical ? 540 : 960,
+                    height: isVertical ? 960 : 540
+                });
+                camera.start();
+                canvasElement.width = isVertical ? 540 : 960;
+                canvasElement.height = isVertical ? 960 : 540;
+            } catch (error) {
+                console.error(error);
+                alert('Error accessing camera. Please check your camera permissions.');
+            }
+        }
+
+        startButton.addEventListener('click', () => {
+            if (isCountingDown) {
+                return;
+            }
+            systemGestureImage.innerText = '❓';
+            systemResultElement.innerText = '';
+            resultElement.innerText = '';
+            gestureElement.innerText = '';
+            startCountdown(3);
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' || event.code === 'Enter') {
+                if (isCountingDown) {
+                    return;
+                }
+                startButton.click();
+            }
+        });
+
+        countdownElement.innerText = '';
+
+        function startCountdown(seconds) {
+            if (isCountingDown) {
+                return;
+            }
+            isCountingDown = true;
+            countdownElement.innerText = seconds;
+            const interval = setInterval(() => {
+                seconds--;
+                countdownElement.innerText = seconds;
+                if (seconds <= 0) {
+                    clearInterval(interval);
+                    countdownElement.innerText = '';
+                    startRecording();
+                    isCountingDown = false;
+                }
+            }, 1000);
+        }
+
+        function startRecording() {
+            recording = true;
+            gestureResults = [];
+            setTimeout(() => {
+                recording = false;
+                const dominantGesture = findDominantGesture(gestureResults);
+                gestureElement.innerText = `You: ${dominantGesture}`;
+                systemGesture = generateSystemGesture();
+                systemResultElement.innerText = `AI: ${systemGesture}`;
+                displaySystemGesture(systemGesture);
+                compareGestures(dominantGesture, systemGesture);
+                userGestureHistory.push(dominantGesture);
+                if (userGestureHistory.length > 5) {
+                    userGestureHistory.shift(); // Keep history limited to last 10 moves
+                }
+            }, 250);
+        }
+
+        function onResults(results) {
+            canvasCtx.save();
+            canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+            canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+
+            if (results.multiHandLandmarks && results.multiHandLandmarks.length > 0) {
+                for (const landmarks of results.multiHandLandmarks) {
+                    drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {color: '#00FF00', lineWidth: 5});
+                    drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 2});
+                    const gesture = detectGesture(landmarks);
+                    if (gesture !== lastGesture && gesture !== 'Unknown') {
+                        console.log(`Live Detected: ${gesture}`);
+                        lastGesture = gesture;
+                    }
+                    if (recording) {
+                        gestureResults.push(gesture);
+                    }
+                }
+            }
+            canvasCtx.restore();
+        }
+
+        function detectGesture(landmarks) {
+            // Helper: Euclidean distance between two points.
+            function distance(a, b) {
+                return Math.hypot(a.x - b.x, a.y - b.y);
+            }
+
+            // Helper: Computes the angle (in degrees) at point B given points A, B, C.
+            function angleBetweenPoints(A, B, C) {
+                const BA = { x: A.x - B.x, y: A.y - B.y };
+                const BC = { x: C.x - B.x, y: C.y - B.y };
+                const dot = BA.x * BC.x + BA.y * BC.y;
+                const magBA = Math.hypot(BA.x, BA.y);
+                const magBC = Math.hypot(BC.x, BC.y);
+                // Protect against division by zero
+                if (magBA === 0 || magBC === 0) return 0;
+                const angleRad = Math.acos(dot / (magBA * magBC));
+                return angleRad * (180 / Math.PI);
+            }
+
+            // Define thresholds (in degrees) for determining if a finger is extended.
+            const fingerExtendedThreshold = 160; // For index, middle, ring, pinky.
+            const thumbExtendedThreshold = 150;  // Thumb may need a slightly lower threshold.
+
+            // Determine if each finger is extended based on the angle at its pip (or equivalent) joint.
+            // Landmark indices (MediaPipe): 
+            // - Thumb: [1, 2, 4] (using CMC, MCP, Tip)
+            // - Index: [5, 6, 8] (MCP, PIP, Tip)
+            // - Middle: [9, 10, 12]
+            // - Ring: [13, 14, 16]
+            // - Pinky: [17, 18, 20]
+            const thumbExtended = angleBetweenPoints(landmarks[1], landmarks[2], landmarks[4]) > thumbExtendedThreshold;
+            const indexExtended = angleBetweenPoints(landmarks[5], landmarks[6], landmarks[8]) > fingerExtendedThreshold;
+            const middleExtended = angleBetweenPoints(landmarks[9], landmarks[10], landmarks[12]) > fingerExtendedThreshold;
+            const ringExtended = angleBetweenPoints(landmarks[13], landmarks[14], landmarks[16]) > fingerExtendedThreshold;
+            const pinkyExtended = angleBetweenPoints(landmarks[17], landmarks[18], landmarks[20]) > fingerExtendedThreshold;
+
+            // Decide on the gesture based on the extended fingers.
+            if (!thumbExtended && !indexExtended && !middleExtended && !ringExtended && !pinkyExtended) {
+                return 'Rock';
+            } else if (thumbExtended && indexExtended && middleExtended && ringExtended && pinkyExtended) {
+                return 'Paper';
+            } else if (!thumbExtended && indexExtended && middleExtended && !ringExtended && !pinkyExtended) {
+                return 'Scissors';
+            } else {
+                return 'Unknown';
+            }
+        }
+
+        let gestureHistory = [];
+
+        function findDominantGesture(gestures) {
+            gestureHistory = [...gestureHistory, ...gestures].slice(-10); // Keep last 10 frames
+            
+            const counts = gestureHistory.reduce((acc, gesture) => {
+                acc[gesture] = (acc[gesture] || 0) + 1;
+                return acc;
+            }, { 'Rock': 0, 'Paper': 0, 'Scissors': 0, 'Unknown': 0 });
+
+            // Require at least 60% confidence in the dominant gesture
+            const total = gestureHistory.length;
+            const candidates = Object.entries(counts)
+                .filter(([_, count]) => count / total >= 0.6)
+                .sort((a, b) => b[1] - a[1]);
+
+            return candidates.length > 0 ? candidates[0][0] : 'Unknown';
+        }
+
+        function generateSystemGesture() {
+            // Filter out unknown gestures from history
+            const validGestures = userGestureHistory.filter(g => g !== 'Unknown');
+            if (validGestures.length < 3) {
+                return randomGesture();
+            }
+
+            // Calculate gesture frequencies
+            const counts = validGestures.reduce((acc, gesture) => {
+                acc[gesture] = (acc[gesture] || 0) + 1;
+                return acc;
+            }, { Rock: 0, Paper: 0, Scissors: 0 });
+
+            const total = validGestures.length;
+            const rockFreq = counts.Rock / total;
+            const paperFreq = counts.Paper / total;
+            const scissorsFreq = counts.Scissors / total;
+
+            // Create weighted choices based on opponent's tendencies
+            const aiChoices = [
+                { gesture: 'Paper', weight: rockFreq },    // Counters Rock
+                { gesture: 'Scissors', weight: paperFreq }, // Counters Paper
+                { gesture: 'Rock', weight: scissorsFreq }  // Counters Scissors
+            ];
+
+            // Normalize weights and select move
+            const totalWeight = aiChoices.reduce((sum, c) => sum + c.weight, 0);
+            const random = Math.random() * totalWeight;
+            
+            let cumulative = 0;
+            for (const choice of aiChoices) {
+                cumulative += choice.weight;
+                if (random <= cumulative) {
+                    return choice.gesture;
+                }
+            }
+            return randomGesture();
+        }
+
+        function randomGesture() {
+            const gestures = ['Rock', 'Paper', 'Scissors'];
+            return gestures[Math.floor(Math.random() * gestures.length)];
+        }
+
+        function displaySystemGesture(gesture) {
+            let emoji = '';
+            if (gesture === 'Rock') {
+                emoji = '✊';
+            } else if (gesture === 'Paper') {
+                emoji = '✋';
+            } else if (gesture === 'Scissors') {
+                emoji = '✌️';
+            }
+            systemGestureImage.innerText = emoji;
+        }
+
+        function compareGestures(userGesture, systemGesture) {
+            if (userGesture === 'Unknown') {
+                resultElement.innerText = 'Invalid gesture!';
+            } else if (userGesture === systemGesture) {
+                resultElement.innerText = 'Draw!';
+            } else if (
+                (userGesture === 'Rock' && systemGesture === 'Scissors') ||
+                (userGesture === 'Paper' && systemGesture === 'Rock') ||
+                (userGesture === 'Scissors' && systemGesture === 'Paper')
+            ) {
+                resultElement.innerText = 'You win!';
+            } else {
+                resultElement.innerText = 'You lose!';
+            }
+        }
+
+        startCamera();
+    </script>
+</body>
+</html>
