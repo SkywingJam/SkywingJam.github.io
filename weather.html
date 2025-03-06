@@ -10,11 +10,12 @@
             max-width: 600px; 
             margin: 20px auto;
             color: white; 
+            overflow-x: hidden;
         }
         .weather-card { 
             padding: 20px; 
             border-radius: 30px; 
-            margin-bottom: 20px; 
+            margin-bottom: calc(100vw * 0.02);
             background-color: rgba(0, 0, 0, 0.1); 
             position: relative;
             z-index: 3;
@@ -253,9 +254,13 @@
 
         @media only screen and (max-width: 600px) {
             body {
-                max-width: 100%;
-                margin: 0;
-                font-size: 1em;
+                max-Width: 90%;
+                margin: 15px auto;
+                font-size: 0.75em;
+            }
+            .center-text {
+                margin: 5px;
+                font-size: 1.25em;
             }
             .weather-card {
                 padding: 10px;
@@ -267,13 +272,32 @@
                 margin: 10px 0;
             }
             .temperature {
-                font-size: 1.5em;
+                font-size: 3em;
             }
             .large_text {
                 font-size: 1.5em;
             }
+            .medium-text {
+                font-size: 1.0em;
+            }
+            .small-text {
+                font-size: 0.9em;
+            }
             .city-text {
-                font-size: 1.2em;
+                font-size: 2em;
+            }
+            .title-text {
+                font-size: 0.8em;
+            }
+            .hourly-forecast-item {
+                width: calc(100% / 4);
+                margin-right: 5px;
+            }
+            .uv-bar {
+                height: 3px;
+            }
+            .uv-dot {
+                height: 8px;
             }
         }
         #backButton {
@@ -486,20 +510,6 @@
             return /Tablet|iPad/i.test(navigator.userAgent);
         }
 
-        function adjustLayoutForMobile() {
-            if (isMobileDevice()) {
-                document.body.style.maxWidth = '90%';
-                document.body.style.margin = '15px auto';
-                document.body.style.fontSize = '0.75em';
-                const weatherCard = document.querySelector('.weather-card');
-                weatherCard.style.marginBottom = '5px';
-                const infoCards = document.querySelectorAll('.info-card');
-                infoCards.forEach(card => {
-                    card.style.height = '100%';
-                });
-            }
-        }
-
         function generateStars(half = false) {
             if (half){
                 const starCount = 50;
@@ -663,16 +673,16 @@
                     hourlyForecastHtml += `
                         <div class="hourly-forecast-item" id="hour-${index}">
                             <img src="${hour.condition.icon}" alt="${hour.condition.text}">
-                            <div><strong>Now</strong></div>
-                            <div>${hour.temp_c.toFixed(0)}°C</div>
+                            <div><span class="large-text"><strong>Now</strong></span></div>
+                            <div><span class="large-text">${hour.temp_c.toFixed(0)}°C</span></div>
                         </div>
                     `;
                 } else {
                     hourlyForecastHtml += `
                         <div class="hourly-forecast-item" id="hour-${index}">
                             <img src="${hour.condition.icon}" alt="${hour.condition.text}">
-                            <div>${hour.time.split(' ')[1]}</div>
-                            <div>${hour.temp_c.toFixed(0)}°C</div>
+                            <div><span class="large-text">${hour.time.split(' ')[1]}</span></div>
+                            <div><span class="large-text">${hour.temp_c.toFixed(0)}°C</span></div>
                         </div>
                     `;
                 }
@@ -731,7 +741,7 @@
                         <div class="weather-item"><span class="title-text">Humidity</span><br><span class="large_text data-text">${currentWeather.humidity}%</span></div>
                     </div>
                     <div class="info-card">
-                        <div class="weather-item"><span class="title-text">Wind</span><br><span class="large_text data-text">${currentWeather.wind_kph} kph</span><br><span class="small-text">from ${getWindDirection(currentWeather.wind_dir)}</span></div>
+                        <div class="weather-item"><span class="title-text">Wind</span><br><span class="large_text data-text">${currentWeather.wind_kph} kph</span><br><span class="small-text">from ${getWindDirection("SSE")}</span></div>
                     </div>
                     <div class="info-card">
                         <div class="weather-item"><span class="title-text">Pressure</span><br><span class="large_text data-text">${currentWeather.pressure_mb} mb</span></div>
@@ -743,8 +753,8 @@
                         <div class="weather-item"><span class="title-text">Visibility</span><br><span class="large_text data-text">${currentWeather.vis_km} km</span></div>
                     </div>
                 </div>
-                <div class="weather-item center-text"><span class="small-text"><strong>Last Updated:</strong> ${currentWeather.last_updated}</span></div>
-                <div class="weather-item center-text"><span class="small-text">Weather Data From <a href="https://www.weatherapi.com/" target="blank">Weather API</a></span></div>
+                <div class="weather-item center-text small-text"><strong>Last Updated:</strong> ${currentWeather.last_updated}</div>
+                <div class="weather-item center-text small-text">Weather Data From <a href="https://www.weatherapi.com/" target="blank">Weather API</a></div>
             `;
 
             const currentHour = new Date().getHours();
@@ -857,7 +867,6 @@
 
         let mode = forecast;
         fetchWeather(forecast);
-        adjustLayoutForMobile();
 
         const currentHr = new Date().getHours();
 
