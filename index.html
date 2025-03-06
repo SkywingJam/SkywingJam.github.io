@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Model Links</title>
+    <title>Personal Projects</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-image: url('https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=en-US');
             background-size: cover;
             background-position: center;
+            background-attachment: fixed;
             color: #ffffff;
             display: flex;
             justify-content: center;
@@ -17,14 +18,30 @@
             height: 100vh;
             margin: 0;
             flex-direction: column;
+            overflow: hidden;
+            position: relative;
+            height: calc(var(--vh, 1vh) * 100);;
+        }
+        body::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0));
+            pointer-events: none;
+            z-index: -1;
         }
         .container {
             background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             text-align: center;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            position: absolute;
+            align-items: center;
         }
         h1 {
             color: #ffffff;
@@ -38,30 +55,36 @@
         }
         a {
             text-decoration: none;
-            color: #ffffff;
-            font-weight: bold;
+            color: lightgrey;
+            font-family: "Trebuchet MS", Tahoma, sans-serif;
+            transition: all 0.3s;
         }
         a:hover {
-            text-decoration: underline;
+            color: white;
         }
         .author {
             position: fixed;
             bottom: 20px;
             left: 20px;
             margin-top: 20px;
-            color: #ffffff;
+            color: white;
             font-size: 0.9em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .author a {
+            font-weight: bold;
+            color: white;
+        }
+        .author a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>3D Model Links</h1>
+        <h1>Personal Projects</h1>
         <ul>
-            <li><a href="model.html" target="_blank">Model</a></li>
-            <li><a href="bones.html" target="_blank">Bones</a></li>
-            <li><a href="rps.html" target="_blank">Rock Paper Scissors</a></li>
+            <li><a href="rps.html">Rock Paper Scissors</a></li>
             <li><a href="weather.html" target="_blank">Weather</a></li>
         </ul>
     </div>
@@ -69,5 +92,15 @@
         Author: <a href="https://github.com/SkywingJam" target="_blank">Haochen Zhou</a><br>
         Background Picture From <a href="https://bing.com/" target="_blank">Bing</a> Image of the Day
     </div>
+    <script>
+        function setVH() {
+            let vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        }
+
+        window.addEventListener('resize', setVH);
+        window.addEventListener('orientationchange', setVH);
+        setVH();
+    </script>
 </body>
 </html>
