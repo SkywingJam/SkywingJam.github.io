@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel XP</title>
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <style>
+        @font-face {
+            font-family: 'Zpix';
+            src: url('fonts/zpix.ttf') format('truetype');
+        }
+        body {
+            font-family: 'Zpix', sans-serif;
+            background-image: url('backgrounds/xp.png');
+            background-size: cover;
+            background-position: center;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            cursor: url('cursor/cursor.png') 0 0, auto;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 50px 20px 20px 20px;
+            border: 2px solid #000;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            width: 400px;
+            position: relative;
+            top: calc(50% - 200px);
+            left: calc(50% - 200px);
+        }
+        .desktop-icon {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 64px;
+            height: 64px;
+            cursor: url('cursor/cursor.png') 0 0, auto;
+            text-align: center;
+            color: white;
+            font-size: 12px;
+            text-shadow: 1px 1px 2px black;
+        }
+        .desktop-icon img {
+            width: 100%;
+            height: auto;
+        }
+        .title-bar {
+            background: #186fc6;
+            padding: 5px;
+            color: white;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #000;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+        }
+        .title-bar::after {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.075);
+            content: "";
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .title-bar .title {
+            margin: 0;
+            padding: 0;
+        }
+        .title-bar .buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .title-bar .buttons .button {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #000;
+            cursor: url('cursor/click.png') 9 0, auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            text-align: center;
+        }
+        .title-bar .buttons .button.red {
+            background-color: #ff0000;
+        }
+        .title-bar .buttons .button.red:hover {
+            background-color: #ff8080;
+        }
+        .title-bar .buttons .button.blue {
+            background-color: #186fc6;
+        }
+        .title-bar .buttons .button.blue:hover {
+            background-color: #63b8ff;
+        }
+        .menu-bar {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30px;
+            background-color: #186fc6;
+            color: white;
+            text-align: center;
+            font-family: 'Zpix', sans-serif;
+            display: flex;
+            z-index: 1;
+        }
+        .menu-bar::after{
+            position: absolute;
+            background: rgba(255, 255, 255, 0.075);
+            content: "";
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .start-button {
+            background-color: #008000;
+            height: 100%;
+            color: white;
+            padding: 5px 20px;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-right: 1px solid black;
+            z-index: 2;
+        }
+        .start-button::after {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.075);
+            content: "";
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            cursor: url('cursor/click.png') 9 0, auto;
+        }
+        .start-button:hover {
+            cursor: url('cursor/click.png') 9 0, auto;
+            background-color: #006400;
+            color: white;
+            text-decoration: none;
+        }
+        .tray {
+            background-color: #588ddd;
+            border-left: 1px solid black;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 10px;
+            margin-left: auto;
+            position: relative;
+            z-index: 1;
+        }
+        .tray::after {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.075);
+            content: "";
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .time {
+            margin-left: auto;
+            padding-left: 10px;
+        }
+        .hidden {
+            visibility: hidden;
+        }
+        .container-link {
+            color: white;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-right: 1px solid black;
+        }
+        .tasks a {
+            color: white;
+            text-decoration: none;
+            padding: 5px 100px 0px 10px;
+            background: rgba(0, 0, 0, 0.4);
+            margin-right: 5px;
+            cursor: url('cursor/click.png') 0 0, auto;
+            display: inline-block;
+        }
+        .tasks {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex-grow: 1;
+            padding-left: 5px;
+            z-index: 2;
+        }
+        .tasks::after {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.075);
+            content: "";
+            width: 100%;
+            height: 50%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .tasks a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            cursor: url('cursor/click.png') 0 0, auto;
+        }
+    </style>
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const timeString = `${hours}<span id="colon">:</span>${minutes}`;
+            document.getElementById('time').innerHTML = timeString;
+        }
+
+        function toggleColon() {
+            const colonElement = document.getElementById('colon');
+            if (colonElement) {
+                colonElement.classList.toggle('hidden');
+            }
+        }
+
+        setInterval(updateTime, 60000);
+        setInterval(toggleColon, 1000);
+
+        function closeContainer(containerId) {
+            event.stopPropagation();
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.remove();
+                updateMenuBar();
+            }
+        }
+
+        function toggleFullScreen(containerId) {
+            event.stopPropagation();
+            const container = document.getElementById(containerId);
+            if (container) {
+                if (container.classList.contains('fullscreen')) {
+                    container.classList.remove('fullscreen');
+                    container.style.width = '400px';
+                    container.style.height = 'auto';
+                    container.style.left = container.dataset.left;
+                    container.style.top = container.dataset.top;
+                } else {
+                    container.classList.add('fullscreen');
+                    container.dataset.left = container.style.left;
+                    container.dataset.top = container.style.top;
+                    container.style.width = '100vw';
+                    container.style.height = '100vh';
+                    container.style.left = '0';
+                    container.style.top = '0';
+                }
+            }
+        }
+
+        function minimizeContainer(containerId) {
+            event.stopPropagation();
+            const container = document.getElementById(containerId);
+            if (container) {
+                container.classList.add('minimized');
+                container.style.display = 'none';
+                updateMenuBar();
+            }
+        }
+
+        function makeDraggable(containerId) {
+            const container = document.getElementById(containerId);
+            const titleBar = container.querySelector('.title-bar');
+            let isDragging = false;
+            let offsetX, offsetY;
+            let timer;
+
+            titleBar.addEventListener('mousedown', (e) => {
+                container.style.zIndex = 1000;
+                const containers = document.querySelectorAll('.container');
+                containers.forEach(c => {
+                    if (c !== container) {
+                        c.style.zIndex = 1;
+                    }
+                });
+                timer = setTimeout(() => {
+                    isDragging = true;
+                    offsetX = e.clientX - container.offsetLeft;
+                    offsetY = e.clientY - container.offsetTop;
+                    container.style.position = 'absolute';
+                }, 250);
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    container.style.left = `${e.clientX - offsetX}px`;
+                    container.style.top = `${e.clientY - offsetY}px`;
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                clearTimeout(timer);
+                isDragging = false;
+            });
+        }
+
+        function createContainer(id, title) {
+            const container = document.createElement('div');
+            container.className = 'container nes-container with-title is-centered';
+            container.onclick = () => {
+                container.style.zIndex = 1000;
+                const containers = document.querySelectorAll('.container');
+                containers.forEach(c => {
+                    if (c !== container) {
+                        c.style.zIndex = 1;
+                    }
+                });
+            };
+            container.id = id;
+            container.innerHTML = `
+                <div class="title-bar">
+                    <span class="title">${title}</span>
+                    <div class="buttons">
+                        <div class="button blue" onclick="minimizeContainer('${id}')">_</div>
+                        <div class="button blue" onclick="toggleFullScreen('${id}')">□</div>
+                        <div class="button red" onclick="closeContainer('${id}')">X</div>
+                    </div>
+                </div>
+                <p>这是一个居中的容器。</p>
+            `;
+            document.body.appendChild(container);
+            makeDraggable(id);
+            updateMenuBar();
+            container.style.zIndex = 1000;
+            const containers = document.querySelectorAll('.container');
+            containers.forEach(c => {
+                if (c !== container) {
+                    c.style.zIndex = 1;
+                }
+            });
+        }
+
+        function updateMenuBar() {
+            const menuBar = document.querySelector('.menu-bar');
+            const containers = document.querySelectorAll('.container');
+            const tasks = document.querySelector('.tasks');
+            tasks.innerHTML = '';
+            containers.forEach(container => {
+                const containerLink = document.createElement('a');
+                containerLink.href = '#';
+                containerLink.textContent = container.querySelector('.title').textContent;
+                containerLink.onclick = () => {
+                    container.classList.remove('minimized');
+                    container.style.display = 'block';
+                    container.style.zIndex = 1000;
+                    const containers = document.querySelectorAll('.container');
+                    containers.forEach(c => {
+                        if (c !== container) {
+                            c.style.zIndex = 1;
+                        }
+                    });
+                };
+                tasks.appendChild(containerLink);
+            });
+        }
+
+        window.onload = () => {
+            updateTime();
+            createContainer('container1', '窗口1');
+            createContainer('container2', '窗口2');
+            createContainer('container3', '窗口3');
+        };
+
+        function createNewContainer() {
+            const containerId = `container${document.querySelectorAll('.container').length + 1}`;
+            createContainer(containerId, '新窗口');
+        }
+    </script>
+</head>
+<body>
+    <div class="desktop-icon" ondblclick="createNewContainer()">
+        <img src="icons/657.ico" alt="新建窗口">
+        <div>我的电脑</div>
+    </div>
+    <div class="menu-bar">
+        <div class="start">
+            <a href="#" class="start-button">田 开始</a>
+        </div>
+        <div class="tasks">
+        </div>
+        <div class="tray">
+            <span id="time" class="time"></span>
+        </div>
+    </div>
+</body>
+</html>
