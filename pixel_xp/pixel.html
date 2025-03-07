@@ -28,7 +28,7 @@
             border: 2px solid #000;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
             width: 400px;
-            position: relative;
+            position: absolute;
             top: calc(50% - 200px);
             left: calc(50% - 200px);
         }
@@ -38,7 +38,7 @@
             left: 20px;
             width: 64px;
             height: 64px;
-            cursor: url('cursor/cursor.png') 0 0, auto;
+            cursor: url('cursor/click.png') 0 0, auto;
             text-align: center;
             color: white;
             font-size: 12px;
@@ -72,6 +72,7 @@
             top: 0;
             left: 0;
             z-index: -1;
+            pointer-events: none;
         }
         .title-bar .title {
             margin: 0;
@@ -126,10 +127,12 @@
             top: 0;
             left: 0;
             z-index: -1;
+            pointer-events: none;
         }
         .start-button {
             background-color: #008000;
             height: 100%;
+            width: 100px;
             color: white;
             padding: 5px 20px;
             text-decoration: none;
@@ -140,6 +143,7 @@
             position: relative;
             border-right: 1px solid black;
             z-index: 2;
+            flex-shrink: 0;
         }
         .start-button::after {
             position: absolute;
@@ -151,6 +155,7 @@
             left: 0;
             z-index: -1;
             cursor: url('cursor/click.png') 9 0, auto;
+            pointer-events: none;
         }
         .start-button:hover {
             cursor: url('cursor/click.png') 9 0, auto;
@@ -169,6 +174,7 @@
             margin-left: auto;
             position: relative;
             z-index: 1;
+            flex-shrink: 0;
         }
         .tray::after {
             position: absolute;
@@ -179,6 +185,7 @@
             top: 0;
             left: 0;
             z-index: -1;
+            pointer-events: none;
         }
         .time {
             margin-left: auto;
@@ -196,11 +203,15 @@
         .tasks a {
             color: white;
             text-decoration: none;
-            padding: 5px 100px 0px 10px;
+            width: 200px;
+            text-align: left;
+            padding: 5px 10px 0px 10px;
             background: rgba(0, 0, 0, 0.4);
             margin-right: 5px;
             cursor: url('cursor/click.png') 0 0, auto;
             display: inline-block;
+            flex-shrink: 1;
+            white-space: nowrap;
         }
         .tasks {
             display: flex;
@@ -209,6 +220,7 @@
             flex-grow: 1;
             padding-left: 5px;
             z-index: 2;
+            overflow: hidden;
         }
         .tasks::after {
             position: absolute;
@@ -219,6 +231,7 @@
             top: 0;
             left: 0;
             z-index: -1;
+            pointer-events: none;
         }
         .tasks a:hover {
             background-color: rgba(255, 255, 255, 0.1);
@@ -265,10 +278,11 @@
                     container.style.top = container.dataset.top;
                 } else {
                     container.classList.add('fullscreen');
+                    container.style.position = 'absolute';
                     container.dataset.left = container.style.left;
                     container.dataset.top = container.style.top;
                     container.style.width = '100vw';
-                    container.style.height = '100vh';
+                    container.style.height = 'calc(100vh - 30px)';
                     container.style.left = '0';
                     container.style.top = '0';
                 }
@@ -297,7 +311,7 @@
                 const containers = document.querySelectorAll('.container');
                 containers.forEach(c => {
                     if (c !== container) {
-                        c.style.zIndex = 1;
+                        c.style.zIndex = c.style.zIndex - 1;
                     }
                 });
                 timer = setTimeout(() => {
@@ -324,12 +338,20 @@
         function createContainer(id, title) {
             const container = document.createElement('div');
             container.className = 'container nes-container with-title is-centered';
+            const Allcontainers = document.querySelectorAll('.container');
+            if (Allcontainers.length > 0) {
+                container.style.top = `calc(50% - 200px + ${Allcontainers.length * 20}px)`;
+                container.style.left = `calc(50% - 200px + ${Allcontainers.length * 20}px)`;
+            } else {
+                container.style.top = 'calc(50% - 200px)';
+                container.style.left = 'calc(50% - 200px)';
+            }
             container.onclick = () => {
                 container.style.zIndex = 1000;
                 const containers = document.querySelectorAll('.container');
                 containers.forEach(c => {
                     if (c !== container) {
-                        c.style.zIndex = 1;
+                        c.style.zIndex = c.style.zIndex - 1;
                     }
                 });
             };
@@ -352,7 +374,7 @@
             const containers = document.querySelectorAll('.container');
             containers.forEach(c => {
                 if (c !== container) {
-                    c.style.zIndex = 1;
+                    c.style.zIndex = c.style.zIndex - 1;
                 }
             });
         }
@@ -373,7 +395,7 @@
                     const containers = document.querySelectorAll('.container');
                     containers.forEach(c => {
                         if (c !== container) {
-                            c.style.zIndex = 1;
+                            c.style.zIndex = c.style.zIndex - 1;
                         }
                     });
                 };
