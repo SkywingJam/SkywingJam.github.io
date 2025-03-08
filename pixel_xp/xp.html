@@ -106,13 +106,14 @@
         .container {
             background: rgba(255, 255, 255, 1);
             padding: 50px 20px 20px 20px;
-            border: 2px solid #000;
+            border: 1.5px solid #000;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
             width: 400px;
             position: absolute;
             top: calc(50% - 200px);
             left: calc(50% - 200px);
-            border-radius: 3px;
+            border-top-left-radius: 7px;
+            border-top-right-radius: 7px;
         }
         .container p{
             user-select: text;
@@ -136,7 +137,7 @@
             user-select: all;
         }
         .title-bar {
-            background: #186fc6;
+            background: #2157d6;
             padding: 5px;
             color: white;
             font-weight: bold;
@@ -144,10 +145,13 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #000;
+            text-shadow: 1px 1px 2px black;
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
             z-index: 1;
         }
         .title-bar::after {
@@ -183,23 +187,23 @@
             border-radius: 2px;
         }
         .title-bar .buttons .button.red {
-            background-color: #ff0000;
+            background: radial-gradient(ellipse at left top, #ff8080, #ff0000);
         }
         .title-bar .buttons .button.red:hover {
-            background-color: #ff8080;
+            background: radial-gradient(ellipse at left top, #ffb3b3, #ff8080);
         }
         .title-bar .buttons .button.blue {
-            background-color: #186fc6;
+            background: radial-gradient(ellipse at left top, #229bff, #2157d6, #0066ff);
         }
         .title-bar .buttons .button.blue:hover {
-            background-color: #63b8ff;
+            background: radial-gradient(ellipse at left top, #80b3ff, #229bff, #80b3ff);
         }
         .menu-bar {
             position: absolute;
             bottom: 0;
             width: 100%;
             height: 30px;
-            background-color: #186fc6;
+            background-color: #2157d6;
             color: white;
             text-align: center;
             font-family: 'Zpix', sans-serif;
@@ -224,7 +228,9 @@
             color: white;
             padding: 5px 25px 5px 20px;
             text-decoration: none;
+            font-style: italic;
             text-align: center;
+            text-shadow: 1px 1px 2px black;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -260,9 +266,10 @@
         .start-button img {
             margin-right: 5px;
             align-self: flex-start;
+            filter: drop-shadow(1px 1px 2px black);
         }
         .tray {
-            background-color: #588ddd;
+            background-color: #118fe9;
             border-left: 1px solid black;
             height: 100%;
             display: flex;
