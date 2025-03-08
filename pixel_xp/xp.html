@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel XP</title>
+    <title>Web XP</title>
     <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
     <style>
         @font-face {
@@ -12,7 +12,7 @@
         }
         body {
             font-family: 'Zpix', sans-serif;
-            background-image: url('backgrounds/xp.png');
+            background-image: url('backgrounds/xp.jpeg');
             background-size: cover;
             background-position: center;
             justify-content: center;
@@ -21,6 +21,7 @@
             margin: 0;
             overflow: hidden;
             cursor: url('cursor/cursor.png') 0 0, auto;
+            user-select: none;
         }
         /* crt effect from https://aleclownes.com/2017/02/01/crt-display.html */
         @keyframes flicker {
@@ -98,12 +99,12 @@
             right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 1001;
-            background-size: 100% 2px, 3px 100%;
+            background-size: 100% 2px, 100% 100%;
             pointer-events: none;
             animation: flicker 1s infinite;
         }
         .container {
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 1);
             padding: 50px 20px 20px 20px;
             border: 2px solid #000;
             box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
@@ -111,9 +112,13 @@
             position: absolute;
             top: calc(50% - 200px);
             left: calc(50% - 200px);
+            border-radius: 3px;
+        }
+        .container p{
+            user-select: text;
         }
         .desktop-icon {
-            position: absolute;
+            position: relative;
             top: 20px;
             left: 20px;
             width: 64px;
@@ -123,10 +128,12 @@
             color: white;
             font-size: 12px;
             text-shadow: 1px 1px 2px black;
+            user-select: all;
         }
         .desktop-icon img {
             width: 100%;
             height: auto;
+            user-select: all;
         }
         .title-bar {
             background: #186fc6;
@@ -148,7 +155,7 @@
             background: rgba(255, 255, 255, 0.075);
             content: "";
             width: 100%;
-            height: 50%;
+            height: 20%;
             top: 0;
             left: 0;
             z-index: -1;
@@ -173,6 +180,7 @@
             font-size: 12px;
             color: white;
             text-align: center;
+            border-radius: 2px;
         }
         .title-bar .buttons .button.red {
             background-color: #ff0000;
@@ -203,7 +211,7 @@
             background: rgba(255, 255, 255, 0.075);
             content: "";
             width: 100%;
-            height: 50%;
+            height: 20%;
             top: 0;
             left: 0;
             z-index: -1;
@@ -214,7 +222,7 @@
             height: 100%;
             width: 100px;
             color: white;
-            padding: 5px 20px;
+            padding: 5px 25px 5px 20px;
             text-decoration: none;
             text-align: center;
             display: flex;
@@ -225,23 +233,33 @@
             z-index: 2;
             flex-shrink: 0;
             cursor: url('cursor/click.png') 9 0, default;
+            text-wrap: nowrap;
+            border-top-right-radius: 12.5px;
+            border-bottom-right-radius: 12.5px;
+            box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
         }
         .start-button::after {
             position: absolute;
             background: rgba(255, 255, 255, 0.075);
             content: "";
             width: 100%;
-            height: 50%;
+            height: 20%;
             top: 0;
             left: 0;
             z-index: -1;
             pointer-events: none;
+            border-top-right-radius: 12.5px;
+            border-bottom-right-radius: 12.5px;
         }
         .start-button:hover {
             cursor: url('cursor/click.png') 9 0, default;
             background-color: #006400;
             color: white;
             text-decoration: none;
+        }
+        .start-button img {
+            margin-right: 5px;
+            align-self: flex-start;
         }
         .tray {
             background-color: #588ddd;
@@ -261,7 +279,7 @@
             background: rgba(255, 255, 255, 0.075);
             content: "";
             width: 100%;
-            height: 50%;
+            height: 20%;
             top: 0;
             left: 0;
             z-index: -1;
@@ -286,12 +304,14 @@
             width: 200px;
             text-align: left;
             padding: 5px 10px 5px 10px;
-            background: rgba(0, 0, 0, 0.4);
-            margin-right: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: 3px;
             cursor: url('cursor/click.png') 9 0, auto;
             display: inline-block;
             flex-shrink: 1;
             white-space: nowrap;
+            border-radius: 6px;
+            box-shadow: inset 1px 1px 0.5px rgba(255, 255, 255, 0.5) , 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
         .tasks {
             display: flex;
@@ -307,14 +327,14 @@
             background: rgba(255, 255, 255, 0.075);
             content: "";
             width: 100%;
-            height: 50%;
+            height: 20%;
             top: 0;
             left: 0;
             z-index: -1;
             pointer-events: none;
         }
         .tasks a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.1);
             cursor: url('cursor/click.png') 9 0, auto;
         }
     </style>
@@ -356,6 +376,7 @@
                     container.style.height = 'auto';
                     container.style.left = container.dataset.left;
                     container.style.top = container.dataset.top;
+                    container.style.boxShadow = '5px 5px 15px rgba(0, 0, 0, 0.5)';
                 } else {
                     container.classList.add('fullscreen');
                     container.style.position = 'absolute';
@@ -365,6 +386,7 @@
                     container.style.height = 'calc(100vh - 30px)';
                     container.style.left = '0';
                     container.style.top = '0';
+                    container.style.boxShadow = 'none';
                 }
             }
         }
@@ -399,7 +421,7 @@
                     offsetX = e.clientX - container.offsetLeft;
                     offsetY = e.clientY - container.offsetTop;
                     container.style.position = 'absolute';
-                }, 250);
+                }, 10);
             });
 
             document.addEventListener('mousemove', (e) => {
@@ -498,12 +520,14 @@
 </head>
 <body>
     <div class="desktop-icon" ondblclick="createNewContainer()">
-        <img src="icons/657.ico" alt="新建窗口">
+        <img src="icons/120.ico" alt="我的电脑">
         <div>我的电脑</div>
     </div>
     <div class="menu-bar">
         <div class="start">
-            <a href="#" class="start-button">田 开始</a>
+            <a href="#" class="start-button">
+                <img src="icons/logo.png" alt="开始" width="20px" height="20px" style="margin-right: 10px;">开始
+            </a>
         </div>
         <div class="tasks">
         </div>
