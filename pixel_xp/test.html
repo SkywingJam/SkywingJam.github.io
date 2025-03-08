@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Windows XP Dev Beta</title>
     <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet" />
+    <link rel="icon" href="icons/logo.png" type="image/x-icon">
     <style>
         @font-face {
             font-family: 'Zpix';
@@ -465,7 +466,7 @@
 
         function attemptOpen(containerId) {
             const container = document.getElementById(containerId);
-            closeContainer(containerId);
+            document.querySelectorAll('.container').forEach(c => c.remove());
             createContainer('story2', '密码验证', `
                 <p>需要输入4位数字密码：</p>
                 <div class="nes-field">
@@ -479,12 +480,13 @@
                     checkPassword();
                 }
             });
+            updateMenuBar();
         }
 
         function checkPassword() {
             const input = document.getElementById('password').value;
             if(input === '1231') {
-                closeContainer('story2');
+                document.querySelectorAll('.container').forEach(c => c.remove());
                 showPage3();
             } else {
                 document.getElementById('hint').style.display = 'block';
@@ -505,7 +507,7 @@
 
         function showFinalChoice(containerId) {
             const container = document.getElementById(containerId);
-            closeContainer(containerId);
+            document.querySelectorAll('.container').forEach(c => c.remove());
             createContainer('story4', '最后的选择', `
                 <p class="glitch-text">⚠ 警告 ⚠</p>
                 <p>要继续看下去吗？</p>
@@ -516,20 +518,22 @@
 
         function badEnding() {
             document.body.innerHTML = `
-                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:1000">
-                    <img src="backgrounds/xp.png"
-                         style="width:100%;height:100%;object-fit:cover">
+                <div style="position:fixed;top:0;left:0;width:100%;height:100%;background:#0000ac;z-index:1000">
+                    <img src="backgrounds/blue_screen.png"
+                         style="width:100%;height:100%;object-fit:contain;">
                 </div>
             `;
             new Audio('se/cough.mp3').play();
         }
 
         function closeAll() {
+            new Audio('se/msg.mp3').play();
             document.querySelectorAll('.container').forEach(c => c.remove());
             createContainer('ending', '明智的选择', `
                 <p>你选择保持理智...</p>
                 <p>但深夜总会听到翻页声</p>
             `);
+            updateMenuBar();
         }
 
         function createContainer(id, title, content) {
