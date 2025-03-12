@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
     <link rel="icon" href="icons/logo.png" type="image/x-icon">
     <link href="style.css" rel="stylesheet" />
 </head>
+
 <body>
     <div class="desktop-icon" ondblclick="startStory()">
         <img src="icons/512.ico" alt="日记本.txt">
@@ -54,7 +56,7 @@
                 </div>
                 <p id="hint" style="color:#ff4444;display:none">似乎与某个日期有关...</p>
             `);
-            document.getElementById('password').addEventListener('keyup', function(event) {
+            document.getElementById('password').addEventListener('keyup', function (event) {
                 if (event.key === 'Enter') {
                     checkPassword();
                 }
@@ -64,7 +66,7 @@
 
         function checkPassword() {
             const input = document.getElementById('password').value;
-            if(input === '1231') {
+            if (input === '1231') {
                 document.querySelectorAll('.container').forEach(c => c.remove());
                 showPage3();
             } else {
@@ -286,4 +288,5 @@
         };
     </script>
 </body>
+
 </html>

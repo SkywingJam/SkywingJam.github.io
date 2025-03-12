@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,8 +21,10 @@
             flex-direction: column;
             overflow: hidden;
             position: relative;
-            height: calc(var(--vh, 1vh) * 100);;
+            height: calc(var(--vh, 1vh) * 100);
+            ;
         }
+
         body::after {
             content: "";
             position: absolute;
@@ -33,6 +36,7 @@
             pointer-events: none;
             z-index: -1;
         }
+
         .container {
             background-color: rgba(0, 0, 0, 0.8);
             padding: 20px;
@@ -43,25 +47,31 @@
             position: absolute;
             align-items: center;
         }
+
         h1 {
             color: #ffffff;
         }
+
         ul {
             list-style-type: none;
             padding: 0;
         }
+
         li {
             margin: 10px 0;
         }
+
         a {
             text-decoration: none;
             color: lightgrey;
             font-family: "Trebuchet MS", Tahoma, sans-serif;
             transition: all 0.3s;
         }
+
         a:hover {
             color: white;
         }
+
         .author {
             position: fixed;
             bottom: 20px;
@@ -71,15 +81,18 @@
             font-size: 0.9em;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
+
         .author a {
             font-weight: bold;
             color: white;
         }
+
         .author a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Personal Projects</h1>
@@ -105,4 +118,5 @@
         setVH();
     </script>
 </body>
+
 </html>

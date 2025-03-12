@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>Weather</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { 
-            font-family: Arial; 
-            max-width: 600px; 
+        body {
+            font-family: Arial;
+            max-width: 600px;
             margin: 20px auto;
-            color: white; 
+            color: white;
             overflow-x: hidden;
         }
-        .weather-card { 
-            padding: 20px; 
-            border-radius: 30px; 
+
+        .weather-card {
+            padding: 20px;
+            border-radius: 30px;
             margin-bottom: calc(100vw * 0.02);
-            background-color: rgba(0, 0, 0, 0.1); 
+            background-color: rgba(0, 0, 0, 0.1);
             position: relative;
             z-index: 3;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: inset 1px 1px 0.5px rgba(255, 255, 255, 0.15),
-                        5px 5px 10px rgba(0, 0, 0, 0.2);
+                5px 5px 10px rgba(0, 0, 0, 0.2);
             border: solid 1px rgba(255, 255, 255, 0.05);
         }
+
         .weather-card::before {
-            background: radial-gradient(
-                                        1200px circle at var(--mouse-x) var(--mouse-y),
-                                        rgba(255, 255, 255, 0.1), 
-                                        transparent 100%
-                                        );
+            background: radial-gradient(1200px circle at var(--mouse-x) var(--mouse-y),
+                    rgba(255, 255, 255, 0.1),
+                    transparent 100%);
             height: 100%;
             width: 100%;
             left: 0;
@@ -44,44 +45,103 @@
             transition: opacity 250ms;
             -webkit-transition: opacity 250m;
         }
+
         .weather-card:hover::before {
             opacity: var(--opacity);
         }
-        .info-card { 
+
+        .info-card {
             padding: 25px;
-            border-radius: 15px; 
+            border-radius: 15px;
             margin-top: 10px;
             background-color: rgba(0, 0, 0, 0.15);
             border: solid 1px rgba(255, 255, 255, 0.05);
             position: relative;
         }
-        .weather-item { margin: 20px 0; }
-        .center-text { text-align: center; margin: 10px;}
-        .temperature { font-size: 3.0em; }
-        .large_text { font-size: 1.8em; }
-        .medium-text { font-size: 1.0em; }
-        .small-text { font-size: 0.8em; }
-        .weather-item img { display: block; margin: 0 auto; }
+
+        .weather-item {
+            margin: 20px 0;
+        }
+
+        .center-text {
+            text-align: center;
+            margin: 10px;
+        }
+
+        .temperature {
+            font-size: 3.0em;
+        }
+
+        .large_text {
+            font-size: 1.8em;
+        }
+
+        .medium-text {
+            font-size: 1.0em;
+        }
+
+        .small-text {
+            font-size: 0.8em;
+        }
+
+        .weather-item img {
+            display: block;
+            margin: 0 auto;
+        }
+
         .hourly-forecast {
-            display: flex; 
-            overflow-x: auto; 
-            border-radius: 15px; 
-            padding: 10px; 
-            -ms-overflow-style: none; 
-            scrollbar-width: none; 
+            display: flex;
+            overflow-x: auto;
+            border-radius: 15px;
+            padding: 10px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
             background-color: rgba(0, 0, 0, 0.15);
             border: solid 1px rgba(255, 255, 255, 0.05);
         }
-        .hourly-forecast::-webkit-scrollbar { display: none; }
-        .hourly-forecast-item { flex: 0 0 auto; width: 100px; text-align: center; margin-right: 10px; margin-top: auto; margin-bottom: auto;}
-        .hourly-forecast-item img { width: 50px; height: 50px; }
-        .uv-bar { width: 100%; height: 5px; border-radius: 5px ;background: linear-gradient(to right, green, green, yellow, orange, red, purple, purple); position: relative; margin-top: 8px;}
-        .uv-dot { position: absolute; top: -3px; width: 2px; height: 10px; background: white; border: 1px solid black; }
-        .info-grid { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 10px; 
+
+        .hourly-forecast::-webkit-scrollbar {
+            display: none;
         }
+
+        .hourly-forecast-item {
+            flex: 0 0 auto;
+            width: 100px;
+            text-align: center;
+            margin-right: 10px;
+            margin-top: auto;
+            margin-bottom: auto;
+        }
+
+        .hourly-forecast-item img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .uv-bar {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: linear-gradient(to right, green, green, yellow, orange, red, purple, purple);
+            position: relative;
+            margin-top: 8px;
+        }
+
+        .uv-dot {
+            position: absolute;
+            top: -3px;
+            width: 2px;
+            height: 10px;
+            background: white;
+            border: 1px solid black;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
         .info-card {
             display: flex;
             flex-direction: column;
@@ -89,14 +149,28 @@
             height: 63%;
             font-size: 1.25em;
         }
-        .city-text { font-size: 2em; }
-        .title-text { text-align: left; vertical-align: top; font-size: 0.9em;}
-        .data-text { text-align: left; vertical-align: middle; }
+
+        .city-text {
+            font-size: 2em;
+        }
+
+        .title-text {
+            text-align: left;
+            vertical-align: top;
+            font-size: 0.9em;
+        }
+
+        .data-text {
+            text-align: left;
+            vertical-align: middle;
+        }
+
         a {
             text-decoration: none;
             color: #ffffff;
             font-weight: bold;
         }
+
         a:hover {
             text-decoration: underline;
         }
@@ -125,6 +199,7 @@
             filter: url(#filter-base);
             box-shadow: 200px 170px 19px 40px rgba(255, 255, 255, 0.9);
         }
+
         #cloud-back {
             top: 90px;
             height: 30px;
@@ -149,12 +224,13 @@
             filter: url(#filter-front);
             box-shadow: 210px 272px 30px 0px rgba(0, 0, 0, 0.4);
         }
-        
+
         @keyframes cloudFloat {
-            0% { 
-                transform: translateX(100vw) rotate(var(--angle)) scale(var(--scale)); 
+            0% {
+                transform: translateX(100vw) rotate(var(--angle)) scale(var(--scale));
             }
-            100% { 
+
+            100% {
                 transform: translateX(-100vw) rotate(var(--angle)) scale(var(--scale));
             }
         }
@@ -180,13 +256,27 @@
         }
 
         @keyframes twinkle {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
         @keyframes weakTwinkle {
-            0%, 100% { opacity: 0.5; }
-            50% { opacity: 0.25; }
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 0.25;
+            }
         }
 
         .star {
@@ -202,8 +292,13 @@
         }
 
         @keyframes rain {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(110vh); }
+            0% {
+                transform: translateY(-100vh);
+            }
+
+            100% {
+                transform: translateY(110vh);
+            }
         }
 
         .raindrop {
@@ -218,8 +313,13 @@
         }
 
         @keyframes snow {
-            0% { transform: translateY(-100vh); }
-            100% { transform: translateY(150vh); }
+            0% {
+                transform: translateY(-100vh);
+            }
+
+            100% {
+                transform: translateY(150vh);
+            }
         }
 
         .snowflake {
@@ -235,21 +335,44 @@
             pointer-events: none;
             z-index: 1;
             opacity: 0;
-            background: linear-gradient(var(--angle), 
-                rgba(255, 255, 255, 0.9),
-                rgba(255, 255, 255, 0.3));
+            background: linear-gradient(var(--angle),
+                    rgba(255, 255, 255, 0.9),
+                    rgba(255, 255, 255, 0.3));
             animation: thunderFlash 0.75s linear;
         }
 
         @keyframes thunderFlash {
-            0% { opacity: 0; }
-            10% { opacity: 0.8; }
-            20% { opacity: 0.3; }
-            30% { opacity: 0.9; }
-            40% { opacity: 0.1; }
-            50% { opacity: 0.3; }
-            60% { opacity: 0; }
-            100% { opacity: 0; }
+            0% {
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.8;
+            }
+
+            20% {
+                opacity: 0.3;
+            }
+
+            30% {
+                opacity: 0.9;
+            }
+
+            40% {
+                opacity: 0.1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            60% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 0;
+            }
         }
 
         @media only screen and (max-width: 600px) {
@@ -258,48 +381,62 @@
                 margin: 15px auto;
                 font-size: 0.75em;
             }
+
             .center-text {
                 margin: 5px;
                 font-size: 1.25em;
             }
+
             .weather-card {
                 padding: 10px;
             }
+
             .info-card {
                 padding: 10px;
             }
+
             .weather-item {
                 margin: 10px 0;
             }
+
             .temperature {
                 font-size: 3em;
             }
+
             .large_text {
                 font-size: 1.5em;
             }
+
             .medium-text {
                 font-size: 1.0em;
             }
+
             .small-text {
                 font-size: 0.9em;
             }
+
             .city-text {
                 font-size: 2em;
             }
+
             .title-text {
                 font-size: 0.8em;
             }
+
             .hourly-forecast-item {
                 width: calc(100% / 4);
                 margin-right: 5px;
             }
+
             .uv-bar {
                 height: 3px;
             }
+
             .uv-dot {
                 height: 8px;
             }
         }
+
         #backButton {
             position: absolute;
             top: 10px;
@@ -314,32 +451,34 @@
             font-family: "Trebuchet MS", Tahoma, sans-serif;
             transition: all 0.3s;
         }
+
         #backButton:hover {
             background-color: rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
+
 <body>
     <div id="weather" class="weather-card">Loading...</div>
-    
+
     <!-- Cloud layers -->
-    <svg width="0" height="0"> 
+    <svg width="0" height="0">
         <!--Top Layer-->
         <filter id="filter-base">
-            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="5" seed="8517" />     
-            <feDisplacementMap  in="SourceGraphic" scale="120" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="5" seed="8517" />
+            <feDisplacementMap in="SourceGraphic" scale="120" />
         </filter>
         <filter id="filter-back">
-            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="8517" />     
-            <feDisplacementMap  in="SourceGraphic" scale="120" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="8517" />
+            <feDisplacementMap in="SourceGraphic" scale="120" />
         </filter>
         <filter id="filter-mid">
-            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="8517"/>
-            <feDisplacementMap  in="SourceGraphic" scale="120" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.011" numOctaves="3" seed="8517" />
+            <feDisplacementMap in="SourceGraphic" scale="120" />
         </filter>
         <filter id="filter-front">
-            <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="4" seed="8517"/>
-            <feDisplacementMap  in="SourceGraphic" scale="50" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.009" numOctaves="4" seed="8517" />
+            <feDisplacementMap in="SourceGraphic" scale="50" />
         </filter>
     </svg>
 
@@ -411,13 +550,13 @@
 
         function getBackgroundGradient(condition, hour) {
             const isCloudy = condition.toLowerCase().includes('overcast') ||
-                            (condition.toLowerCase().includes('cloudy') && !condition.toLowerCase().includes('partly'));
-            const isRainy = condition.toLowerCase().includes('rain') || 
-                           condition.toLowerCase().includes('drizzle') ||
-                           condition.toLowerCase().includes('thunderstorm') ||
-                           condition.toLowerCase().includes('shower') ||
-                           condition.toLowerCase().includes('snow');
-            
+                (condition.toLowerCase().includes('cloudy') && !condition.toLowerCase().includes('partly'));
+            const isRainy = condition.toLowerCase().includes('rain') ||
+                condition.toLowerCase().includes('drizzle') ||
+                condition.toLowerCase().includes('thunderstorm') ||
+                condition.toLowerCase().includes('shower') ||
+                condition.toLowerCase().includes('snow');
+
             let gradient;
             if (isRainy) {
                 if (hour >= 6 && hour < 18) {
@@ -445,39 +584,39 @@
             return gradient;
         }
 
-            function generateClouds(cloudPercent, windSpeedKph) {
+        function generateClouds(cloudPercent, windSpeedKph) {
             // 计算云朵参数
             const cloudCount = Math.ceil(cloudPercent / 5); // 每5%云量增加1朵
             const windSpeed = windSpeedKph / 3.6; // 转换为m/s
             const baseDuration = 10; // 基础动画持续时间
 
-            for(let i = 0; i < cloudCount; i++) {
+            for (let i = 0; i < cloudCount; i++) {
                 const cloudType = ['base', 'mid', 'front'][i % 3];
                 const cloud = document.createElement('div');
                 cloud.className = `cloud-layer ${cloudType}`;
-                
+
                 const viewportWidth = window.innerWidth;
-                const cloudWidth = cloudType === 'base' ? 600 : 
-                                cloudType === 'mid' ? 580 : 450;
+                const cloudWidth = cloudType === 'base' ? 600 :
+                    cloudType === 'mid' ? 580 : 450;
 
                 const maxLeft = (viewportWidth - cloudWidth * 0.7) / viewportWidth * 100;
                 const horizontalPos = 0 + Math.random() * (maxLeft - 0);
-                
+
                 // 随机参数
                 const angle = (Math.random() * 30 - 15);
                 const scale = 0.8 + Math.random() * 0.4;
                 const verticalPos = 20 + Math.random() * 60;
-                
+
                 // 风速影响
                 const duration = Math.max(40, (baseDuration - windSpeed * 20)) * (0.8 + Math.random() * 0.4);
-                
+
                 cloud.style.cssText = `
                     top: ${verticalPos}%;
                     left: ${Math.random() * 100}%;
                     opacity: ${0.9 - (i * 0.15)};
                 `;
 
-                switch(cloudType) {
+                switch (cloudType) {
                     case 'base':
                         cloud.style.boxShadow = '200px 170px 19px 40px rgba(255,255,255,0.9)';
                         cloud.style.filter = 'url(#filter-base)';
@@ -511,7 +650,7 @@
         }
 
         function generateStars(half = false) {
-            if (half){
+            if (half) {
                 const starCount = 50;
                 for (let i = 0; i < starCount; i++) {
                     const star = document.createElement('div');
@@ -577,7 +716,7 @@
             }
         }
 
-        function generateSnow(){
+        function generateSnow() {
             const snowflakeCount = 50;
             for (let i = 0; i < snowflakeCount; i++) {
                 const snowflake = document.createElement('div');
@@ -608,7 +747,7 @@
             const angle = Math.random() * 180 - 45; // Random angle between -45 and 135 degrees
             thunder.style.setProperty('--angle', `${angle}deg`);
             document.body.appendChild(thunder);
-            
+
             // Remove element after animation
             setTimeout(() => {
                 thunder.remove();
@@ -618,7 +757,7 @@
         function startThunderStorm() {
             // Initial immediate strike
             generateThunder();
-            
+
             // Set up random interval strikes
             thunderInterval = setInterval(() => {
                 generateThunder();
@@ -770,12 +909,12 @@
             const currentCondition = currentWeather.condition.text;
             body.style.background = getBackgroundGradient(currentCondition, currentHour);
             let isCloudy = currentCondition.toLowerCase().includes('overcast') ||
-                           (currentCondition.toLowerCase().includes('cloudy') && !currentCondition.toLowerCase().includes('partly'));
-            let isRainy = currentCondition.toLowerCase().includes('rain') || 
-                          currentCondition.toLowerCase().includes('drizzle') ||
-                          currentCondition.toLowerCase().includes('thunderstorm') ||
-                            currentCondition.toLowerCase().includes('shower') ||
-                          currentCondition.toLowerCase().includes('snow');
+                (currentCondition.toLowerCase().includes('cloudy') && !currentCondition.toLowerCase().includes('partly'));
+            let isRainy = currentCondition.toLowerCase().includes('rain') ||
+                currentCondition.toLowerCase().includes('drizzle') ||
+                currentCondition.toLowerCase().includes('thunderstorm') ||
+                currentCondition.toLowerCase().includes('shower') ||
+                currentCondition.toLowerCase().includes('snow');
             let bottomColor = 'white';
             let topColor = 'white';
             let hour = currentHour;
@@ -921,4 +1060,5 @@
         weatherCard.onmouseup = e => handleMouseUp(e);
     </script>
 </body>
+
 </html>
