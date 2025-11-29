@@ -945,8 +945,11 @@
             }
         }
 
+        let oldWidth = window.innerWidth;
+
         function resize() {
             width = window.innerWidth;
+            if (width === oldWidth) return;
             height = window.innerHeight;
             canvas.width = width * window.devicePixelRatio;
             canvas.height = height * window.devicePixelRatio;
