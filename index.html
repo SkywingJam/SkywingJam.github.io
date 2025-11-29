@@ -1109,7 +1109,7 @@
 
         window.addEventListener('mousemove', (e) => {
             const cx = window.innerWidth / 2;
-            const cy = window.innerHeight / 2;
+            const cy = window.innerHeight;
             const dx = e.clientX - cx;
             const dy = e.clientY - cy;
 
@@ -1261,8 +1261,7 @@
             // Smoothly interpolate tilt
             currentTilt += (targetTilt - currentTilt) * 0.015;
 
-            // Smoothly interpolate spread spacing using iOS-style Ease-Out
-            // This creates a natural deceleration curve (fast start, slow end)
+            // Smoothly interpolate spread spacing using Ease-Out
             const spreadSmoothing = 0.05; 
             currentSpreadSpacing += (targetSpreadSpacing - currentSpreadSpacing) * spreadSmoothing;
 
