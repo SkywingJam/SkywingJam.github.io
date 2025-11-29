@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SkywingJam | Haochen Zhou</title>
+
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
     
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     
@@ -30,7 +36,7 @@
         }
 
         /* --- Dark Mode --- */
-        body.dark-mode {
+        html.dark-mode {
             --bg-color: #2d3436;
             --text-main: #f5f6fa; /* Brighter white */
             --text-secondary: #dcdde1; /* Much brighter grey for readability */
@@ -649,6 +655,18 @@
             .edu-card { flex-direction: column; text-align: center; gap: 15px; align-items: center; }
         }
     </style>
+    <script>
+        // Prevent Flash of Incorrect Theme (FOIT)
+        (function() {
+            const savedTheme = sessionStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
+                document.documentElement.classList.add('dark-mode');
+            } else {
+                document.documentElement.classList.remove('dark-mode');
+            }
+        })();
+    </script>
 </head>
 <body>
 
@@ -926,26 +944,49 @@
             bodyColorBottom: 'rgba(255, 255, 255, 0.0)'
         };
 
-        function toggleTheme() {
-            const body = document.body;
+        function toggleTheme(forceDark) {
+            const html = document.documentElement;
             const btn = document.getElementById('themeToggle');
             const icon = btn.querySelector('i');
             
-            // Toggle Dark Mode Class (Since light is default)
-            body.classList.toggle('dark-mode');
+            // Determine target state
+            const isDark = typeof forceDark === 'boolean' 
+                ? forceDark 
+                : !html.classList.contains('dark-mode');
             
-            if (body.classList.contains('dark-mode')) {
+            if (isDark) {
                 // Switch to Dark
+                html.classList.add('dark-mode');
                 Object.assign(config, darkModeConfig);
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-lightbulb');
+                sessionStorage.setItem('theme', 'dark');
             } else {
                 // Switch back to Light
+                html.classList.remove('dark-mode');
                 Object.assign(config, lightModeConfig);
                 icon.classList.remove('fa-lightbulb');
                 icon.classList.add('fa-moon');
+                sessionStorage.setItem('theme', 'light');
             }
         }
+
+        // Initialize Theme: Check SessionStorage -> Check System Preference
+        function initTheme() {
+            const savedTheme = sessionStorage.getItem('theme');
+            const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedTheme === 'dark') {
+                toggleTheme(true);
+            } else if (savedTheme === 'light') {
+                toggleTheme(false);
+            } else if (systemDark) {
+                toggleTheme(true);
+            }
+        }
+
+        // Run initialization
+        initTheme();
 
         let oldWidth = 0;
 
