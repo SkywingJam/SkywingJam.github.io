@@ -30,14 +30,14 @@
             --glass-bg: rgba(227, 232, 239, 0.6);
             --glass-border: rgba(255, 255, 255, 0.4);
             
-            --nav-bg: rgba(227, 232, 239, 0.85);
+            --nav-bg: rgba(227, 232, 239, 0.75);
             --tag-bg: rgba(255, 255, 255, 0.6);
             --tag-border: rgba(255, 255, 255, 0.8);
         }
 
         /* --- Dark Mode --- */
         html.dark-mode {
-            --bg-color: #2d3436;
+            --bg-color: #303336;
             --text-main: #f5f6fa; /* Brighter white */
             --text-secondary: #dcdde1; /* Much brighter grey for readability */
             --accent-color: #679efe; 
@@ -45,10 +45,10 @@
             --shadow-light: rgba(255, 255, 255, 0.08); 
             --shadow-dark: rgba(0, 0, 0, 0.4);
             
-            --glass-bg: rgba(45, 52, 54, 0.6);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-bg: rgba(48, 51, 54, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.05);
             
-            --nav-bg: rgba(45, 52, 54, 0.9);
+            --nav-bg: rgba(48, 51, 54, 0.85);
             --tag-bg: rgba(255, 255, 255, 0.1); /* More visible tag bg */
             --tag-border: rgba(255, 255, 255, 0.2);
         }
@@ -256,7 +256,7 @@
             padding: 18px 50px;
             font-size: 1.1rem;
             font-weight: 700;
-            color: var(--accent-color);
+            color: var(--text-main);
             text-decoration: none;
             background: var(--bg-color);
             border-radius: 50px;
@@ -273,6 +273,7 @@
             box-shadow: 
                 15px 15px 30px var(--shadow-dark), 
                 -15px -15px 30px var(--shadow-light);
+            color: var(--accent-color);
         }
 
         .cta-btn:active {
@@ -476,7 +477,7 @@
 
         .capsule {
             padding: 15px 40px;
-            border-radius: 50px;
+            border-radius: 25px;
             background: var(--bg-color);
             color: var(--text-main);
             font-weight: 600;
@@ -491,8 +492,6 @@
 
         .capsule:hover {
             transform: translateY(-3px);
-            color: var(--accent-color);
-            border-color: var(--accent-color);
         }
 
         /* --- 8. Experience & Projects Section --- */
@@ -655,6 +654,7 @@
         .contact-card:hover {
             transform: translateY(-5px);
             color: var(--accent-color);
+            border-color: var(--accent-color);
         }
 
         .contact-card:active {
