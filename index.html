@@ -1074,6 +1074,7 @@
         initTheme();
 
         // --- Scroll Effect Logic ---
+        let targetSpreadSpacing = 75;
         let currentSpreadSpacing = 75;
         const minSpread = 75;
         const maxSpread = 150; 
@@ -1090,17 +1091,41 @@
 
             if (delta > 0) {
                 // Scrolling Down -> Increase Spread
-                currentSpreadSpacing += delta * expandFactor;
-                if (currentSpreadSpacing > maxSpread) currentSpreadSpacing = maxSpread;
+                targetSpreadSpacing += delta * expandFactor;
+                if (targetSpreadSpacing > maxSpread) targetSpreadSpacing = maxSpread;
             } else if (delta < 0) {
                 // Scrolling Up -> Decrease Spread
                 // delta is negative, so adding it decreases the value
-                currentSpreadSpacing += delta * collapseFactor; 
-                if (currentSpreadSpacing < minSpread) currentSpreadSpacing = minSpread;
+                targetSpreadSpacing += delta * collapseFactor; 
+                if (targetSpreadSpacing < minSpread) targetSpreadSpacing = minSpread;
             }
         }
 
         window.addEventListener('scroll', updateScrollSpacing);
+
+        // --- Mouse Tilt Effect ---
+        let targetTilt = 0;
+        let currentTilt = 0;
+
+        window.addEventListener('mousemove', (e) => {
+            const cx = window.innerWidth / 2;
+            const cy = window.innerHeight / 2;
+            const dx = e.clientX - cx;
+            const dy = e.clientY - cy;
+
+            // Calculate angle relative to center
+            const angle = Math.atan2(dy, dx);
+            
+            // Calculate distance for smoothing at center to avoid jitter
+            const dist = Math.sqrt(dx * dx + dy * dy);
+            const distFactor = Math.min(dist / 100, 1); // Smooth radius of 100px
+
+            // Use cosine of angle: 
+            // Right (0 rad) -> 1 (Max Tilt)
+            // Bottom (PI/2) -> 0 (No Tilt)
+            // Left (PI) -> -1 (Max Reverse Tilt)
+            targetTilt = Math.cos(angle) * 0.2 * distFactor;
+        });
 
         let oldWidth = 0;
 
@@ -1173,6 +1198,15 @@
                     y += Math.sin(x * (this.frequency * 1.77) + this.phase * 0.7) * (this.currentAmp * 0.45);
                     y += Math.sin(x * (this.frequency * 3.33) + this.phase * 1.6) * (this.currentAmp * 0.12);
                     y += this.yBase;
+
+                    // Apply tilt effect
+                    // 1. Static Tilt (Cosine): Keeps the "Left High, Right Low" structure when tilting right
+                    y -= Math.cos((x / width) * Math.PI) * currentTilt * (width * 0.35);
+
+                    // 2. Dynamic Flow (Traveling Sine): Adds fluid motion to the tilt
+                    // The wave moves (phase) and its amplitude is controlled by the tilt intensity
+                    y += Math.sin(x * 0.004 + this.phase * 2) * currentTilt * (width * 0.15);
+
                     points.push({x: x, y: y});
                 }
 
@@ -1223,6 +1257,14 @@
 
         function animate() {
             ctx.clearRect(0, 0, width, height);
+
+            // Smoothly interpolate tilt
+            currentTilt += (targetTilt - currentTilt) * 0.015;
+
+            // Smoothly interpolate spread spacing using iOS-style Ease-Out
+            // This creates a natural deceleration curve (fast start, slow end)
+            const spreadSmoothing = 0.05; 
+            currentSpreadSpacing += (targetSpreadSpacing - currentSpreadSpacing) * spreadSmoothing;
 
             waves.forEach(wave => {
                 wave.update();
