@@ -1073,6 +1073,35 @@
         // Run initialization
         initTheme();
 
+        // --- Scroll Effect Logic ---
+        let currentSpreadSpacing = 75;
+        const minSpread = 75;
+        const maxSpread = 150; 
+        let lastScrollTop = window.scrollY;
+
+        function updateScrollSpacing() {
+            const scrollTop = window.scrollY;
+            const delta = scrollTop - lastScrollTop;
+            lastScrollTop = scrollTop;
+
+            // Sensitivity factors
+            const expandFactor = 0.05; 
+            const collapseFactor = 0.05; 
+
+            if (delta > 0) {
+                // Scrolling Down -> Increase Spread
+                currentSpreadSpacing += delta * expandFactor;
+                if (currentSpreadSpacing > maxSpread) currentSpreadSpacing = maxSpread;
+            } else if (delta < 0) {
+                // Scrolling Up -> Decrease Spread
+                // delta is negative, so adding it decreases the value
+                currentSpreadSpacing += delta * collapseFactor; 
+                if (currentSpreadSpacing < minSpread) currentSpreadSpacing = minSpread;
+            }
+        }
+
+        window.addEventListener('scroll', updateScrollSpacing);
+
         let oldWidth = 0;
 
         function resize() {
@@ -1111,16 +1140,30 @@
                     this.direction = -0.8; 
                 }
                 
-                const spreadSpacing = 50; 
-                const structuralOffset = (this.index - (config.waveCount - 1) / 2) * spreadSpacing;
+                // Calculate structural index for dynamic spacing
+                this.structuralIndex = (this.index - (config.waveCount - 1) / 2);
                 const randomNoise = (Math.random() - 0.5) * 40;
-                this.yBase = height / 2 + structuralOffset + randomNoise;
+                
+                // Base Y position (center of screen + noise)
+                this.baseY = height / 2 + randomNoise;
+                
+                // Initial yBase
+                this.yBase = this.baseY + this.structuralIndex * currentSpreadSpacing;
             }
 
             update() {
                 this.phase += this.speed * this.direction;
                 let breathing = Math.sin(this.phase * 1.5) + Math.sin(this.phase * 0.6) * 0.5;
-                this.currentAmp = this.amplitude + breathing * 25;
+                
+                // Calculate intensity based on current spread (0 to 1)
+                const intensity = (currentSpreadSpacing - minSpread) / (maxSpread - minSpread);
+                // Increase amplitude up to 1.6x based on scroll intensity
+                const ampMultiplier = 1 + (intensity * 0.6);
+
+                this.currentAmp = (this.amplitude + breathing * 25) * ampMultiplier;
+                
+                // Update yBase based on currentSpreadSpacing
+                this.yBase = this.baseY + this.structuralIndex * currentSpreadSpacing;
             }
 
             draw(ctx) {
