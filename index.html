@@ -68,8 +68,9 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
-            height: 100%;
+            width: 100vw;
+            height: 100vh;
+            display: block;
             z-index: -1;
         }
 
@@ -511,13 +512,14 @@
             display: flex;
             gap: 20px;
             margin-top: auto;
+            flex-wrap: wrap;
         }
 
         .action-btn {
             flex: 1; 
             text-align: center;
             text-decoration: none;
-            padding: 14px 0;
+            padding: 14px 15px;
             border-radius: 25px;
             font-size: 1rem;
             font-weight: 600;
@@ -997,7 +999,8 @@
 
             draw(ctx) {
                 const points = [];
-                for (let x = 0; x <= width; x += 20) {
+                // Fix: Extend loop slightly beyond width to prevent gaps at the right edge
+                for (let x = 0; x <= width + 20; x += 20) {
                     let y = Math.sin(x * this.frequency + this.phase) * this.currentAmp;
                     y += Math.sin(x * (this.frequency * 1.77) + this.phase * 0.7) * (this.currentAmp * 0.45);
                     y += Math.sin(x * (this.frequency * 3.33) + this.phase * 1.6) * (this.currentAmp * 0.12);
