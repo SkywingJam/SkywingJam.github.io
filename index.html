@@ -91,6 +91,20 @@
             z-index: -1;
         }
 
+        #bg-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100lvh;
+            /* Vignette gradient: Transparent center -> Dark edges */
+            background: radial-gradient(circle at center, transparent 10%, #1d1d1d 120%);
+            opacity: 0;
+            pointer-events: none;
+            z-index: -1;
+            transition: opacity 0.1s linear;
+        }
+
         /* --- 2. Navbar --- */
         .navbar {
             position: fixed;
@@ -477,7 +491,7 @@
 
         .capsule {
             padding: 15px 40px;
-            border-radius: 25px;
+            border-radius: 50px;
             background: var(--bg-color);
             color: var(--text-main);
             font-weight: 600;
@@ -737,6 +751,7 @@
     <!-- 1. Fixed Background Canvas -->
     <canvas id="waveCanvas"></canvas>
     <div class="vignette"></div>
+    <div id="bg-overlay"></div>
 
     <!-- 2. Navbar -->
     <nav class="navbar">
@@ -1057,6 +1072,11 @@
                 icon.classList.add('fa-moon');
                 localStorage.setItem('theme', 'light');
             }
+            
+            // Re-apply scroll effects (highlight dimming) immediately
+            if (typeof updateScrollSpacing === 'function') {
+                updateScrollSpacing();
+            }
         }
 
         // Initialize Theme: Check LocalStorage
@@ -1070,15 +1090,15 @@
             }
         }
 
-        // Run initialization
-        initTheme();
-
         // --- Scroll Effect Logic ---
         let targetSpreadSpacing = 75;
         let currentSpreadSpacing = 75;
         const minSpread = 75;
         const maxSpread = 150; 
         let lastScrollTop = window.scrollY;
+
+        // Run initialization
+        initTheme();
 
         function updateScrollSpacing() {
             const scrollTop = window.scrollY;
@@ -1098,6 +1118,48 @@
                 // delta is negative, so adding it decreases the value
                 targetSpreadSpacing += delta * collapseFactor; 
                 if (targetSpreadSpacing < minSpread) targetSpreadSpacing = minSpread;
+            }
+
+            // --- Background Darkening & UI Highlight Adjustment ---
+            const overlay = document.getElementById('bg-overlay');
+            if (overlay) {
+                const heroHeight = window.innerHeight;
+                const startFade = heroHeight * 0.5;
+                const endFade = heroHeight * 1.2;
+                let intensity = 0.3;
+                // If dark mode, intensity 0.75 max, else 0.5 max
+                if (document.documentElement.classList.contains('dark-mode')) {
+                    intensity = 0.9;
+                }
+                
+                let progress = 0;
+                if (scrollTop > startFade) {
+                    progress = (scrollTop - startFade) / (endFade - startFade);
+                    progress = Math.min(Math.max(progress, 0), 1);
+                }
+                
+                // 1. Darken Background (Vignette Intensity)
+                // Allow opacity to go higher since it's a gradient now
+                overlay.style.opacity = progress * intensity;
+
+                // 2. Dim UI Highlights (Wave & Neumorphism Shadows)
+                const isDark = document.documentElement.classList.contains('dark-mode');
+                
+                if (progress > 0) {
+                    const baseWaveAlpha = isDark ? 0.6 : 0.95;
+                    const baseShadowAlpha = isDark ? 0.08 : 0.9;
+                    
+                    // Reduce intensity as background gets darker
+                    const intensityFactor = 1 - (progress * intensity * isDark ? 0.5 : 0.6); 
+                    
+                    document.documentElement.style.setProperty('--shadow-light', `rgba(255, 255, 255, ${baseShadowAlpha * intensityFactor})`);
+                } else {
+                    // Reset to defaults if at top
+                    // Let CSS classes handle --shadow-light
+                    document.documentElement.style.removeProperty('--shadow-light');
+                    // Reset config from base objects
+                    config.highlightColor = isDark ? darkModeConfig.highlightColor : lightModeConfig.highlightColor;
+                }
             }
         }
 
