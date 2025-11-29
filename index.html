@@ -658,7 +658,7 @@
     <script>
         // Prevent Flash of Incorrect Theme (FOIT)
         (function() {
-            const savedTheme = sessionStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('theme');
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
                 document.documentElement.classList.add('dark-mode');
@@ -960,20 +960,20 @@
                 Object.assign(config, darkModeConfig);
                 icon.classList.remove('fa-moon');
                 icon.classList.add('fa-lightbulb');
-                sessionStorage.setItem('theme', 'dark');
+                localStorage.setItem('theme', 'dark');
             } else {
                 // Switch back to Light
                 html.classList.remove('dark-mode');
                 Object.assign(config, lightModeConfig);
                 icon.classList.remove('fa-lightbulb');
                 icon.classList.add('fa-moon');
-                sessionStorage.setItem('theme', 'light');
+                localStorage.setItem('theme', 'light');
             }
         }
 
-        // Initialize Theme: Check SessionStorage -> Check System Preference
+        // Initialize Theme: Check LocalStorage -> Check System Preference
         function initTheme() {
-            const savedTheme = sessionStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('theme');
             const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
             if (savedTheme === 'dark') {
