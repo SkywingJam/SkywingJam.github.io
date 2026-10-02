@@ -240,8 +240,20 @@ a,button {
 }
 
 .icon-button:hover {
-  border-color:var(--accent);
-  transform:rotate(15deg)
+  border-color:var(--accent)
+}
+
+.theme-toggle>span {
+  display:block;
+  transition:transform .65s cubic-bezier(.2,.7,.2,1)
+}
+
+.dark-mode .theme-toggle>span {
+  transform:rotate(180deg)
+}
+
+.icon-button:active,.motion-toggle:active {
+  transform:scale(.96)
 }
 
 .hero {
@@ -388,14 +400,35 @@ h1 em {
   border-top:1px solid var(--line);
   backdrop-filter:blur(5px);
   -webkit-backdrop-filter:blur(5px);
-  transition:border-color .25s;
+  position:relative;
+  isolation:isolate;
+  transition:border-color .3s,background-color .4s,box-shadow .5s,transform .65s cubic-bezier(.2,.75,.25,1);
   max-width:530px;
   width:100%;
   justify-self:end
 }
 
-.featured-file:hover {
+.featured-file:hover,.featured-file:focus-visible {
   border-color:var(--accent)
+}
+
+.featured-file:before {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:0;
+  background:radial-gradient(ellipse at var(--surface-x,50%) var(--surface-y,35%),rgba(255,255,255,.2),transparent 65%);
+  transition:opacity .5s
+}
+
+.dark-mode .featured-file:before {
+  background:radial-gradient(ellipse at var(--surface-x,50%) var(--surface-y,35%),rgba(173,206,237,.09),transparent 65%)
+}
+
+.featured-file:focus-visible:before,.featured-file.surface-active:before {
+  opacity:1
 }
 
 .file-top {
@@ -877,13 +910,103 @@ h1 em {
 
 .arrival-pending {
   opacity:0;
-  transform:translateY(10px)
+  transform:translateY(14px)
 }
 
 .arrival-visible {
   opacity:1;
   transform:none;
-  transition:opacity .55s,transform .55s
+  transition:opacity .65s,transform .7s cubic-bezier(.2,.75,.25,1);
+  transition-delay:var(--arrival-delay,0ms)
+}
+
+/* Quiet feedback: only the current target responds; no perpetual card movement. */
+.top-nav a,.text-link,.quiet-link {
+  position:relative
+}
+
+.top-nav a:after,.text-link:after,.quiet-link:after {
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:6px;
+  height:1px;
+  background:currentColor;
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1)
+}
+
+.top-nav a:focus-visible:after,.text-link:focus-visible:after,.quiet-link:focus-visible:after {
+  transform:scaleX(1)
+}
+
+a.interest {
+  position:relative
+}
+
+a.interest:after {
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:-1px;
+  height:1px;
+  background:var(--accent);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform .4s
+}
+
+.interest h3,.interest-foot span,.art-cross {
+  transition:transform .45s cubic-bezier(.2,.7,.2,1),color .25s
+}
+
+.contour-art svg {
+  transition:transform .8s cubic-bezier(.2,.7,.2,1)
+}
+
+.motion-toggle {
+  transition:border-color .25s,color .25s,background-color .25s,transform .2s
+}
+
+.scroll-cue>span:last-child {
+  transition:transform .35s cubic-bezier(.2,.7,.2,1)
+}
+
+.hero:has(.wave-stage[data-state="running"]) .motion-state:before {
+  animation:quiet-breath 4.8s ease-in-out infinite
+}
+
+@keyframes quiet-breath {
+  0%,100% {opacity:.45;transform:scale(.8)}
+  50% {opacity:1;transform:scale(1.15)}
+}
+
+@media(hover:hover) and (pointer:fine) {
+  .top-nav a:hover:after,.text-link:hover:after,.quiet-link:hover:after,a.interest:hover:after,a.interest:focus-visible:after {
+    transform:scaleX(1)
+  }
+  :root:not(.motion-paused) .featured-file.surface-active {
+    transform:translateY(-3px);
+    box-shadow:0 12px 30px -20px rgba(24,40,58,.24)
+  }
+  :root:not(.motion-paused) a.interest:hover h3,:root:not(.motion-paused) a.interest:focus-visible h3 {
+    transform:translateX(3px)
+  }
+  :root:not(.motion-paused) a.interest:hover .interest-foot span {
+    transform:translate(2px,-2px)
+  }
+  :root:not(.motion-paused) .experiment:hover .art-cross {
+    transform:rotate(90deg)
+  }
+  :root:not(.motion-paused) .experiment:hover .contour-art svg {
+    transform:translateY(-3px) scale(1.015)
+  }
+  :root:not(.motion-paused) .scroll-cue:hover>span:last-child {
+    transform:translateY(3px)
+  }
 }
 
 @media(max-width:1050px) {
@@ -1232,6 +1355,11 @@ h1 em {
   .arrival-pending {
     opacity:1;
     transform:none
+  }
+  .featured-file.surface-active,.theme-toggle>span,a.interest:hover h3,a.interest:focus-visible h3,
+  a.interest:hover .interest-foot span,.experiment:hover .art-cross,.experiment:hover .contour-art svg,
+  .scroll-cue:hover>span:last-child,.icon-button:active,.motion-toggle:active {
+    transform:none!important
   }
 }
 

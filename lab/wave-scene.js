@@ -9,6 +9,14 @@ const waves = [
   { phase: 2.05, frequency: .93, speed: -.051, breath: .31, amplitude: 1.08 },
   { phase: 2.48, frequency: 1.27, speed: .089, breath: .19, amplitude: .88 },
 ];
+// Exact critically damped spring: responsive under the pointer, no ringing on release.
+function settle(value, velocity, target, dt) {
+  const omega = 7;
+  const offset = value - target;
+  const impulse = (velocity + omega * offset) * dt;
+  const decay = Math.exp(-omega * dt);
+  return [target + (offset + impulse) * decay, (velocity - omega * impulse) * decay];
+}
 const palette = {
   sky: [[238, 233, 223], [8, 19, 38]],
   floor: [[183, 195, 198], [19, 40, 68]],
@@ -16,6 +24,8 @@ const palette = {
   rim: [[255, 255, 250], [196, 220, 249]],
   shade: [[75, 94, 112], [2, 10, 26]],
   frost: [[255, 251, 241], [112, 148, 186]],
+  prismWarm: [[255, 151, 83], [182, 159, 233]],
+  prismCool: [[61, 151, 219], [88, 190, 240]],
 };
 
 /** Reusable painter, also used to export the fallback posters at a fixed phase. */
@@ -52,15 +62,17 @@ export function createAcrylicPainter(canvas) {
     ctx.imageSmoothingEnabled = softCtx.imageSmoothingEnabled = true;
   }
 
-  function paint(time = 0, night = 0, tilt = 0, spread = 0) {
+  function paint(time = 0, night = 0, tilt = 0, spread = 0, lift = 0) {
     const color = (name, alpha = 1) => {
       const [day, moon] = palette[name];
       return `rgba(${day.map((v, i) => Math.round(mix(v, moon[i], night))).join(',')},${alpha})`;
     };
+    const lightX = .23 + tilt * .065;
+    const lightY = .12 + lift * .035;
     const bg = ctx.createLinearGradient(0, 0, width * .2, height);
     bg.addColorStop(0, color('sky')); bg.addColorStop(1, color('floor'));
     ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
-    const sun = ctx.createRadialGradient(width * .23, height * .12, 0, width * .23, height * .12, width * .65);
+    const sun = ctx.createRadialGradient(width * lightX, height * lightY, 0, width * lightX, height * lightY, width * .65);
     sun.addColorStop(0, color('light', mix(.72, .17, night)));
     sun.addColorStop(.4, color('light', mix(.22, .07, night)));
     sun.addColorStop(1, color('light', 0));
@@ -68,7 +80,7 @@ export function createAcrylicPainter(canvas) {
 
     // Distant, broad illumination gives the frosted layers something to transmit.
     ctx.save();
-    ctx.translate(width * .28, 0); ctx.rotate(-.22);
+    ctx.translate(width * (.28 + tilt * .045), 0); ctx.rotate(-.22);
     const windowLight = ctx.createLinearGradient(-width * .25, 0, width * .25, 0);
     windowLight.addColorStop(0, color('rim', 0));
     windowLight.addColorStop(.43, color('rim', mix(.16, .07, night)));
@@ -90,12 +102,14 @@ export function createAcrylicPainter(canvas) {
       // Fixed phases survive resize and theme changes. Gentle harmonics follow the reference.
       const span = Math.max(width, 760);
       for (let x = -24; x <= width + 24; x += 6) {
-        const u = x / span;
+        const u = (x + tilt * (20 + index * 15)) / span;
         const a = amplitude * wave.amplitude * (1 + .045 * Math.sin(time * wave.breath + index * 2.1));
         let y = base + Math.cos(u * TAU * wave.frequency + phase) * a;
         y += Math.sin(u * TAU * wave.frequency * 1.77 + wave.phase * .7 + time * wave.speed * .63) * a * .28;
         y += Math.sin(u * TAU * wave.frequency * 3.33 + wave.phase * 1.6 - time * wave.speed * .41) * a * .055;
-        y += (x / width - .5) * tilt * height * .028;
+        // Stronger, depth-dependent lean; independent profiles still cross freely.
+        y += (x / width - .5) * tilt * height * (.145 + index * .04);
+        y += lift * height * (.012 + index * .013);
         points.push({ x, y });
       }
       const edge = new Path2D();
@@ -111,7 +125,7 @@ export function createAcrylicPainter(canvas) {
       // Shadow falls down/right onto the already painted layer, away from the light.
       ctx.save();
       ctx.clip(body);
-      ctx.translate(3, 15 + index * 3);
+      ctx.translate(3 + tilt * 3, 15 + index * 3 + lift * 2);
       ctx.lineWidth = 8 + index * 3;
       ctx.strokeStyle = color('shade', mix(.32, .22, night));
       ctx.shadowColor = color('shade', mix(.58, .5, night)); ctx.shadowBlur = 22 * dpr;
@@ -150,8 +164,8 @@ export function createAcrylicPainter(canvas) {
         // Keep the moonlight endpoint unchanged while interpolating between themes.
         const lit = mix(clamp(.58 - slope * .85, .08, 1), clamp(.62 - slope * .55, .15, 1), night);
         const local = mix(
-          .28 + .72 * Math.exp(-Math.pow((p.x / width - .27) / .22, 2)),
-          .64 + .36 * Math.exp(-Math.pow((p.x / width - .27) / .26, 2)), night);
+          .28 + .72 * Math.exp(-Math.pow((p.x / width - (.27 + tilt * .065)) / .22, 2)),
+          .64 + .36 * Math.exp(-Math.pow((p.x / width - (.27 + tilt * .065)) / .26, 2)), night);
         const shade = ctx.createLinearGradient(p.x, p.y, p.x - slope * depth / (1 + slope * slope), p.y + depth / (1 + slope * slope));
         shade.addColorStop(0, color('rim', lit * local * mix(.98, .38, night)));
         shade.addColorStop(.07, color('rim', lit * local * mix(.42, .12, night)));
@@ -163,7 +177,7 @@ export function createAcrylicPainter(canvas) {
         ctx.lineTo(q.x, q.y + depth); ctx.lineTo(p.x, p.y + depth); ctx.closePath(); ctx.fill();
       }
       // A restrained reflection inside the bevel, strongest on the light-facing crest.
-      const glint = ctx.createLinearGradient(0, 0, width, 0);
+      const glint = ctx.createLinearGradient(width * tilt * .045, 0, width * (1 + tilt * .045), 0);
       glint.addColorStop(0, color('rim', 0));
       glint.addColorStop(.18, color('rim', mix(.12, .045, night)));
       glint.addColorStop(.3, color('rim', mix(.85, .32, night)));
@@ -180,6 +194,23 @@ export function createAcrylicPainter(canvas) {
       ctx.fillRect(0, 0, width, height); ctx.globalAlpha = 1;
       ctx.restore();
 
+      // Fine chromatic separation inside the polished rim, concentrated in reflected light.
+      // The neutral highlight stays on top; tint is strongest where the key light lands.
+      ctx.save(); ctx.clip(body);
+      const separation = 1.15 + Math.abs(tilt) * 1.1;
+      for (const [tint, direction] of [['prismWarm', -1], ['prismCool', 1]]) {
+        const spectral = ctx.createLinearGradient(width * tilt * .045, 0, width * (1 + tilt * .045), 0);
+        spectral.addColorStop(0, color(tint, 0));
+        spectral.addColorStop(.2, color(tint, mix(.36, .2, night)));
+        spectral.addColorStop(.32, color(tint, mix(.66, .42, night)));
+        spectral.addColorStop(.55, color(tint, mix(.095, .05, night)));
+        spectral.addColorStop(.72, color(tint, 0));
+        spectral.addColorStop(.86, color(tint, mix(.35, .2, night)));
+        spectral.addColorStop(1, color(tint, 0));
+        ctx.save(); ctx.translate(direction * separation, 1.7 + index * .28 + direction * .55);
+        ctx.strokeStyle = spectral; ctx.lineWidth = 1.35 + index * .25; ctx.stroke(edge); ctx.restore();
+      }
+      ctx.restore();
       const rim = ctx.createLinearGradient(0, 0, width, 0);
       rim.addColorStop(0, color('rim', mix(.3, .13, night)));
       rim.addColorStop(.23, color('rim', mix(.95, .58, night)));
@@ -199,24 +230,29 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   const painter = createAcrylicPainter(canvas);
   let disposed = false, visible = stage.getBoundingClientRect().bottom > 0;
   let frame = 0, last = 0, time = 0, night = Number(dark), targetNight = night;
-  let tilt = 0, targetTilt = 0, spread = 0, quality = 0, slowFrames = 0;
+  let tilt = 0, targetTilt = 0, tiltVelocity = 0, lift = 0, targetLift = 0, liftVelocity = 0;
+  let spread = 0, quality = 0, slowFrames = 0;
   let mobile = false, width = 0, height = 0, renderAverage = 0;
   const pointer = matchMedia('(hover: hover) and (pointer: fine)');
+  const hero = stage.closest('.hero') || stage;
   const life = new AbortController();
   const listener = { signal: life.signal, passive: true };
   const canMove = () => !paused && visible && !document.hidden;
   function draw() {
     const start = performance.now();
-    painter.paint(time, night, tilt, spread);
+    painter.paint(time, night, tilt, spread, lift);
     const cost = performance.now() - start;
     renderAverage = renderAverage ? mix(renderAverage, cost, .05) : cost;
     stage.dataset.renderMs = renderAverage.toFixed(1);
     stage.dataset.phase = time.toFixed(3);
+    stage.dataset.tilt = tilt.toFixed(3);
+    stage.dataset.lift = lift.toFixed(3);
   }
   function resize() {
     if (disposed) return;
     const rect = stage.getBoundingClientRect();
     width = rect.width; height = rect.height; mobile = width <= 700;
+    if (mobile || !pointer.matches) resetPointer();
     painter.resize(width, height, Math.min(devicePixelRatio || 1, mobile || quality ? 1 : 1.5), quality);
     stage.dataset.quality = ['full', 'soft', 'minimal'][quality];
     draw(); sync();
@@ -233,7 +269,8 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     const blend = 1 - Math.exp(-dt * 5);
     if (canMove()) {
       time += dt;
-      tilt += (targetTilt - tilt) * (1 - Math.exp(-dt * 2.2));
+      [tilt, tiltVelocity] = settle(tilt, tiltVelocity, targetTilt, dt);
+      [lift, liftVelocity] = settle(lift, liftVelocity, targetLift, dt);
       const scroll = clamp(-stage.getBoundingClientRect().top / height, 0, 1);
       spread += (scroll - spread) * blend;
     }
@@ -263,13 +300,24 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     disposed = true; cancelAnimationFrame(frame); life.abort(); observer.disconnect(); sizing.disconnect();
     painter.dispose();
   }
-  window.addEventListener('pointermove', event => {
-    if (pointer.matches && !mobile && canMove()) targetTilt = clamp((event.clientX / innerWidth - .5) * 2, -1, 1);
+  function resetPointer() { targetTilt = 0; targetLift = 0; }
+  hero.addEventListener('pointermove', event => {
+    if (!pointer.matches || mobile || !canMove() || event.pointerType === 'touch') return;
+    const rect = hero.getBoundingClientRect();
+    targetTilt = clamp(((event.clientX - rect.left) / rect.width * 2 - 1) * 1.3, -1, 1);
+    targetLift = clamp(((event.clientY - rect.top) / rect.height * 2 - 1) * 1.15, -1, 1);
   }, listener);
-  document.documentElement.addEventListener('pointerleave', () => { targetTilt = 0; }, listener);
+  hero.addEventListener('pointerleave', resetPointer, listener);
+  hero.addEventListener('pointercancel', resetPointer, listener);
+  window.addEventListener('blur', resetPointer, listener);
+  pointer.addEventListener('change', resetPointer, listener);
   document.addEventListener('visibilitychange', sync, listener);
   canvas.addEventListener('contextlost', fallback, listener);
-  const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); });
+  const observer = new IntersectionObserver(entries => {
+    visible = entries[0].isIntersecting;
+    if (!visible) resetPointer();
+    sync();
+  });
   observer.observe(stage);
   const sizing = new ResizeObserver(resize); sizing.observe(stage);
   try { resize(); } catch (error) { dispose(); throw error; }
