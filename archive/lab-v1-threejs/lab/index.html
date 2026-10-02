@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <meta name="robots" content="noindex, nofollow">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Lab — SkywingJam</title>
   <meta name="description" content="A personal archive of small experiments, visual explorations, and things made out of curiosity. By Haochen Zhou.">
-  <meta name="theme-color" content="#f2eee5">
-  <link rel="canonical" href="https://skywingjam.com/lab/">
+  <meta name="theme-color" content="#f2efe8">
   <meta property="og:title" content="Lab — SkywingJam">
   <meta property="og:description" content="Small experiments. Open questions. A little room for curiosity.">
   <meta property="og:type" content="website">
@@ -23,12 +23,13 @@
       try { theme = localStorage.getItem('theme'); } catch {}
       const dark = theme === 'dark' || (theme !== 'light' && matchMedia('(prefers-color-scheme: dark)').matches);
       document.documentElement.classList.toggle('dark-mode', dark);
-      document.querySelector('meta[name="theme-color"]').content = dark ? '#081326' : '#f2eee5';
+      document.querySelector('meta[name="theme-color"]').content = dark ? '#151c20' : '#f2efe8';
     })();
   </script>
   <link rel="stylesheet" href="./lab.css">
 </head>
 <body>
+  <aside style="position:relative;z-index:30;padding:10px 20px;background:#172338;color:#eef4ff;font:12px/1.5 system-ui;text-align:center">Historical study — archived 03 OCT 2026. <a href="/lab/" style="color:inherit;text-decoration:underline">Open the current Lab ↗</a></aside>
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="masthead wrap">
     <a class="wordmark" href="/" aria-label="SkywingJam home">SKYWINGJAM<span class="wordmark-sub">INDEPENDENT EXPLORATIONS</span></a>
@@ -55,8 +56,8 @@
         <div class="wave-vignette"></div>
       </div>
       <div class="hero-bottom wrap">
-        <div class="specimen-caption"><span class="eyebrow">MATERIAL STUDY / 001</span><p>Light, held in acrylic.</p><div class="scale" aria-hidden="true"><span>0</span><i></i><span>1</span></div></div>
-        <a class="featured-file" href="#liquid-archive"><div class="file-top"><span class="eyebrow">SELECTED EXPERIMENT</span><span class="eyebrow">001 / ONGOING</span></div><div class="file-title"><h2>Liquid archive</h2><span class="arrow" aria-hidden="true">↗</span></div><p>Sunlit warmth. Moonlit blue. A surface in between.</p><span class="file-access">Explore the study <span aria-hidden="true">→</span></span></a>
+        <div class="specimen-caption"><span class="eyebrow">MATERIAL STUDY / 001</span><p>Liquid, held in light.</p><div class="scale" aria-hidden="true"><span>0</span><i></i><span>1</span></div></div>
+        <a class="featured-file" href="#liquid-archive"><div class="file-top"><span class="eyebrow">SELECTED EXPERIMENT</span><span class="eyebrow">001 / ONGOING</span></div><div class="file-title"><h2>Liquid archive</h2><span class="arrow" aria-hidden="true">↗</span></div><p>A study in light, glass, and slow movement.</p><span class="file-access">Explore the study <span aria-hidden="true">→</span></span></a>
       </div>
       <div class="hero-foot wrap"><a class="scroll-cue" href="#index"><span class="eyebrow">SCROLL TO EXPLORE</span><span aria-hidden="true">↓</span></a><div class="motion-controls" hidden><span class="motion-state">GENTLY IN MOTION</span><button class="motion-toggle" type="button" aria-pressed="false"><span class="motion-icon" aria-hidden="true">Ⅱ</span><span class="motion-label">Pause motion</span></button></div><span class="hero-edition">AN OPEN-ENDED COLLECTION</span></div>
     </section>
@@ -65,7 +66,7 @@
       <div class="section-heading"><div><p class="eyebrow">01 / EXPERIMENTS</p><h2 id="archive-title">Made out of <em>curiosity.</em></h2></div><p>Little ideas, taken a little further.<br>A growing collection of things in progress.</p></div>
       <article class="experiment" id="liquid-archive" data-arrival>
         <div class="experiment-art liquid-art"><div class="art-index"><span>FIG. 001</span><span>LIGHT / FORM</span></div><div class="art-cross" aria-hidden="true">+</div><span class="art-label">LIQUID ARCHIVE</span></div>
-        <div class="experiment-copy"><div class="entry-meta"><span>001 / MATERIAL STUDY</span><span class="status"><i aria-hidden="true"></i> Ongoing</span></div><h3>Liquid archive</h3><p>What happens when a surface feels almost weightless? Three layers of frosted acrylic, shaped by warm daylight or cool moonlight. Soft transmission, fine edges, and movement that leaves space to think.</p><div class="tags"><span>Creative coding</span><span>Light &amp; material</span><span>Interaction</span></div><div class="entry-links"><a class="text-link" href="#main">Return to the live study <span aria-hidden="true">↗</span></a><a class="quiet-link" href="./wave-scene.js" download="wave-scene.js">Source <span aria-hidden="true">↓</span></a></div></div>
+        <div class="experiment-copy"><div class="entry-meta"><span>001 / MATERIAL STUDY</span><span class="status"><i aria-hidden="true"></i> Ongoing</span></div><h3>Liquid archive</h3><p>What happens when a surface feels almost weightless? An exploration of translucent waves, soft reflections, and movement that leaves space to think.</p><div class="tags"><span>Creative coding</span><span>Light &amp; material</span><span>Interaction</span></div><div class="entry-links"><a class="text-link" href="#main">Return to the live study <span aria-hidden="true">↗</span></a><a class="quiet-link" href="./wave-scene.js" download="wave-scene.js">Source <span aria-hidden="true">↓</span></a></div></div>
       </article>
       <article class="experiment" id="ambient-field" data-arrival>
         <div class="experiment-art contour-art"><div class="art-index"><span>FIG. 002</span><span>LINES / MOTION</span></div><svg viewBox="0 0 640 380" fill="none" aria-hidden="true"><g id="contour-lines" stroke="currentColor" stroke-width=".8"><path d="M-40 160C100 20 160 310 330 170S530 70 690 160"/><path d="M-40 169C100 29 160 319 330 179S530 79 690 169"/><path d="M-40 178C100 38 160 328 330 188S530 88 690 178"/><path d="M-40 187C100 47 160 337 330 197S530 97 690 187"/><path d="M-40 196C100 56 160 346 330 206S530 106 690 196"/><path d="M-40 205C100 65 160 355 330 215S530 115 690 205"/><path d="M-40 214C100 74 160 364 330 224S530 124 690 214"/><path d="M-40 223C100 83 160 373 330 233S530 133 690 223"/><path d="M-40 232C100 92 160 382 330 242S530 142 690 232"/><path d="M-40 241C100 101 160 391 330 251S530 151 690 241"/><path d="M-40 250C100 110 160 400 330 260S530 160 690 250"/><path d="M-40 259C100 119 160 409 330 269S530 169 690 259"/><path d="M-40 268C100 128 160 418 330 278S530 178 690 268"/><path d="M-40 277C100 137 160 427 330 287S530 187 690 277"/><path d="M-40 286C100 146 160 436 330 296S530 196 690 286"/><path d="M-40 295C100 155 160 445 330 305S530 205 690 295"/></g></svg><span class="art-label">AMBIENT FIELD</span></div>

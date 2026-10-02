@@ -12,7 +12,7 @@ function setTheme(dark, save = false) {
   root.classList.toggle('dark-mode', dark);
   themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   themeButton.setAttribute('aria-pressed', String(dark));
-  document.querySelector('meta[name="theme-color"]').content = dark ? '#081326' : '#f2eee5';
+  document.querySelector('meta[name="theme-color"]').content = dark ? '#151c20' : '#f2efe8';
   if (save) {
     themeExplicit = true;
     try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
