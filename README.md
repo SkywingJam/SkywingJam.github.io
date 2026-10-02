@@ -1,8 +1,9 @@
 # SkywingJam.github.io
- Personal Webpage
+Personal Webpage
 
-## Discovery
+## Lab
 
-- [/lab 页面构思与落地方案](docs/discovery/lab-page.md)
-- [/lab 首版实现与验证记录](docs/discovery/lab-implementation.md)
-- [/lab 日光 / 月光霜面亚克力修改方案（待执行）](docs/discovery/lab-frosted-acrylic-plan.md)
+- [当前页面](lab/index.html)
+- [日光 / 月光霜面亚克力方案](docs/discovery/lab-frosted-acrylic-plan.md)
+- [新版实现与验证记录](docs/discovery/lab-frosted-acrylic-implementation.md)
+- [历史实现与参考归档](archive/README.md)

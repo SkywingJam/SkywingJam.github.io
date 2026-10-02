@@ -1,7 +1,7 @@
 @property --bg {
   syntax:"<color>";
   inherits:true;
-  initial-value:#f2eee5
+  initial-value:#f2efe8
 }
 
 @property --ink {
@@ -31,7 +31,7 @@
 @property --panel {
   syntax:"<color>";
   inherits:true;
-  initial-value:rgba(248,246,240,.35)
+  initial-value:rgba(248,246,240,.9)
 }
 
 @property --art {
@@ -42,12 +42,12 @@
 
 :root {
   color-scheme:light;
-  --bg:#f2eee5;
+  --bg:#f2efe8;
   --ink:#202320;
   --muted:#67665f;
   --line:rgba(42,43,38,.22);
   --accent:#316665;
-  --panel:rgba(248,246,240,.35);
+  --panel:rgba(248,246,240,.9);
   --art:#e7e6de;
   --poster:url('./assets/wave-poster-light.webp');
   --serif:'Instrument Serif',Georgia,serif;
@@ -57,13 +57,13 @@
 
 :root.dark-mode {
   color-scheme:dark;
-  --bg:#081326;
-  --ink:#e1eaf4;
-  --muted:#aabbd0;
+  --bg:#151c20;
+  --ink:#edece5;
+  --muted:#b0b7b6;
   --line:rgba(215,227,221,.23);
-  --accent:#a6bdd8;
-  --panel:rgba(8,19,38,.35);
-  --art:#132844;
+  --accent:#a5c6c2;
+  --panel:rgba(25,34,38,.91);
+  --art:#202d32;
   --poster:url('./assets/wave-poster-dark.webp')
 }
 
@@ -246,7 +246,7 @@ a,button {
 
 .hero {
   position:relative;
-  min-height:660px;
+  min-height:790px;
   height:calc(100svh - 112px);
   max-height:1000px;
   isolation:isolate;
@@ -259,7 +259,7 @@ a,button {
   display:flex;
   justify-content:space-between;
   gap:48px;
-  padding-top:43px;
+  padding-top:55px;
   position:relative;
   z-index:2;
   pointer-events:none
@@ -278,18 +278,14 @@ a,button {
 }
 
 h1 {
-  font-size:clamp(48px,4.8vw,76px);
+  font-size:clamp(64px,6.8vw,112px);
   line-height:.98;
-  letter-spacing:-.055em;
+  letter-spacing:-.063em;
   margin-top:27px
 }
 
 h1 em {
-  font-family:var(--sans);
-  font-style:normal;
-  font-weight:400;
-  letter-spacing:-.055em;
-  color:var(--muted)
+  letter-spacing:-.025em
 }
 
 .hero-aside {
@@ -343,7 +339,7 @@ h1 em {
 }
 
 .wave-vignette {
-  background:linear-gradient(var(--bg) 0%,transparent 28%,transparent 78%,var(--bg) 100%)
+  background:linear-gradient(var(--bg) 0%,var(--bg) 15%,transparent 43%,transparent 78%,var(--bg) 100%)
 }
 
 .hero-bottom {
@@ -382,12 +378,11 @@ h1 em {
 }
 
 .featured-file {
-  padding:20px 18px 16px;
+  padding:23px 26px 18px;
   background:var(--panel);
-  border:0;
-  border-top:1px solid var(--line);
-  backdrop-filter:blur(5px);
-  -webkit-backdrop-filter:blur(5px);
+  border:1px solid var(--line);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
   transition:border-color .25s;
   max-width:530px;
   width:100%;
@@ -886,6 +881,12 @@ h1 em {
   transition:opacity .55s,transform .55s
 }
 
+@media(min-width:1800px) {
+  .wave-stage {
+    inset-inline:calc((1440px - 100vw)/2)
+  }
+}
+
 @media(max-width:1050px) {
   .wrap {
     width:calc(100% - 64px)
@@ -897,13 +898,13 @@ h1 em {
     gap:22px
   }
   .hero {
-    min-height:660px
+    min-height:740px
   }
   .hero-aside {
     max-width:190px
   }
   .hero-copy h1 {
-    font-size:64px
+    font-size:76px
   }
   .hero-bottom {
     gap:28px
@@ -973,7 +974,7 @@ h1 em {
   }
   .hero {
     height:auto;
-    min-height:800px;
+    min-height:830px;
     max-height:none
   }
   .hero-top {
@@ -984,7 +985,7 @@ h1 em {
     font-size:9px
   }
   h1,.hero-copy h1 {
-    font-size:clamp(43px,9.6vw,62px);
+    font-size:clamp(49px,9.6vw,69px);
     margin-top:23px
   }
   .hero-aside {
@@ -1012,7 +1013,7 @@ h1 em {
     bottom:160px
   }
   .wave-vignette {
-    background:linear-gradient(var(--bg) 0%,transparent 25%,transparent 78%,var(--bg) 100%)
+    background:linear-gradient(var(--bg) 0%,var(--bg) 12%,transparent 40%,transparent 72%,var(--bg) 100%)
   }
   .hero-bottom {
     display:flex;
@@ -1041,7 +1042,7 @@ h1 em {
   }
   .featured-file {
     max-width:none;
-    padding:18px 0
+    padding:18px 20px
   }
   .file-title h2 {
     font-size:27px
