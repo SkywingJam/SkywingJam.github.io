@@ -32,6 +32,7 @@ requestAnimationFrame(() => root.classList.add('theme-ready'));
 document.querySelector('#year').textContent = new Date().getFullYear();
 
 function updateMotionControls() {
+  root.classList.toggle('motion-paused', userPaused);
   controls.hidden = !scene || reducedMotion.matches;
   motionButton.setAttribute('aria-pressed', String(userPaused));
   motionButton.querySelector('.motion-label').textContent = userPaused ? 'Resume motion' : 'Pause motion';
@@ -42,6 +43,7 @@ motionButton.addEventListener('click', () => {
   userPaused = !userPaused;
   scene?.setPaused(userPaused);
   updateMotionControls();
+  if (userPaused) resetSurface();
 });
 
 async function enhanceWave() {
@@ -78,6 +80,35 @@ reducedMotion.addEventListener('change', () => {
   } else enhanceWave();
 });
 
+// Only the selected file gets a small lift and a moving reflection. Keep text crisp.
+const surface = document.querySelector('.featured-file');
+const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
+let surfaceFrame = 0, surfaceX = 0, surfaceY = 0;
+function resetSurface() {
+  cancelAnimationFrame(surfaceFrame); surfaceFrame = 0;
+  surface.classList.remove('surface-active');
+  for (const name of ['--surface-x', '--surface-y']) surface.style.removeProperty(name);
+}
+surface.addEventListener('pointermove', event => {
+  if (!finePointer.matches || reducedMotion.matches || userPaused || event.pointerType === 'touch') return;
+  const rect = surface.getBoundingClientRect();
+  surfaceX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+  surfaceY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+  if (surfaceFrame) return;
+  surfaceFrame = requestAnimationFrame(() => {
+    surfaceFrame = 0;
+    surface.classList.add('surface-active');
+    surface.style.setProperty('--surface-x', `${surfaceX * 100}%`);
+    surface.style.setProperty('--surface-y', `${surfaceY * 100}%`);
+  });
+}, { passive: true });
+surface.addEventListener('pointerleave', resetSurface);
+surface.addEventListener('pointercancel', resetSurface);
+window.addEventListener('blur', resetSurface);
+finePointer.addEventListener('change', resetSurface);
+reducedMotion.addEventListener('change', resetSurface);
+document.addEventListener('visibilitychange', () => { if (document.hidden) resetSurface(); });
+
 const arrivals = document.querySelectorAll('[data-arrival]');
 const arrivalObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
@@ -88,6 +119,10 @@ const arrivalObserver = new IntersectionObserver(entries => {
 }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
 if (!reducedMotion.matches) {
   arrivals.forEach(element => {
+    if (element.closest('.interest-grid')) {
+      const index = [...element.parentElement.children].indexOf(element);
+      element.style.setProperty('--arrival-delay', `${index * 65}ms`);
+    }
     const rect = element.getBoundingClientRect();
     if (rect.top < innerHeight && rect.bottom > 0) return;
     element.classList.add('arrival-pending');
@@ -100,6 +135,7 @@ reducedMotion.addEventListener('change', () => {
   arrivalObserver.disconnect();
 });
 window.addEventListener('pagehide', () => {
+  resetSurface();
   loadGeneration++;
   scene?.dispose();
   scene = null;
