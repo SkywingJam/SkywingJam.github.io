@@ -27,6 +27,7 @@
     })();
   </script>
   <link rel="stylesheet" href="./lab.css">
+  <link rel="stylesheet" href="./light-study.css">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -71,6 +72,38 @@
         <div class="experiment-art contour-art"><div class="art-index"><span>FIG. 002</span><span>LINES / MOTION</span></div><svg viewBox="0 0 640 380" fill="none" aria-hidden="true"><g id="contour-lines" stroke="currentColor" stroke-width=".8"><path d="M-40 160C100 20 160 310 330 170S530 70 690 160"/><path d="M-40 169C100 29 160 319 330 179S530 79 690 169"/><path d="M-40 178C100 38 160 328 330 188S530 88 690 178"/><path d="M-40 187C100 47 160 337 330 197S530 97 690 187"/><path d="M-40 196C100 56 160 346 330 206S530 106 690 196"/><path d="M-40 205C100 65 160 355 330 215S530 115 690 205"/><path d="M-40 214C100 74 160 364 330 224S530 124 690 214"/><path d="M-40 223C100 83 160 373 330 233S530 133 690 223"/><path d="M-40 232C100 92 160 382 330 242S530 142 690 232"/><path d="M-40 241C100 101 160 391 330 251S530 151 690 241"/><path d="M-40 250C100 110 160 400 330 260S530 160 690 250"/><path d="M-40 259C100 119 160 409 330 269S530 169 690 259"/><path d="M-40 268C100 128 160 418 330 278S530 178 690 268"/><path d="M-40 277C100 137 160 427 330 287S530 187 690 277"/><path d="M-40 286C100 146 160 436 330 296S530 196 690 286"/><path d="M-40 295C100 155 160 445 330 305S530 205 690 295"/></g></svg><span class="art-label">AMBIENT FIELD</span></div>
         <div class="experiment-copy"><div class="entry-meta"><span>002 / GENERATIVE STUDY</span><span class="status">In use</span></div><h3>Ambient field</h3><p>A landscape drawn with lines. Slow, overlapping contours bring a quiet sense of depth to the portfolio, with a gentle response to the pointer.</p><div class="tags"><span>Generative form</span><span>Canvas</span><span>Slow motion</span></div><div class="entry-links"><a class="text-link" href="/">Visit the portfolio <span aria-hidden="true">↗</span></a><a class="quiet-link" href="/ambient-field.js" download="ambient-field.js">Source <span aria-hidden="true">↓</span></a></div></div>
       </article>
+    </section>
+
+    <!-- Reusable light-study block. Copy this section; labels and captions are editable. -->
+    <section class="light-study wrap" id="optical-studies" data-light-study data-specimen="lens" aria-labelledby="light-study-title">
+      <div class="study-heading"><p class="eyebrow">INTERLUDE / OPTICAL STUDIES</p><span class="study-edition">THREE WAYS OF SEEING</span></div>
+      <div class="study-layout">
+        <div class="study-display" data-study-display>
+          <div class="study-scene" aria-hidden="true">
+            <div class="study-grid"></div><div class="study-light-beam"></div>
+            <span class="study-fiducial study-fiducial-a">+</span><span class="study-fiducial study-fiducial-b">+</span>
+            <div class="study-orbit"></div><div class="study-ground"></div>
+            <div class="study-art" data-study-art="lens"><div class="study-object"><div class="optic-lens"></div></div></div>
+            <div class="study-art" data-study-art="layers" hidden><div class="study-object"><div class="optic-plate" style="--plate:0"></div><div class="optic-plate" style="--plate:1"></div><div class="optic-plate" style="--plate:2"></div></div></div>
+            <div class="study-art" data-study-art="prism" hidden><div class="prism-ray"></div><div class="study-object"><div class="optic-prism"><span class="prism-face prism-face-a"></span><span class="prism-face prism-face-b"></span><span class="prism-face prism-face-c"></span><svg viewBox="0 0 300 300" fill="none"><path d="M150 4 36 249 165 296 270 231 150 4 165 296M36 249 270 231"/></svg></div></div></div>
+            <div class="study-scene-label"><span data-study-number>PLATE 01</span><span data-study-hint>LIGHT / MATTER</span></div>
+          </div>
+          <p class="study-caption" data-study-caption>One surface. A different view from every angle.</p>
+        </div>
+        <div class="study-copy">
+          <h2 id="light-study-title" data-study-title>A small atlas<br> of <em>light.</em></h2>
+          <p class="study-intro">Three objects, one changing light.<br>Take a moment to look closer.</p>
+          <div class="study-choices" data-study-choices aria-label="Optical study" hidden>
+            <button type="button" data-study-choice="lens" data-caption="One surface. A different view from every angle." data-number="PLATE 01"><span class="study-choice-index">01</span><span class="study-choice-name">Lens<small>CURVE / REFLECTION</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
+            <button type="button" data-study-choice="layers" data-caption="A little distance becomes a little depth." data-number="PLATE 02"><span class="study-choice-index">02</span><span class="study-choice-name">Layers<small>OVERLAP / DIFFUSION</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
+            <button type="button" data-study-choice="prism" data-caption="At the edge, a quiet separation of colour." data-number="PLATE 03"><span class="study-choice-index">03</span><span class="study-choice-name">Prism<small>EDGE / SPECTRUM</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
+          </div>
+          <div class="study-controls" data-study-controls hidden>
+            <label class="study-light-label"><span>MOVE THE LIGHT</span><output data-study-angle>−15°</output><input type="range" min="-45" max="45" value="-15" step="1" aria-label="Light angle" data-study-light></label>
+            <div class="study-control-foot"><span aria-hidden="true">−45° <i></i> +45°</span><button type="button" data-study-reset>Reset <span aria-hidden="true">↺</span></button></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="interests wrap" id="interests" aria-labelledby="interests-title">
