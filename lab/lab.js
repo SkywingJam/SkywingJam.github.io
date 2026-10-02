@@ -1,3 +1,5 @@
+import { enhanceLightStudies } from './light-study.js';
+
 const root = document.documentElement;
 const stage = document.querySelector('.wave-stage');
 const themeButton = document.querySelector('.theme-toggle');
@@ -143,3 +145,6 @@ window.addEventListener('pagehide', () => {
   updateMotionControls();
 });
 window.addEventListener('pageshow', event => { if (event.persisted) enhanceWave(); });
+
+// Independent reusable blocks: no animation loop or renderer dependency.
+enhanceLightStudies(document);
