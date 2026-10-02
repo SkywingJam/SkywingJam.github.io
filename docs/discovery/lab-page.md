@@ -2,7 +2,7 @@
 
 日期：2026-10-02（Australia/Melbourne）  
 分支：`discovery`  
-状态：设计与技术 discovery，尚未实现页面或验证渲染性能。
+状态：设计与技术 discovery；首版已在本地实现，见 [实现与验证记录](lab-implementation.md)。本文保留原始设计目标，实际验证结果以实现记录为准。
 
 ## 1. 方向与范围
 
