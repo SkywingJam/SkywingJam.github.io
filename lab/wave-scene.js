@@ -11,7 +11,7 @@ const waves = [
 ];
 // Exact critically damped spring: responsive under the pointer, no ringing on release.
 function settle(value, velocity, target, dt) {
-  const omega = 7;
+  const omega = 5.5;
   const offset = value - target;
   const impulse = (velocity + omega * offset) * dt;
   const decay = Math.exp(-omega * dt);
@@ -197,6 +197,7 @@ export function createAcrylicPainter(canvas) {
       // Fine chromatic separation inside the polished rim, concentrated in reflected light.
       // The neutral highlight stays on top; tint is strongest where the key light lands.
       ctx.save(); ctx.clip(body);
+      ctx.globalAlpha = mix(.75, 1, night);
       const separation = 1.15 + Math.abs(tilt) * 1.1;
       for (const [tint, direction] of [['prismWarm', -1], ['prismCool', 1]]) {
         const spectral = ctx.createLinearGradient(width * tilt * .045, 0, width * (1 + tilt * .045), 0);
