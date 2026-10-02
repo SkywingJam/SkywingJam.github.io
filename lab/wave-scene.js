@@ -10,11 +10,11 @@ const waves = [
   { phase: 2.48, frequency: 1.27, speed: .089, breath: .19, amplitude: .88 },
 ];
 const palette = {
-  sky: [[242, 238, 229], [8, 19, 38]],
-  floor: [[207, 211, 209], [19, 40, 68]],
+  sky: [[238, 233, 223], [8, 19, 38]],
+  floor: [[183, 195, 198], [19, 40, 68]],
   light: [[255, 249, 233], [161, 194, 232]],
   rim: [[255, 255, 250], [196, 220, 249]],
-  shade: [[106, 116, 130], [2, 10, 26]],
+  shade: [[75, 94, 112], [2, 10, 26]],
   frost: [[255, 251, 241], [112, 148, 186]],
 };
 
@@ -61,8 +61,8 @@ export function createAcrylicPainter(canvas) {
     bg.addColorStop(0, color('sky')); bg.addColorStop(1, color('floor'));
     ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
     const sun = ctx.createRadialGradient(width * .23, height * .12, 0, width * .23, height * .12, width * .65);
-    sun.addColorStop(0, color('light', mix(.95, .17, night)));
-    sun.addColorStop(.4, color('light', mix(.4, .07, night)));
+    sun.addColorStop(0, color('light', mix(.72, .17, night)));
+    sun.addColorStop(.4, color('light', mix(.22, .07, night)));
     sun.addColorStop(1, color('light', 0));
     ctx.fillStyle = sun; ctx.fillRect(0, 0, width, height);
 
@@ -71,8 +71,8 @@ export function createAcrylicPainter(canvas) {
     ctx.translate(width * .28, 0); ctx.rotate(-.22);
     const windowLight = ctx.createLinearGradient(-width * .25, 0, width * .25, 0);
     windowLight.addColorStop(0, color('rim', 0));
-    windowLight.addColorStop(.43, color('rim', mix(.34, .07, night)));
-    windowLight.addColorStop(.52, color('rim', mix(.48, .11, night)));
+    windowLight.addColorStop(.43, color('rim', mix(.16, .07, night)));
+    windowLight.addColorStop(.52, color('rim', mix(.3, .11, night)));
     windowLight.addColorStop(1, color('rim', 0));
     ctx.fillStyle = windowLight; ctx.fillRect(-width * .25, -height, width * .5, height * 3);
     ctx.restore();
@@ -113,8 +113,8 @@ export function createAcrylicPainter(canvas) {
       ctx.clip(body);
       ctx.translate(3, 15 + index * 3);
       ctx.lineWidth = 8 + index * 3;
-      ctx.strokeStyle = color('shade', mix(.22, .22, night));
-      ctx.shadowColor = color('shade', .5); ctx.shadowBlur = 22 * dpr;
+      ctx.strokeStyle = color('shade', mix(.32, .22, night));
+      ctx.shadowColor = color('shade', mix(.58, .5, night)); ctx.shadowBlur = 22 * dpr;
       ctx.stroke(edge);
       ctx.restore();
 
@@ -135,8 +135,8 @@ export function createAcrylicPainter(canvas) {
       }
       ctx.globalAlpha = 1;
       const milk = ctx.createLinearGradient(0, base - amplitude, 0, height);
-      milk.addColorStop(0, color('frost', mix(.12, .07, night)));
-      milk.addColorStop(.3, color('frost', mix(.08, .035, night)));
+      milk.addColorStop(0, color('frost', mix(.07, .07, night)));
+      milk.addColorStop(.3, color('frost', mix(.045, .035, night)));
       milk.addColorStop(1, color('frost', mix(.02, .015, night)));
       ctx.fillStyle = milk; ctx.fillRect(0, 0, width, height);
 
@@ -146,13 +146,17 @@ export function createAcrylicPainter(canvas) {
       for (let j = 0; j < points.length - 1; j++) {
         const p = points[j], q = points[j + 1];
         const slope = (q.y - p.y) / (q.x - p.x);
-        const lit = clamp(.62 - slope * .55, .15, 1);
-        const local = .64 + .36 * Math.exp(-Math.pow((p.x / width - .27) / .26, 2));
+        // Daylight has less ambient fill and a stronger key light from the upper left.
+        // Keep the moonlight endpoint unchanged while interpolating between themes.
+        const lit = mix(clamp(.58 - slope * .85, .08, 1), clamp(.62 - slope * .55, .15, 1), night);
+        const local = mix(
+          .28 + .72 * Math.exp(-Math.pow((p.x / width - .27) / .22, 2)),
+          .64 + .36 * Math.exp(-Math.pow((p.x / width - .27) / .26, 2)), night);
         const shade = ctx.createLinearGradient(p.x, p.y, p.x - slope * depth / (1 + slope * slope), p.y + depth / (1 + slope * slope));
-        shade.addColorStop(0, color('rim', lit * local * mix(.78, .38, night)));
-        shade.addColorStop(.07, color('rim', lit * local * mix(.25, .12, night)));
-        shade.addColorStop(.21, color('shade', mix(.14, .11, night) * (1.2 - lit * .35)));
-        shade.addColorStop(.44, color('frost', lit * mix(.18, .06, night)));
+        shade.addColorStop(0, color('rim', lit * local * mix(.98, .38, night)));
+        shade.addColorStop(.07, color('rim', lit * local * mix(.42, .12, night)));
+        shade.addColorStop(.21, color('shade', mix(.24, .11, night) * mix(1.35 - lit * .7, 1.2 - lit * .35, night)));
+        shade.addColorStop(.44, color('frost', lit * mix(local * .3, .06, night)));
         shade.addColorStop(1, color('frost', 0));
         ctx.fillStyle = shade;
         ctx.beginPath(); ctx.moveTo(p.x, p.y - 1); ctx.lineTo(q.x, q.y - 1);
@@ -162,7 +166,7 @@ export function createAcrylicPainter(canvas) {
       const glint = ctx.createLinearGradient(0, 0, width, 0);
       glint.addColorStop(0, color('rim', 0));
       glint.addColorStop(.18, color('rim', mix(.12, .045, night)));
-      glint.addColorStop(.3, color('rim', mix(.65, .32, night)));
+      glint.addColorStop(.3, color('rim', mix(.85, .32, night)));
       glint.addColorStop(.43, color('rim', mix(.1, .03, night)));
       glint.addColorStop(.65, color('rim', 0));
       glint.addColorStop(.84, color('rim', mix(.18, .09, night)));
