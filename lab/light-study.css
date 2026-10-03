@@ -20,7 +20,7 @@
   color:var(--study-ink)
 }
 .light-study,.light-study *,.light-study *:before,.light-study *:after {box-sizing:border-box}
-.light-study h2,.light-study p {margin:0}
+.light-study :where(h2,p) {margin:0}
 .light-study h2 {font-weight:500}
 .light-study em {font-family:var(--serif,Georgia,serif);font-weight:400}
 .light-study [hidden] {display:none!important}

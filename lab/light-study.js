@@ -73,19 +73,22 @@ export function createLightStudy(root) {
   }
   // Direct manipulation is optional; the native range remains the keyboard equivalent.
   let drag = null;
-  function endDrag(event) {
+  function endDrag() {
     if (drag && scene?.hasPointerCapture(drag.id)) scene.releasePointerCapture(drag.id);
     drag = null; root.classList.remove('study-dragging');
   }
   scene?.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0) return;
-    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, value: Number(input.value), width: scene.getBoundingClientRect().width };
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY, value: Number(input.value), width: scene.getBoundingClientRect().width, started: false };
   }, options);
   scene?.addEventListener('pointermove', event => {
     if (!drag || drag.id !== event.pointerId) return;
     const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
-    if (!scene.hasPointerCapture(event.pointerId)) {
+    // Touch browsers may capture implicitly before intent is known. Keep scrolling
+    // available until the gesture is clearly horizontal.
+    if (!drag.started) {
       if (Math.abs(dx) < 6 || Math.abs(dx) < Math.abs(dy) * 1.2) return;
+      drag.started = true;
       scene.setPointerCapture(event.pointerId); root.classList.add('study-dragging');
     }
     input.value = String(Math.round(Math.max(-45, Math.min(45, drag.value + dx / drag.width * 120))));
@@ -105,7 +108,7 @@ export function createLightStudy(root) {
   reset.addEventListener('click', () => { input.value = input.defaultValue; light(); }, options);
   reduced.addEventListener('change', sync, options);
   document.addEventListener('visibilitychange', sync, options);
-  window.addEventListener('pagehide', () => { root.dataset.observing = 'false'; animation?.cancel(); }, options);
+  window.addEventListener('pagehide', () => { endDrag(); root.dataset.observing = 'false'; animation?.cancel(); }, options);
   window.addEventListener('pageshow', sync, options);
   const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); }, { threshold: .15 });
   observer.observe(root);
