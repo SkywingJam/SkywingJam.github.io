@@ -1,5 +1,11 @@
-/* Standalone, repeatable editorial display. All colour follows the page theme. */
+/* Standalone, repeatable editorial display.
+   Layout responds to the block's own width (container queries), not the viewport,
+   so the same markup works full-bleed, in a sidebar or in a narrow CMS column.
+   Host contract (all optional): --bg --ink --muted --line --accent, --sans --serif --mono,
+   a .dark-mode / [data-theme="dark"] ancestor, and a .motion-paused ancestor.
+   Per block: data-study-theme="light|dark|auto", data-study-motion="paused". */
 .light-study {
+  container:light-study / inline-size;
   --study-ink:var(--ink,#202320);
   --study-muted:var(--muted,#67665f);
   --study-line:var(--line,rgba(42,43,38,.22));
@@ -11,22 +17,32 @@
   --study-shadow:rgba(42,62,71,.22);
   --study-glass:rgba(223,237,237,.24);
   --study-reflect:rgba(255,255,250,.75);
+  --study-sans:var(--sans,system-ui,-apple-system,'Segoe UI',Arial,sans-serif);
+  --study-serif:var(--serif,Georgia,'Times New Roman',serif);
+  --study-mono:var(--mono,ui-monospace,SFMono-Regular,Consolas,monospace);
+  /* Small mono labels. One place to tune legibility for the whole block. */
+  --study-label:10px;
+  --study-label-sm:9px;
   --study-key:38%;
+  /* −1 (light from left) … +1 (from right); set by JS, default matches −15°. */
+  --study-light:-.333;
   --study-angle:-15deg;
   --study-turn:-1.2deg;
   --study-progress:33.333%;
   padding-top:64px;
-  font:400 16px/1.65 var(--sans,Arial,sans-serif);
+  font:400 16px/1.65 var(--study-sans);
   color:var(--study-ink)
 }
 .light-study,.light-study *,.light-study *:before,.light-study *:after {box-sizing:border-box}
 .light-study :where(h2,p) {margin:0}
 .light-study h2 {font-weight:500}
-.light-study em {font-family:var(--serif,Georgia,serif);font-weight:400}
+.light-study em {font-family:var(--study-serif);font-weight:400}
 .light-study [hidden] {display:none!important}
 .light-study button {background:none;cursor:pointer;color:inherit;font:inherit}
 .light-study button:focus-visible {outline:2px solid var(--study-accent);outline-offset:4px}
-.dark-mode .light-study {
+
+/* Dark, following the host theme. Host tokens win when present. */
+:where(.dark-mode,[data-theme="dark"]) .light-study:not([data-study-theme="light"]):not([data-study-theme="auto"]) {
   --study-ink:var(--ink,#e1eaf4);
   --study-muted:var(--muted,#aabbd0);
   --study-line:var(--line,rgba(215,227,221,.23));
@@ -39,6 +55,45 @@
   --study-glass:rgba(122,162,194,.1);
   --study-reflect:rgba(209,232,255,.55)
 }
+/* Forced themes use the block's own palette so they stay legible on any host. */
+.light-study[data-study-theme="light"] {
+  --study-ink:#202320;
+  --study-muted:#67665f;
+  --study-line:rgba(42,43,38,.22);
+  --study-accent:#316665;
+  --study-paper:#f2eee5;
+  background:var(--study-paper)
+}
+.light-study[data-study-theme="dark"] {
+  --study-ink:#e1eaf4;
+  --study-muted:#aabbd0;
+  --study-line:rgba(215,227,221,.23);
+  --study-accent:#a6bdd8;
+  --study-paper:#081326;
+  --study-bg:#102139;
+  --study-glow:rgba(156,188,222,.26);
+  --study-edge:rgba(190,220,243,.63);
+  --study-shadow:rgba(0,7,19,.6);
+  --study-glass:rgba(122,162,194,.1);
+  --study-reflect:rgba(209,232,255,.55);
+  background:var(--study-paper)
+}
+@media(prefers-color-scheme:dark) {
+  .light-study[data-study-theme="auto"] {
+    --study-ink:#e1eaf4;
+    --study-muted:#aabbd0;
+    --study-line:rgba(215,227,221,.23);
+    --study-accent:#a6bdd8;
+    --study-paper:#081326;
+    --study-bg:#102139;
+    --study-glow:rgba(156,188,222,.26);
+    --study-edge:rgba(190,220,243,.63);
+    --study-shadow:rgba(0,7,19,.6);
+    --study-glass:rgba(122,162,194,.1);
+    --study-reflect:rgba(209,232,255,.55)
+  }
+}
+
 .study-heading {
   display:flex;
   justify-content:space-between;
@@ -49,7 +104,7 @@
   margin-bottom:28px
 }
 .study-heading .eyebrow,.study-edition,.study-scene-label,.study-choice-index,.study-choice-name small,.study-light-label>span,.study-light-label output,.study-control-foot {
-  font:10px/1.5 var(--mono,monospace);
+  font:var(--study-label)/1.5 var(--study-mono);
   letter-spacing:.07em;
   color:var(--study-muted)
 }
@@ -61,6 +116,12 @@
 }
 .study-display {min-width:0}
 .study-scene {
+  /* Exhibits size themselves in cqw of the scene, so they scale with any column. */
+  container-type:inline-size;
+  --plate-w:min(37cqw,275px);
+  --plate-dx:1.7cqw;
+  --plate-dy:min(5.5cqw,46px);
+  --plate-top:min(12cqw,100px);
   position:relative;
   min-height:440px;
   width:100%;
@@ -83,16 +144,17 @@
 }
 .study-light-beam {
   position:absolute;
-  inset:-30%;
-  background:linear-gradient(90deg,transparent 22%,var(--study-glow) 42%,transparent 63%);
+  /* Oversized so the rotated edges stay outside the scene at any angle (was a hard diagonal at ±45°). */
+  inset:-80%;
+  background:linear-gradient(90deg,transparent 32.8%,var(--study-glow) 45.1%,transparent 58%);
   opacity:.32;
-  transform:translateX(calc((var(--study-key) - 50%) * .4)) rotate(var(--study-angle));
+  transform:translateX(calc((var(--study-key) - 50%) * .246)) rotate(var(--study-angle));
   transition:transform .25s ease-out
 }
 .study-fiducial {
   position:absolute;
   z-index:3;
-  font:18px var(--mono,monospace);
+  font:18px var(--study-mono);
   color:var(--study-muted);
   opacity:.6
 }
@@ -118,8 +180,11 @@
   border-radius:50%;
   background:radial-gradient(ellipse,var(--study-shadow),transparent 72%);
   filter:blur(9px);
-  transform:rotate(-12deg)
+  transform:translateX(calc(var(--study-light) * -16%)) rotate(-12deg);
+  transition:transform .25s ease-out
 }
+/* Generic exhibits: every direct child shares one cell, so extra layers (rays, glows) align with the object. */
+.study-object>* {grid-area:1/1}
 .study-art {position:absolute;inset:0}
 .study-enhanced .study-scene {cursor:ew-resize;touch-action:pan-y}
 .study-dragging .study-scene {cursor:grabbing;user-select:none}
@@ -132,7 +197,8 @@
   animation-play-state:paused;
   transform:translateY(-2px)
 }
-:root:not(.motion-paused) .light-study[data-observing="true"] .study-object {
+/* JS sets data-observing (on screen, tab visible) and data-still (paused or reduced motion). */
+.light-study[data-observing="true"]:not([data-still="true"]) .study-object {
   animation-play-state:running
 }
 @keyframes study-suspend {
@@ -143,13 +209,19 @@
   position:relative;
   width:36%;
   max-width:270px;
-  min-width:180px;
+  min-width:min(180px,55cqw);
   aspect-ratio:.83;
   margin-top:-20px;
   border-radius:50%;
   border:1px solid var(--study-edge);
   background:radial-gradient(ellipse at var(--study-key) 14%,var(--study-reflect),transparent 31%),linear-gradient(118deg,rgba(179,210,220,.14),rgba(255,255,250,.08) 45%,rgba(105,149,164,.2)),var(--study-glass);
-  box-shadow:inset 12px -8px 20px rgba(237,252,255,.14),inset -6px 6px 12px rgba(69,115,138,.22),4px 8px 14px -12px var(--study-shadow),1px 0 0 rgba(247,185,129,.45),-1px -1px 0 rgba(124,189,216,.4);
+  /* Offsets use clamp(±a, light × ∓3a): full value from about ±15° outward, mirrored when the light crosses. */
+  box-shadow:
+    inset clamp(-12px,calc(var(--study-light) * -36px),12px) -8px 20px rgba(237,252,255,.14),
+    inset clamp(-6px,calc(var(--study-light) * 18px),6px) 6px 12px rgba(69,115,138,.22),
+    clamp(-6px,calc(var(--study-light) * -12px),6px) 8px 14px -12px var(--study-shadow),
+    clamp(-1px,calc(var(--study-light) * -3px),1px) 0 0 rgba(247,185,129,.45),
+    clamp(-1px,calc(var(--study-light) * 3px),1px) -1px 0 rgba(124,189,216,.4);
   backdrop-filter:blur(3px);
   -webkit-backdrop-filter:blur(3px);
   transform:rotate(calc(-26deg + var(--study-turn))) skewY(6deg);
@@ -161,7 +233,7 @@
   inset:10px 7px 8px 13px;
   border-radius:50%;
   border:1px solid var(--study-edge);
-  box-shadow:inset 2px -2px 7px var(--study-reflect),-4px 4px 8px rgba(62,93,111,.1);
+  box-shadow:inset clamp(-2px,calc(var(--study-light) * -6px),2px) -2px 7px var(--study-reflect),clamp(-4px,calc(var(--study-light) * 12px),4px) 4px 8px rgba(62,93,111,.1);
   opacity:.6
 }
 .optic-lens:after {
@@ -176,16 +248,19 @@
 }
 .optic-plate {
   position:absolute;
-  width:37%;
-  min-width:180px;
-  max-width:275px;
+  width:var(--plate-w);
   aspect-ratio:1.36;
-  left:calc(50% - 18.5% + (var(--plate) - 1) * 14px);
-  top:calc(50% - 100px + (var(--plate) - 1) * 46px);
+  left:calc(50% - var(--plate-w) / 2 + (var(--plate) - 1) * var(--plate-dx));
+  top:calc(50% - var(--plate-top) + (var(--plate) - 1) * var(--plate-dy));
   border-radius:22px;
   border:1px solid var(--study-edge);
   background:radial-gradient(ellipse at var(--study-key) 0%,var(--study-reflect),transparent 55%),linear-gradient(140deg,rgba(183,218,227,.2),rgba(222,241,245,.06)),var(--study-glass);
-  box-shadow:inset 0 2px 2px var(--study-edge),inset -2px -3px 3px rgba(78,124,151,.2),0 10px 18px -13px var(--study-shadow),1px 1px 0 rgba(90,158,202,.35),-1px -1px 0 rgba(238,189,151,.35);
+  box-shadow:
+    inset 0 2px 2px var(--study-edge),
+    inset clamp(-2px,calc(var(--study-light) * 6px),2px) -3px 3px rgba(78,124,151,.2),
+    calc(var(--study-light) * -8px) 10px 18px -13px var(--study-shadow),
+    clamp(-1px,calc(var(--study-light) * -3px),1px) 1px 0 rgba(90,158,202,.35),
+    clamp(-1px,calc(var(--study-light) * 3px),1px) -1px 0 rgba(238,189,151,.35);
   backdrop-filter:blur(5px);
   -webkit-backdrop-filter:blur(5px);
   transform:rotate(calc(-27deg + var(--study-turn))) skew(17deg,2deg);
@@ -203,14 +278,17 @@
   position:relative;
   width:40%;
   max-width:300px;
-  min-width:200px;
+  min-width:min(200px,60cqw);
   aspect-ratio:1;
   margin-top:-30px;
   transform:rotate(calc(-9deg + var(--study-turn)));
   transition:transform .25s ease-out;
-  filter:drop-shadow(8px 15px 7px var(--study-shadow))
+  filter:drop-shadow(clamp(-12px,calc(var(--study-light) * -24px),12px) 15px 7px var(--study-shadow))
 }
-.prism-face {position:absolute;inset:0}
+.prism-face {position:absolute;inset:0;transition:filter .25s ease-out}
+/* The face turned toward the light brightens, the far face dims. */
+.prism-face-a {filter:brightness(calc(1 - var(--study-light) * .14))}
+.prism-face-b {filter:brightness(calc(1 + var(--study-light) * .14))}
 .prism-face-a {
   clip-path:polygon(50% 1.333%,12% 83%,55% 98.667%);
   background:linear-gradient(120deg,var(--study-reflect),var(--study-glass) 55%,rgba(104,156,181,.42))
@@ -224,18 +302,48 @@
   background:linear-gradient(110deg,rgba(210,169,129,.35),rgba(164,207,221,.35))
 }
 .optic-prism svg {position:absolute;inset:0;width:100%;height:100%;stroke:var(--study-edge);stroke-width:1.25}
+/* Dispersion lives in the prism's own box (same size and turn), so it floats and turns with the prism.
+   One fan exits each side; the side away from the light shows, and they cross-fade near centre. */
 .prism-ray {
-  position:absolute;
-  left:53%;
-  top:44%;
-  width:52%;
-  height:34%;
-  background:linear-gradient(180deg,transparent,rgba(139,183,222,.23) 20%,rgba(180,156,206,.2) 42%,rgba(225,181,151,.22) 64%,rgba(237,209,142,.18) 80%,transparent);
-  clip-path:polygon(0 35%,100% 0,100% 100%,0 65%);
-  transform-origin:left center;
-  transform:rotate(calc(var(--study-angle) * .45));
-  filter:blur(3px);
+  position:relative;
+  width:40%;
+  max-width:300px;
+  min-width:min(200px,60cqw);
+  aspect-ratio:1;
+  margin-top:-30px;
+  pointer-events:none;
+  transform:rotate(calc(-9deg + var(--study-turn)));
   transition:transform .25s ease-out
+}
+.prism-ray:before,.prism-ray:after {
+  content:'';
+  position:absolute;
+  top:30%;
+  width:120%;
+  height:56%;
+  background:linear-gradient(180deg,transparent,rgba(139,183,222,.23) 20%,rgba(180,156,206,.2) 42%,rgba(225,181,151,.22) 64%,rgba(237,209,142,.18) 80%,transparent);
+  filter:blur(3px);
+  transition:transform .25s ease-out,opacity .25s ease-out
+}
+/* Exits the right face when the light comes from the left. */
+.prism-ray:before {
+  left:66%;
+  clip-path:polygon(0 42%,100% 0,100% 100%,0 58%);
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 45%,transparent 92%);
+  mask-image:linear-gradient(90deg,transparent,#000 14%,#000 45%,transparent 92%);
+  transform-origin:0 50%;
+  transform:rotate(calc(var(--study-angle) * .4));
+  opacity:clamp(0,calc(.4 - var(--study-light) * 3),1)
+}
+/* Mirror: exits the left face when the light comes from the right. */
+.prism-ray:after {
+  right:70%;
+  clip-path:polygon(0 0,100% 42%,100% 58%,0 100%);
+  -webkit-mask-image:linear-gradient(270deg,transparent,#000 14%,#000 45%,transparent 92%);
+  mask-image:linear-gradient(270deg,transparent,#000 14%,#000 45%,transparent 92%);
+  transform-origin:100% 50%;
+  transform:rotate(calc(var(--study-angle) * .4));
+  opacity:clamp(0,calc(var(--study-light) * 3 - .4),1)
 }
 .study-scene-label {
   position:absolute;
@@ -245,30 +353,37 @@
   display:flex;
   justify-content:space-between;
   gap:16px;
-  font-size:9px
+  font-size:var(--study-label-sm);
+  white-space:nowrap
 }
 .study-caption {
   font-size:12px;
   color:var(--study-muted);
   padding:17px 0 23px;
-  min-height:61px
+  min-height:61px;
+  text-wrap:pretty
 }
 .study-copy {
-  padding:10px 0 0 clamp(32px,4.2vw,68px);
+  padding:10px 0 0 clamp(32px,4.2cqi,68px);
   display:flex;
   flex-direction:column;
   align-items:stretch
 }
+/* Copy is unformatted: no <br> needed. Balance keeps short headings on even lines. */
 .study-copy h2 {
-  font-size:clamp(34px,3.4vw,53px);
+  font-size:clamp(34px,4cqi,53px);
   line-height:1.05;
-  letter-spacing:-.05em
+  letter-spacing:-.05em;
+  max-width:7.5em;
+  text-wrap:balance
 }
 .study-intro {
   color:var(--study-muted);
   font-size:13px;
   line-height:1.8;
-  margin-top:20px
+  margin-top:20px;
+  max-width:42ch;
+  text-wrap:pretty
 }
 .study-choices {margin-top:25px;border-top:1px solid var(--study-line)}
 .study-choices button {
@@ -299,14 +414,15 @@
 }
 .study-choices button[aria-selected="true"] {color:var(--study-ink)}
 .study-choices button[aria-selected="true"]:before {transform:scaleX(1)}
-.study-choice-index {width:21px;flex-shrink:0;font-size:9px}
+.study-choice-index {width:21px;flex-shrink:0;font-size:var(--study-label-sm)}
 .study-choice-name {font-size:18px;line-height:1.2;letter-spacing:-.025em}
-.study-choice-name small {display:block;font-size:8px;margin-top:6px}
+.study-choice-name small {display:block;font-size:var(--study-label-sm);margin-top:6px}
 .study-choice-mark {margin-left:auto;font-size:20px;opacity:0;transform:translate(-4px,4px);transition:opacity .3s,transform .3s}
 .study-choices button[aria-selected="true"] .study-choice-mark {opacity:1;transform:none}
-.study-controls {margin-top:auto;padding-top:26px;padding-bottom:20px}
+/* Space between catalogue and controls stays fixed so longer catalogues don't crowd the slider. */
+.study-controls {margin-top:auto;padding-top:clamp(26px,4cqi,48px);padding-bottom:20px}
 .study-light-label {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;cursor:pointer}
-.study-light-label>span,.study-light-label output {font-size:9px}
+.study-light-label>span,.study-light-label output {font-size:var(--study-label-sm)}
 .study-light-label input {
   appearance:none;
   -webkit-appearance:none;
@@ -324,43 +440,57 @@
 .study-light-label input::-moz-range-progress {height:1px;background:var(--study-accent)}
 .study-light-label input::-moz-range-thumb {width:12px;height:12px;border:1px solid var(--study-accent);border-radius:50%;background:var(--study-paper);box-shadow:0 0 0 3px var(--study-paper)}
 .study-light-label input:focus-visible {outline:2px solid var(--study-accent);outline-offset:4px;border-radius:2px}
-.study-control-foot {display:flex;align-items:center;justify-content:space-between;font-size:8px;letter-spacing:0}
+.study-control-foot {display:flex;align-items:center;justify-content:space-between;font-size:var(--study-label-sm);letter-spacing:0}
 .study-control-foot>span {display:flex;align-items:center;gap:12px}
 .study-control-foot i {display:block;width:20px;height:1px;background:var(--study-line)}
-.study-control-foot button {border:0;font:10px var(--mono,monospace);padding:10px 0 10px 15px;min-height:36px;color:var(--study-muted)}
-.study-control-foot button:disabled {opacity:.4;cursor:default}
+.study-control-foot button {border:0;font:var(--study-label) var(--study-mono);padding:10px 0 10px 15px;min-height:36px;color:var(--study-muted)}
+/* Disabled reset stays readable: it signals "already at the starting light". */
+.study-control-foot button:disabled {opacity:.62;cursor:default}
 .study-control-foot button:not(:disabled):hover {color:var(--study-ink)}
 .study-choices button:focus-visible {outline-offset:3px;z-index:1}
-.motion-paused .light-study * {transition:none!important}
+.light-study[data-still="true"] * {transition:none!important}
 @media(hover:hover) and (pointer:fine) {
   .study-choices button:hover {color:var(--study-ink)}
   .study-choices button:hover .study-choice-mark {opacity:1;transform:none}
 }
-@media(max-width:1050px) {
+
+/* Medium block: tighter two-column layout. */
+@container light-study (max-width:990px) {
   .study-layout {grid-template-columns:minmax(0,1.3fr) minmax(230px,1fr)}
   .study-scene {min-height:460px}
   .study-copy {padding-left:32px}
 }
-@media(max-width:700px) {
-  .light-study {padding-top:35px}
+/* Narrow block: stack the display above the catalogue. */
+@container light-study (max-width:680px) {
   .study-edition {display:none}
   .study-heading {margin-bottom:22px}
   .study-layout {display:flex;flex-direction:column}
-  .study-scene {height:370px;min-height:0;max-height:none;aspect-ratio:auto}
+  .study-scene {
+    height:370px;min-height:0;max-height:none;aspect-ratio:auto;
+    --plate-w:min(48cqw,275px);
+    --plate-dx:2.9cqw;
+    --plate-dy:min(10.8cqw,46px);
+    --plate-top:min(23cqw,100px)
+  }
   .study-caption {padding-bottom:20px;font-size:11px;min-height:54px}
   .study-copy {padding:12px 0 10px}
-  .study-copy h2 {font-size:36px}
-  .study-copy h2 br {display:none}
+  .study-copy h2 {font-size:36px;max-width:none}
   .study-intro {margin-top:13px;font-size:12px}
-  .study-intro br {display:none}
   .study-choices {margin-top:22px}
   .study-choices button {min-height:62px;padding:13px 0}
   .study-choice-name {font-size:17px}
   .study-controls {padding-top:22px;padding-bottom:15px}
-  .optic-lens {width:45%;min-width:156px}
-  .optic-plate {width:48%;min-width:155px;left:calc(26% + (var(--plate) - 1) * 10px);top:calc(50% - 80px + (var(--plate) - 1) * 38px)}
-  .optic-prism {width:52%;min-width:180px}
+  .optic-lens {width:45%}
+  .optic-prism,.prism-ray {width:52%}
   .study-orbit {width:80%;left:10%}
+}
+/* Very narrow scene: keep the label row on one line by dropping the hint. */
+@container (max-width:340px) {
+  .study-scene-label [data-study-hint] {display:none}
+}
+/* Outer rhythm belongs to the page, so it still follows the viewport. */
+@media(max-width:700px) {
+  .light-study {padding-top:35px}
 }
 @media(prefers-reduced-motion:reduce) {
   .light-study * {animation:none!important;transition:none!important}

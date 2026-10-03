@@ -60,6 +60,33 @@ let browser;
  // Reuse a second instance, with fresh accessible identities and independent state.
  const reuse=await page.evaluate(async()=>{const original=document.querySelector('[data-light-study]');const clone=original.cloneNode(true);clone.removeAttribute('id');document.querySelector('main').append(clone);const {createLightStudy}=await import('/lab/light-study.js');const api=createLightStudy(clone);const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);const duplicates=ids.filter((id,i)=>ids.indexOf(id)!==i);const originalState=original.dataset.specimen;clone.querySelector('[data-study-choice=lens]').click();const independent=original.dataset.specimen===originalState;api.dispose();clone.remove();return {duplicates,independent};});
  assert.deepEqual(reuse.duplicates,[]);assert.equal(reuse.independent,true);
+ // Reuse contract: layout follows the block's own width, copy comes from HTML, range comes from the input.
+ await page.setViewportSize({width:1440,height:1000});
+ const contract=await page.evaluate(async()=>{
+  const {createLightStudy}=await import('/lab/light-study.js');
+  const original=document.querySelector('[data-light-study]');
+  const host=document.createElement('div');host.style.width='480px';document.querySelector('main').append(host);
+  const clone=original.cloneNode(true);clone.removeAttribute('id');
+  clone.classList.remove('wrap');clone.setAttribute('data-study-theme','dark');clone.setAttribute('data-study-motion','paused');
+  clone.querySelector('[data-study-hint]').dataset.studyHintActive='CUSTOM HINT';
+  clone.querySelector('[data-study-angle]').dataset.format='{value} deg';
+  const range=clone.querySelector('[data-study-light]');range.min='-10';range.max='30';range.value='10';range.defaultValue='10';
+  host.append(clone);const api=createLightStudy(clone);
+  const layout=getComputedStyle(clone.querySelector('.study-layout')).display;
+  const scene=clone.querySelector('.study-scene').getBoundingClientRect();
+  const plates=[...clone.querySelectorAll('.optic-plate')];clone.querySelector('[data-study-choice=layers]').click();
+  const sceneBox=clone.querySelector('.study-scene').getBoundingClientRect();
+  const platesInside=plates.every(p=>{const r=p.getBoundingClientRect();return r.left>=sceneBox.left-1&&r.right<=sceneBox.right+1});
+  const result={layout,sceneWidth:Math.round(scene.width),overflow:clone.scrollWidth>clone.clientWidth,platesInside,
+   hint:clone.querySelector('[data-study-hint]').textContent,angle:clone.querySelector('[data-study-angle]').textContent,
+   progress:clone.style.getPropertyValue('--study-progress'),still:clone.dataset.still,
+   ink:getComputedStyle(clone).getPropertyValue('--study-ink').trim(),
+   titleBreaks:original.querySelectorAll('[data-study-title] br, .study-intro br').length};
+  api.dispose();host.remove();return result;});
+ assert.equal(contract.layout,'flex','narrow block stacks');assert.equal(contract.sceneWidth,480);
+ assert.equal(contract.overflow,false);assert.equal(contract.platesInside,true,'plates scale with scene');
+ assert.equal(contract.hint,'CUSTOM HINT');assert.equal(contract.angle,'10 deg');assert.equal(contract.progress,'50%');
+ assert.equal(contract.still,'true');assert.equal(contract.ink,'#e1eaf4');assert.equal(contract.titleBreaks,0);
  await page.setViewportSize({width:1440,height:1000});await page.locator('.motion-toggle').click();await study.scrollIntoViewIfNeeded();
  assert.equal(await study.locator('[data-study-art=prism] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'paused');
  await page.emulateMedia({reducedMotion:'reduce'});await study.locator('[data-study-choice=lens]').click();
@@ -68,6 +95,6 @@ let browser;
  assert.equal(await study.locator('[data-study-art=lens] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'running');
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.waitForTimeout(100);assert.equal(await study.getAttribute('data-observing'),'false');
  const staticPage=await browser.newPage({javaScriptEnabled:false});await staticPage.goto(baseURL+'/lab/');assert.equal(await staticPage.locator('[data-study-art=lens]').isVisible(),true);assert.equal(await staticPage.locator('[data-study-choices]').isVisible(),false);
- assert.deepEqual(errors,[]);console.log('choices, keyboard, slider/reset, multi-instance IDs, themes, responsive, pause/reduced motion, offscreen, mouse/touch dragging, vertical touch scrolling and no JS: passed');
+ assert.deepEqual(errors,[]);console.log('reuse contract (container layout, HTML copy, input range, forced theme, per-block pause), choices, keyboard, slider/reset, multi-instance IDs, themes, responsive, pause/reduced motion, offscreen, mouse/touch dragging, vertical touch scrolling and no JS: passed');
  await browser.close();
 })().catch(async e=>{console.error(e);await browser?.close();process.exitCode=1;});

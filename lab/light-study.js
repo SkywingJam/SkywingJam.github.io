@@ -20,7 +20,17 @@ export function createLightStudy(root) {
   const prefix = `light-study-${++sequence}`;
   let active = Math.max(0, choices.findIndex(choice => choice.dataset.studyChoice === root.dataset.specimen));
   let animation = null, visible = false;
-  const still = () => reduced.matches || document.documentElement.classList.contains('motion-paused');
+  // Motion can be paused by the host (.motion-paused on <html> or an ancestor) or per block (data-study-motion="paused").
+  const still = () => reduced.matches || !!root.closest('.motion-paused, [data-study-motion="paused"]');
+  // The light range comes from the native input, so HTML min/max/value stay the single source of truth.
+  const num = (value, fallback) => (value === '' || !Number.isFinite(Number(value)) ? fallback : Number(value));
+  const min = num(input.min, -45), max = Math.max(num(input.max, 45), min + 1), span = max - min;
+  // Copy lives in HTML. Templates use {value} (plain number) and {signed} (with − / + sign).
+  const format = (template, angle) => template
+    .replaceAll('{signed}', `${angle < 0 ? '−' : '+'}${Math.abs(angle)}`)
+    .replaceAll('{value}', String(angle));
+  const outputFormat = output.dataset.format || '{signed}°';
+  const valueText = input.dataset.valuetext || '{value}°';
 
   const heading = root.querySelector('[data-study-title]');
   if (heading) { heading.id = `${prefix}-title`; root.setAttribute('aria-labelledby', heading.id); }
@@ -63,19 +73,23 @@ export function createLightStudy(root) {
   }
   function light() {
     const angle = Number(input.value);
-    root.style.setProperty('--study-key', `${50 + angle * .8}%`);
+    const t = (angle - min) / span;
+    root.style.setProperty('--study-key', `${50 + (t - .5) * 72}%`);
+    // Normalised light side: −1 = light from the left, +1 = from the right. Shading and shadows follow it.
+    root.style.setProperty('--study-light', (t * 2 - 1).toFixed(3));
     root.style.setProperty('--study-angle', `${angle}deg`);
     root.style.setProperty('--study-turn', `${angle * .08}deg`);
-    root.style.setProperty('--study-progress', `${(angle + 45) / 90 * 100}%`);
-    output.textContent = `${angle < 0 ? '−' : '+'}${Math.abs(angle)}°`;
-    input.setAttribute('aria-valuetext', `${angle}°`);
+    root.style.setProperty('--study-progress', `${t * 100}%`);
+    output.textContent = format(outputFormat, angle);
+    input.setAttribute('aria-valuetext', format(valueText, angle));
     reset.disabled = input.value === input.defaultValue;
   }
   // Direct manipulation is optional; the native range remains the keyboard equivalent.
   let drag = null;
   function endDrag() {
     if (drag && scene?.hasPointerCapture(drag.id)) scene.releasePointerCapture(drag.id);
-    drag = null; root.classList.remove('study-dragging');
+    drag = null;
+    if (root.classList.contains('study-dragging')) root.classList.remove('study-dragging');
   }
   scene?.addEventListener('pointerdown', event => {
     if (!event.isPrimary || event.button !== 0) return;
@@ -91,7 +105,8 @@ export function createLightStudy(root) {
       drag.started = true;
       scene.setPointerCapture(event.pointerId); root.classList.add('study-dragging');
     }
-    input.value = String(Math.round(Math.max(-45, Math.min(45, drag.value + dx / drag.width * 120))));
+    // A full-width drag covers about 1.33× the range, matching the original ±45° feel.
+    input.value = String(Math.round(Math.max(min, Math.min(max, drag.value + dx / drag.width * span * 4 / 3))));
     light();
   }, options);
   scene?.addEventListener('pointerup', endDrag, options);
@@ -101,6 +116,7 @@ export function createLightStudy(root) {
   window.addEventListener('blur', endDrag, options);
   function sync() {
     root.dataset.observing = String(visible && !document.hidden);
+    root.dataset.still = String(still());
     if (still() || document.hidden || !visible) animation?.cancel();
     if (document.hidden || !visible) endDrag();
   }
@@ -113,13 +129,17 @@ export function createLightStudy(root) {
   const observer = new IntersectionObserver(entries => { visible = entries[0].isIntersecting; sync(); }, { threshold: .15 });
   observer.observe(root);
   const motionObserver = new MutationObserver(sync);
+  // Watch the page-level pause class and this block's own switch (not the whole subtree,
+  // which would also see this block's own class changes).
   motionObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  motionObserver.observe(root, { attributes: true, attributeFilter: ['data-study-motion'] });
   select(active, false); light(); sync();
   group.hidden = false; root.querySelector('[data-study-controls]').hidden = false;
   root.classList.add('study-enhanced');
   const hint = root.querySelector('[data-study-hint]');
   const initialHint = hint?.textContent;
-  if (hint) hint.textContent = 'DRAG TO MOVE LIGHT';
+  // Optional: the enhanced hint is supplied in HTML via data-study-hint-active.
+  if (hint?.dataset.studyHintActive) hint.textContent = hint.dataset.studyHintActive;
   const api = {
     dispose() {
       endDrag(); life.abort(); observer.disconnect(); motionObserver.disconnect(); animation?.cancel();

@@ -74,7 +74,8 @@
       </article>
     </section>
 
-    <!-- Reusable light-study block. Copy this section; labels and captions are editable. -->
+    <!-- Reusable light-study block. Copy this section; all copy lives here (see docs/discovery/lab-light-study-pattern.md).
+         Optional: data-study-theme="light|dark|auto", data-study-motion="paused". -->
     <section class="light-study wrap" id="optical-studies" data-light-study data-specimen="lens" aria-labelledby="light-study-title">
       <div class="study-heading"><p class="eyebrow">INTERLUDE / OPTICAL STUDIES</p><span class="study-edition">THREE WAYS OF SEEING</span></div>
       <div class="study-layout">
@@ -85,21 +86,21 @@
             <div class="study-orbit"></div><div class="study-ground"></div>
             <div class="study-art" data-study-art="lens"><div class="study-object"><div class="optic-lens"></div></div></div>
             <div class="study-art" data-study-art="layers" hidden><div class="study-object"><div class="optic-plate" style="--plate:0"></div><div class="optic-plate" style="--plate:1"></div><div class="optic-plate" style="--plate:2"></div></div></div>
-            <div class="study-art" data-study-art="prism" hidden><div class="prism-ray"></div><div class="study-object"><div class="optic-prism"><span class="prism-face prism-face-a"></span><span class="prism-face prism-face-b"></span><span class="prism-face prism-face-c"></span><svg viewBox="0 0 300 300" fill="none"><path d="M150 4 36 249 165 296 270 231 150 4 165 296M36 249 270 231"/></svg></div></div></div>
-            <div class="study-scene-label"><span data-study-number>PLATE 01</span><span data-study-hint>LIGHT / MATTER</span></div>
+            <div class="study-art" data-study-art="prism" hidden><div class="study-object"><div class="prism-ray"></div><div class="optic-prism"><span class="prism-face prism-face-a"></span><span class="prism-face prism-face-b"></span><span class="prism-face prism-face-c"></span><svg viewBox="0 0 300 300" fill="none"><path d="M150 4 36 249 165 296 270 231 150 4 165 296M36 249 270 231"/></svg></div></div></div>
+            <div class="study-scene-label"><span data-study-number>PLATE 01</span><span data-study-hint data-study-hint-active="DRAG TO MOVE LIGHT">LIGHT / MATTER</span></div>
           </div>
           <p class="study-caption" data-study-caption>One surface. A different view from every angle.</p>
         </div>
         <div class="study-copy">
-          <h2 id="light-study-title" data-study-title>A small atlas<br> of <em>light.</em></h2>
-          <p class="study-intro">Three objects, one changing light.<br>Take a moment to look closer.</p>
+          <h2 id="light-study-title" data-study-title>A small atlas of <em>light.</em></h2>
+          <p class="study-intro">Three objects, one changing light. Take a moment to look closer.</p>
           <div class="study-choices" data-study-choices aria-label="Optical study" hidden>
             <button type="button" data-study-choice="lens" data-caption="One surface. A different view from every angle." data-number="PLATE 01"><span class="study-choice-index">01</span><span class="study-choice-name">Lens<small>CURVE / REFLECTION</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
             <button type="button" data-study-choice="layers" data-caption="A little distance becomes a little depth." data-number="PLATE 02"><span class="study-choice-index">02</span><span class="study-choice-name">Layers<small>OVERLAP / DIFFUSION</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
             <button type="button" data-study-choice="prism" data-caption="At the edge, a quiet separation of colour." data-number="PLATE 03"><span class="study-choice-index">03</span><span class="study-choice-name">Prism<small>EDGE / SPECTRUM</small></span><span class="study-choice-mark" aria-hidden="true">↗</span></button>
           </div>
           <div class="study-controls" data-study-controls hidden>
-            <label class="study-light-label"><span>MOVE THE LIGHT</span><output data-study-angle>−15°</output><input type="range" min="-45" max="45" value="-15" step="1" aria-label="Light angle" data-study-light></label>
+            <label class="study-light-label"><span>MOVE THE LIGHT</span><output data-study-angle data-format="{signed}°">−15°</output><input type="range" min="-45" max="45" value="-15" step="1" aria-label="Light angle" data-valuetext="{value} degrees" data-study-light></label>
             <div class="study-control-foot"><span aria-hidden="true">−45° <i></i> +45°</span><button type="button" data-study-reset>Reset <span aria-hidden="true">↺</span></button></div>
           </div>
         </div>

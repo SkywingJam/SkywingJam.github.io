@@ -38,26 +38,46 @@ instance?.dispose();
 | `data-study-title`、`data-study-caption`、`data-study-number` | 标题、当前说明与编号 |
 | `data-study-controls`、`data-study-light` | 控件容器、原生 range 输入 |
 | `data-study-angle`、`data-study-reset` | 角度输出、复位按钮 |
-| `data-study-hint` | 可选手势提示，初始化后显示拖动提示 |
+| `data-study-hint`、`data-study-hint-active` | 可选提示；无 JS 时显示原文，初始化后换成 `data-study-hint-active` 的文案（未提供则不变） |
+| `data-format`（在 `data-study-angle` 上） | 角度显示模板，默认 `{signed}°`；`{value}` 为纯数字，`{signed}` 带 −/+ |
+| `data-valuetext`（在 range 上） | 读屏文案模板，默认 `{value}°` |
+| `data-study-theme` | 可选 `light` / `dark` / `auto`：强制主题或跟随系统，使用区块自带色板 |
+| `data-study-motion="paused"` | 仅暂停本区块的自动悬浮 |
 
-无需修改 JS 即可替换文案、编号或展品 key。新展品默认只显示第一个，其他容器带 `hidden`；按钮与控件容器默认带 `hidden`，由 JS 成功初始化后显示。SVG 若有内部 ID，需要自行保证多实例时唯一。
+所有可见文案都在 HTML 中，JS 不含任何文案。标题和导语不要写 `<br>`，换行由 `text-wrap:balance/pretty` 处理。无需修改 JS 即可替换文案、编号或展品 key。新展品默认只显示第一个，其他容器带 `hidden`；按钮与控件容器默认带 `hidden`，由 JS 成功初始化后显示。SVG 若有内部 ID，需要自行保证多实例时唯一。
 
-当前角度范围固定为 −45° 至 +45°。改变 range 的范围时也需调整控制器的拖动限制与进度映射，不能只改 HTML 的 min/max。
+角度范围、初始值与复位值都取自 range 的 `min`、`max`、`value`。拖动灵敏度与光源位置会按范围自动换算；`−45° / +45°` 刻度文字是 HTML 文案，改范围时一并修改。
 
 ### 光照与主题变量
 
-控制器更新 `--study-key`（光源位置）、`--study-angle`（光照角度）、`--study-turn`（轻微物件转角）、`--study-progress`（滑杆进度）。新展品可在自身渐变、反射和变换中使用这些变量；替换为图片并不会自动获得真实光照响应。
+控制器更新 `--study-light`（光照方向，−1 为左、+1 为右）、`--study-key`（光源位置）、`--study-angle`（光照角度）、`--study-turn`（轻微物件转角）、`--study-progress`（滑杆进度）。新展品可在自身渐变、反射和变换中使用这些变量；阴影与高光偏移建议写成 `clamp(-a, calc(var(--study-light) * -3a), a)`，光线越过中线时自动翻面。`.study-object` 的直接子元素共享同一网格单元，附加图层（如 Prism 的色散光束）放在其中即可与物件同步悬浮与转动。替换为图片并不会自动获得真实光照响应。
 
 颜色优先继承宿主 `--bg`、`--ink`、`--muted`、`--line`、`--accent`，并有独立默认值。暗色由祖先 `.dark-mode` 控制。可按区块覆盖 `--study-bg`、`--study-glow`、`--study-edge`、`--study-shadow`、`--study-glass`、`--study-reflect`，注意暗色规则的优先级。
+
+### 宿主契约与尺寸
+
+| 宿主提供（均可选） | 缺省时 |
+| --- | --- |
+| `--bg` `--ink` `--muted` `--line` `--accent` | 区块自带亮色值 |
+| `--sans` `--serif` `--mono` | 系统字体栈 |
+| 祖先 `.dark-mode` 或 `[data-theme="dark"]` | 亮色；或用 `data-study-theme` |
+| `<html>` 上的 `.motion-paused` | 不暂停；或用 `data-study-motion` |
+
+布局按区块自身宽度切换（容器查询 `light-study`）：宽度 ≤990px 时收紧为双栏，≤680px 时上下堆叠；展示区宽度 ≤340px 时隐藏手势提示。展品尺寸使用展示区的 `cqw`，在侧栏或窄栏中同样成立。叠层板的尺寸与间距由 `.study-scene` 上的 `--plate-w`、`--plate-dx`、`--plate-dy`、`--plate-top` 控制。小号等宽标签统一由 `--study-label`（10px）与 `--study-label-sm`（9px）调节。外层上边距仍跟随视口，属于页面节奏。
 
 ## 交互与降级
 
 - 目录支持方向键、Home、End；滑杆保留原生键盘与屏幕阅读器语义。
-- 全局 `.motion-paused` 或系统减少动态效果偏好关闭自动悬浮与入场；主动切换展品、拖动和滑杆仍可用。
+- `.motion-paused`、`data-study-motion="paused"` 或系统减少动态效果偏好关闭自动悬浮与入场（状态写入 `data-still`）；主动切换展品、拖动和滑杆仍可用。
 - IntersectionObserver 与页面可见性控制自动悬浮，离屏或后台时停止；离屏、失焦、释放手势及 pagehide 清理拖动状态。
 - 无 JavaScript 时保留第一件静态展品与样例说明，隐藏不可用的选择和滑杆控件。
 
 ## 验证
+
+`check-light-study.cjs` 另含复用契约检查：480px 容器内堆叠且无溢出、叠层板不越出展示区、提示与角度文案取自 HTML、自定义 range（−10° 至 30°）的进度映射、强制暗色与单区块暂停、标题无 `<br>`。
+
+2026-10-03 复核（分支 `discovery-light-study-reuse`）：上述检查在云端 headless Chromium 通过，另在无 `lab.css` 的独立页面中以 1100/480/320px 容器人工查看。`check-lab.cjs` 在该环境因无 GPU（单帧约 250ms）卡在 “leftward lean” 断言，修改前后结果相同，需在本机复核。暗色 Layers 前板内出现的竖向硬边在软件渲染下可复现，去掉后两块板的背景模糊也未消除，待真机确认。
+
 
 可选脚本 `scripts/check-light-study.cjs`，使用现有 Playwright 安装，不增加生产依赖。运行前启动本地服务：
 
