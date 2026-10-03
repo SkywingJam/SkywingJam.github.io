@@ -17,6 +17,18 @@ function settle(value, velocity, target, dt) {
   const decay = Math.exp(-omega * dt);
   return [target + (offset + impulse) * decay, (velocity - omega * impulse) * decay];
 }
+// Liquid response: each layer sloshes on its own under-damped spring. Deeper layers are
+// heavier (lower ω) and a little more viscous (higher ζ), so they lag and settle later.
+// ζ ≈ .6 gives one soft overshoot (~8%) and no visible ringing.
+const sloshing = [{ omega: 4.6, zeta: .6 }, { omega: 3.85, zeta: .66 }, { omega: 3.2, zeta: .72 }];
+function slosh(value, velocity, target, omega, zeta, dt) {
+  const steps = Math.max(1, Math.ceil(dt * 240)), h = dt / steps;
+  for (let i = 0; i < steps; i++) {
+    velocity += (-omega * omega * (value - target) - 2 * zeta * omega * velocity) * h;
+    value += velocity * h;
+  }
+  return [value, velocity];
+}
 const palette = {
   sky: [[238, 233, 223], [8, 19, 38]],
   floor: [[183, 195, 198], [19, 40, 68]],
@@ -75,7 +87,8 @@ export function createAcrylicPainter(canvas) {
     ctx.imageSmoothingEnabled = softCtx.imageSmoothingEnabled = true;
   }
 
-  function paint(time = 0, night = 0, tilt = 0, spread = 0, lift = 0) {
+  // layers: optional per-layer { tilt, lift, stir } from the scene; posters omit it.
+  function paint(time = 0, night = 0, tilt = 0, spread = 0, lift = 0, layers = null) {
     // Build each palette prefix once per frame; hundreds of colour strings are made per paint.
     if (night !== prefixNight) {
       prefixNight = night;
@@ -124,19 +137,37 @@ export function createAcrylicPainter(canvas) {
       const index = count === 2 ? layer * 2 : layer;
       const base = height * (.36 + index * .17) + (index - 1) * spread * height * .018;
       const wave = waves[index];
-      const phase = wave.phase + time * wave.speed;
+      const own = layers?.[index];
+      const layerTilt = own ? own.tilt : tilt, layerLift = own ? own.lift : lift, stir = own ? own.stir : 0;
+      // A viscous liquid surface: components travel with dispersion (phase speed ∝ √k, so
+      // longer swells lead and shorter ripples drift), and short wavelengths are damped
+      // much harder (amplitude ∝ k^-2.5). A slow standing term adds the sloshing of a
+      // contained volume. Fixed phases survive resize and theme changes.
+      const k = wave.frequency * TAU, w = wave.speed;
+      const p0 = wave.phase + time * w;
+      const p1 = wave.phase * .7 + time * w * 1.272;   // √1.618
+      const p2 = wave.phase * 1.6 + time * w * 1.618;  // √2.618
+      const standing = .16 * Math.sin(time * wave.breath * .55 + index * 1.7);
+      // Stirring by the pointer briefly lifts the swell, then the liquid calms.
+      const a = amplitude * wave.amplitude * 1.12
+        * (1 + .045 * Math.sin(time * wave.breath + index * 2.1) + .08 * stir);
+      const lean = height * (.145 + index * .04);
       const points = [];
-      // Fixed phases survive resize and theme changes. Gentle harmonics follow the reference.
       const span = Math.max(width, 760);
       for (let x = -24; x <= width + 24; x += 6) {
-        const u = (x + tilt * (20 + index * 15)) / span;
-        const a = amplitude * wave.amplitude * (1 + .045 * Math.sin(time * wave.breath + index * 2.1));
-        let y = base + Math.cos(u * TAU * wave.frequency + phase) * a;
-        y += Math.sin(u * TAU * wave.frequency * 1.77 + wave.phase * .7 + time * wave.speed * .63) * a * .28;
-        y += Math.sin(u * TAU * wave.frequency * 3.33 + wave.phase * 1.6 - time * wave.speed * .41) * a * .055;
-        // Stronger, depth-dependent lean; independent profiles still cross freely.
-        y += (x / width - .5) * tilt * height * (.145 + index * .04);
-        y += lift * height * (.012 + index * .013);
+        const u = (x + layerTilt * (20 + index * 15)) / span;
+        let d = Math.cos(u * k + p0)
+          + .3 * Math.cos(u * k * 1.618 + p1)
+          + .045 * Math.cos(u * k * 2.618 + p2)
+          + standing * Math.cos(u * k * .5 + wave.phase * 1.3);
+        // Surface tension rounds the tallest crests and troughs instead of letting
+        // aligned components form a point.
+        d /= Math.sqrt(1 + d * d * .18);
+        let y = base + d * a;
+        // The lean follows the first sloshing mode of a tank (half sine), not a rigid
+        // ramp: the middle carries the motion, the edges stay rounded.
+        y += .5 * Math.sin(Math.PI * (x / width - .5)) * layerTilt * lean;
+        y += layerLift * height * (.012 + index * .013);
         points.push({ x, y });
       }
       const edge = new Path2D();
@@ -293,9 +324,10 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   const life = new AbortController();
   const listener = { signal: life.signal, passive: true };
   const canMove = () => !paused && visible && !document.hidden;
+  const layers = sloshing.map(spring => ({ ...spring, tilt: 0, tiltVelocity: 0, lift: 0, liftVelocity: 0, stir: 0 }));
   function draw() {
     const start = performance.now();
-    painter.paint(time, night, tilt, spread, lift);
+    painter.paint(time, night, tilt, spread, lift, layers);
     const cost = performance.now() - start;
     renderAverage = renderAverage ? mix(renderAverage, cost, .05) : cost;
     // Diagnostics are written a few times per second, not every frame, to avoid DOM churn.
@@ -311,6 +343,8 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   const settled = () => night === targetNight
     && Math.abs(tilt - targetTilt) < .002 && Math.abs(tiltVelocity) < .01
     && Math.abs(lift - targetLift) < .002 && Math.abs(liftVelocity) < .01
+    && layers.every(l => Math.abs(l.tilt - targetTilt) < .002 && Math.abs(l.tiltVelocity) < .01
+      && Math.abs(l.lift - targetLift) < .002 && Math.abs(l.liftVelocity) < .01 && l.stir < .01)
     && Math.abs(clamp(-stage.getBoundingClientRect().top / height, 0, 1) - spread) < .001;
   function resize() {
     if (disposed) return;
@@ -336,6 +370,12 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
       time += dt;
       [tilt, tiltVelocity] = settle(tilt, tiltVelocity, targetTilt, dt);
       [lift, liftVelocity] = settle(lift, liftVelocity, targetLift, dt);
+      const calm = 1 - Math.exp(-dt * 2.5);
+      for (const layer of layers) {
+        [layer.tilt, layer.tiltVelocity] = slosh(layer.tilt, layer.tiltVelocity, targetTilt, layer.omega, layer.zeta, dt);
+        [layer.lift, layer.liftVelocity] = slosh(layer.lift, layer.liftVelocity, targetLift, layer.omega, layer.zeta, dt);
+        layer.stir += (Math.min(1, Math.abs(layer.tiltVelocity) * .5 + Math.abs(layer.liftVelocity) * .3) - layer.stir) * calm;
+      }
       const scroll = clamp(-stage.getBoundingClientRect().top / height, 0, 1);
       spread += (scroll - spread) * blend;
     }
