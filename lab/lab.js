@@ -10,7 +10,7 @@ const colorScheme = matchMedia('(prefers-color-scheme: dark)');
 let scene = null, loading = false, loadGeneration = 0, userPaused = false, themeExplicit = false;
 try { themeExplicit = ['light', 'dark'].includes(localStorage.getItem('theme')); } catch {}
 
-function setTheme(dark, save = false) {
+function setTheme(dark, save = false, instant = false) {
   root.classList.toggle('dark-mode', dark);
   themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
   themeButton.setAttribute('aria-pressed', String(dark));
@@ -19,11 +19,41 @@ function setTheme(dark, save = false) {
     themeExplicit = true;
     try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch {}
   }
-  scene?.setTheme(dark);
+  scene?.setTheme(dark, instant);
 }
 themeButton.hidden = false;
 setTheme(root.classList.contains('dark-mode'));
-themeButton.addEventListener('click', () => setTheme(!root.classList.contains('dark-mode'), true));
+// The new theme opens as a circle from the toggle. Without View Transitions, or with reduced
+// motion, it falls back to the colour cross-fade.
+let themeReveal = 0;
+// Repeated clicks must not start a text selection around the toggle.
+themeButton.addEventListener('mousedown', event => { if (event.detail > 1) event.preventDefault(); });
+themeButton.addEventListener('click', () => {
+  // Read the requested state, not the DOM: during a reveal the class changes a frame later,
+  // and quick repeated clicks must each count.
+  const dark = themeButton.getAttribute('aria-pressed') !== 'true';
+  if (!document.startViewTransition || reducedMotion.matches || userPaused) { setTheme(dark, true); return; }
+  const box = themeButton.getBoundingClientRect();
+  const x = box.left + box.width / 2, y = box.top + box.height / 2;
+  root.style.setProperty('--reveal-x', `${x}px`);
+  root.style.setProperty('--reveal-y', `${y}px`);
+  root.style.setProperty('--reveal-r', `${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`);
+  root.classList.add('theme-switching');
+  // Announce the new state right away; the reveal is only the visual.
+  themeButton.setAttribute('aria-pressed', String(dark));
+  themeButton.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
+  // Hold the wave during the reveal: a live canvas inside the new snapshot would be re-captured
+  // every frame and is the main cost of the transition.
+  scene?.setPaused(true);
+  const token = ++themeReveal;
+  const transition = document.startViewTransition(() => setTheme(dark, true, true));
+  // A quick second click supersedes this reveal; only the latest one restores state.
+  transition.finished.finally(() => {
+    if (token !== themeReveal) return;
+    root.classList.remove('theme-switching');
+    scene?.setPaused(userPaused);
+  });
+});
 colorScheme.addEventListener('change', event => { if (!themeExplicit) setTheme(event.matches); });
 window.addEventListener('storage', event => {
   if (event.key !== 'theme') return;
@@ -82,34 +112,45 @@ reducedMotion.addEventListener('change', () => {
   } else enhanceWave();
 });
 
-// Only the selected file gets a small lift and a moving reflection. Keep text crisp.
-const surface = document.querySelector('.featured-file');
+// Surfaces ([data-surface]): only the card under the pointer gets a moving reflection
+// (and the featured file a small lift). Text stays crisp; nothing moves on its own.
+const surfaces = [...document.querySelectorAll('[data-surface]')];
 const finePointer = matchMedia('(hover: hover) and (pointer: fine)');
-let surfaceFrame = 0, surfaceX = 0, surfaceY = 0;
-function resetSurface() {
-  cancelAnimationFrame(surfaceFrame); surfaceFrame = 0;
-  surface.classList.remove('surface-active');
-  for (const name of ['--surface-x', '--surface-y']) surface.style.removeProperty(name);
+let surfaceFrame = 0, surfaceTarget = null, surfaceX = 0, surfaceY = 0;
+// The light fades out where the pointer left it: the position is kept, only the
+// opacity changes, so it never slides back to the centre on the way out.
+function resetSurface(target = null) {
+  if (!target || target === surfaceTarget) { cancelAnimationFrame(surfaceFrame); surfaceFrame = 0; }
+  for (const item of target ? [target] : surfaces) item.classList.remove('surface-active');
 }
-surface.addEventListener('pointermove', event => {
-  if (!finePointer.matches || reducedMotion.matches || userPaused || event.pointerType === 'touch') return;
-  const rect = surface.getBoundingClientRect();
-  surfaceX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-  surfaceY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-  if (surfaceFrame) return;
-  surfaceFrame = requestAnimationFrame(() => {
-    surfaceFrame = 0;
-    surface.classList.add('surface-active');
-    surface.style.setProperty('--surface-x', `${surfaceX * 100}%`);
-    surface.style.setProperty('--surface-y', `${surfaceY * 100}%`);
-  });
-}, { passive: true });
-surface.addEventListener('pointerleave', resetSurface);
-surface.addEventListener('pointercancel', resetSurface);
-window.addEventListener('blur', resetSurface);
-finePointer.addEventListener('change', resetSurface);
-reducedMotion.addEventListener('change', resetSurface);
+for (const item of surfaces) {
+  item.addEventListener('pointermove', event => {
+    if (!finePointer.matches || reducedMotion.matches || userPaused || event.pointerType === 'touch') return;
+    const rect = item.getBoundingClientRect();
+    surfaceTarget = item;
+    surfaceX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    surfaceY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    if (surfaceFrame) return;
+    surfaceFrame = requestAnimationFrame(() => {
+      surfaceFrame = 0;
+      surfaceTarget.classList.add('surface-active');
+      surfaceTarget.style.setProperty('--surface-x', `${surfaceX * 100}%`);
+      surfaceTarget.style.setProperty('--surface-y', `${surfaceY * 100}%`);
+    });
+  }, { passive: true });
+  item.addEventListener('pointerleave', () => resetSurface(item));
+  item.addEventListener('pointercancel', () => resetSurface(item));
+}
+window.addEventListener('blur', () => resetSurface());
+finePointer.addEventListener('change', () => resetSurface());
+reducedMotion.addEventListener('change', () => resetSurface());
 document.addEventListener('visibilitychange', () => { if (document.hidden) resetSurface(); });
+
+// Ambient experiment art only animates while it is on screen.
+const artObserver = new IntersectionObserver(entries => {
+  for (const entry of entries) entry.target.classList.toggle('in-view', entry.isIntersecting);
+}, { rootMargin: '80px 0px' });
+document.querySelectorAll('.experiment-art').forEach(art => artObserver.observe(art));
 
 const arrivals = document.querySelectorAll('[data-arrival]');
 const arrivalObserver = new IntersectionObserver(entries => {
@@ -121,10 +162,9 @@ const arrivalObserver = new IntersectionObserver(entries => {
 }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
 if (!reducedMotion.matches) {
   arrivals.forEach(element => {
-    if (element.closest('.interest-grid')) {
-      const index = [...element.parentElement.children].indexOf(element);
-      element.style.setProperty('--arrival-delay', `${index * 65}ms`);
-    }
+    // Siblings that arrive together are gently staggered.
+    const peers = [...element.parentElement.children].filter(item => item.hasAttribute('data-arrival'));
+    element.style.setProperty('--arrival-delay', `${Math.min(peers.indexOf(element), 4) * 80}ms`);
     const rect = element.getBoundingClientRect();
     if (rect.top < innerHeight && rect.bottom > 0) return;
     element.classList.add('arrival-pending');
@@ -138,6 +178,7 @@ reducedMotion.addEventListener('change', () => {
 });
 window.addEventListener('pagehide', () => {
   resetSurface();
+  artObserver.disconnect();
   loadGeneration++;
   scene?.dispose();
   scene = null;

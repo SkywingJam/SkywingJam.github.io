@@ -429,9 +429,10 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   try { resize(); } catch (error) { dispose(); throw error; }
   stage.classList.add('scene-ready');
   return {
-    setTheme(value) {
+    // instant: jump to the new palette (used under a view-transition reveal, which is itself the fade).
+    setTheme(value, instant = false) {
       targetNight = Number(value);
-      if (!visible || document.hidden) { night = targetNight; draw(); }
+      if (instant || !visible || document.hidden) { night = targetNight; draw(); }
       sync();
     },
     setPaused(value) { paused = value; sync(); },

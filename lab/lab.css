@@ -52,7 +52,10 @@
   --poster:url('./assets/wave-poster-light.webp');
   --serif:'Instrument Serif',Georgia,serif;
   --sans:'TikTok Sans',Arial,sans-serif;
-  --mono:ui-monospace,SFMono-Regular,Consolas,monospace
+  --mono:ui-monospace,SFMono-Regular,Consolas,monospace;
+  /* Motion vocabulary: one settle curve and one soft spring-like overshoot, used everywhere. */
+  --ease-settle:cubic-bezier(.16,1,.3,1);
+  --ease-soft:cubic-bezier(.34,1.36,.64,1)
 }
 
 :root.dark-mode {
@@ -229,6 +232,8 @@ a,button {
 }
 
 .icon-button {
+  -webkit-user-select:none;
+  user-select:none;
   display:grid;
   place-items:center;
   width:44px;
@@ -520,9 +525,10 @@ h1 em {
   display:flex;
   gap:9px;
   align-items:center;
-  padding:8px 12px;
+  padding:8px 16px;
   min-height:44px;
   border:1px solid var(--line);
+  border-radius:999px;
   font-family:var(--mono);
   font-size:10px
 }
@@ -910,13 +916,14 @@ h1 em {
 
 .arrival-pending {
   opacity:0;
-  transform:translateY(14px)
+  transform:translateY(22px)
 }
 
+/* Long, decelerating settle: content arrives like something set down, not slid in. */
 .arrival-visible {
   opacity:1;
   transform:none;
-  transition:opacity .65s,transform .7s cubic-bezier(.2,.75,.25,1);
+  transition:opacity .9s cubic-bezier(.33,1,.68,1),transform 1.1s var(--ease-settle);
   transition-delay:var(--arrival-delay,0ms)
 }
 
@@ -1164,7 +1171,7 @@ a.interest:after {
   }
   .featured-file {
     max-width:none;
-    padding:18px 0
+    padding:18px 16px 16px
   }
   .file-title h2 {
     font-size:27px
@@ -1388,3 +1395,138 @@ a.interest:after {
     gap:10px
   }
 }
+
+/* ------------------------------------------------------------------
+   Motion polish. Everything here is decorative: reduced motion and the
+   page-level pause (.motion-paused) switch it off, and no-JS renders at rest.
+   ------------------------------------------------------------------ */
+
+/* Opening: the headline rises line by line, then the quieter parts follow. */
+@keyframes rise-in {
+  from {opacity:0;transform:translateY(.42em)}
+  to {opacity:1;transform:none}
+}
+@keyframes fade-in {
+  from {opacity:0}
+  to {opacity:1}
+}
+.intro h1 .line {
+  display:inline-block;
+  animation:rise-in 1.1s var(--ease-settle) both;
+  animation-delay:.12s
+}
+.intro h1 em.line {animation-delay:.24s}
+.intro .hero-copy>.eyebrow,.intro .hero-aside,.intro .hero-bottom>*,.intro .hero-foot {
+  animation:fade-in 1s cubic-bezier(.33,1,.68,1) both
+}
+.intro .hero-copy>.eyebrow {animation-delay:.05s}
+.intro .hero-aside {animation-delay:.45s}
+.intro .specimen-caption {animation-delay:.6s}
+.intro .featured-file {animation-delay:.7s}
+.intro .hero-foot {animation-delay:.85s}
+
+/* Scroll: the hero copy drifts up and lets go as the page moves on (compositor-only). */
+@supports (animation-timeline:scroll()) {
+  @keyframes hero-drift {
+    to {transform:translateY(-56px);opacity:.15}
+  }
+  /* The lower band only moves: fading it would make it a backdrop root and empty the card's frost. */
+  @keyframes hero-drift-soft {
+    to {transform:translateY(-28px)}
+  }
+  .hero-top {
+    animation:hero-drift linear both;
+    animation-timeline:scroll(root);
+    animation-range:0 90vh
+  }
+  .hero-bottom {
+    animation:hero-drift-soft linear both;
+    animation-timeline:scroll(root);
+    animation-range:10vh 100vh
+  }
+}
+
+/* Experiments breathe while they are on screen. */
+@keyframes contour-drift {
+  from {translate:0 -3px}
+  to {translate:0 4px}
+}
+.contour-art path {
+  animation:contour-drift 9s ease-in-out infinite alternate both;
+  /* Negative, staggered delays send a slow ripple down the stack of lines. */
+  animation-delay:calc(var(--i,0) * -.42s);
+  animation-play-state:paused
+}
+.liquid-art {
+  background-image:none
+}
+.liquid-art:before {
+  content:'';
+  position:absolute;
+  inset:-3%;
+  background:var(--poster) center 62% / cover;
+  animation:poster-drift 18s ease-in-out infinite alternate both;
+  animation-play-state:paused;
+  transition:scale 1.4s var(--ease-settle)
+}
+@keyframes poster-drift {
+  from {translate:-1.2% 0}
+  to {translate:1.2% -.8%}
+}
+.experiment-art.in-view path,.experiment-art.in-view:before {animation-play-state:running}
+:root.motion-paused .contour-art path,:root.motion-paused .liquid-art:before {animation-play-state:paused}
+
+/* A gentle nod on the scroll cue, only while nothing else is asking for attention. */
+@keyframes cue-nod {
+  0%,60%,100% {translate:0 0}
+  30% {translate:0 4px}
+}
+:root:not(.motion-paused) .scroll-cue>span:last-child {animation:cue-nod 2.8s ease-in-out 2.4s infinite}
+
+/* Surfaces: a soft light follows the pointer across cards (fine pointers only). */
+.interest[data-surface] {isolation:isolate}
+.interest[data-surface]:before {
+  content:'';
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  opacity:0;
+  background:radial-gradient(300px circle at var(--surface-x,50%) var(--surface-y,40%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%);
+  /* Feather all four sides so the light never shows the card's rectangle. */
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(transparent,#000 14%,#000 86%,transparent);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(transparent,#000 14%,#000 86%,transparent);
+  mask-composite:intersect;
+  transition:opacity .6s
+}
+.interest.surface-active:before {opacity:1}
+
+@media(hover:hover) and (pointer:fine) {
+  :root:not(.motion-paused) .experiment:hover .liquid-art:before {scale:1.035}
+  .motion-toggle:hover {background:color-mix(in srgb,var(--accent) 7%,transparent)}
+  .icon-button {transition:border-color .2s,transform .5s var(--ease-soft)}
+  :root:not(.motion-paused) .icon-button:hover {transform:rotate(-12deg) scale(1.04)}
+}
+
+/* Theme change: the new palette opens from the toggle like light spreading through acrylic. */
+::view-transition-old(root),::view-transition-new(root) {animation:none;mix-blend-mode:normal}
+::view-transition-new(root) {animation:theme-reveal .7s var(--ease-settle);will-change:clip-path}
+@keyframes theme-reveal {
+  from {clip-path:circle(0 at var(--reveal-x,100%) var(--reveal-y,0))}
+  to {clip-path:circle(var(--reveal-r,150vmax) at var(--reveal-x,100%) var(--reveal-y,0))}
+}
+:root.theme-switching,:root.theme-switching * {transition:none!important}
+/* Let clicks pass through the reveal to the page (the toggle stays usable), and never
+   start a text selection while the snapshot is on top. */
+::view-transition {pointer-events:none}
+:root.theme-switching {-webkit-user-select:none;user-select:none}
+
+@media(prefers-reduced-motion:reduce) {
+  .hero-top,.hero-bottom,.contour-art path,.liquid-art:before,.scroll-cue>span:last-child {animation:none!important}
+  ::view-transition-new(root) {animation:none}
+}
+
+/* Arrow icons are inline SVG, not Unicode: ↗ ↘ ↔ carry an emoji variant and iOS can
+   substitute the colour emoji when the text font lacks the glyph. Sized and coloured like text. */
+.i-arrow {display:inline-block;width:.86em;height:.86em;vertical-align:-.08em;flex-shrink:0;overflow:visible;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}

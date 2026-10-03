@@ -68,7 +68,9 @@ export function createLightStudy(root) {
     plate.textContent = choice.dataset.number || '';
     if (animate && visible && !still() && !document.hidden) {
       const art = arts.find(item => !item.hidden);
-      animation = art.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 480, easing: 'cubic-bezier(.2,.7,.2,1)' });
+      animation = art.animate([{ opacity: 0, transform: 'translateY(6px) scale(.985)' }, { opacity: 1, transform: 'none' }], { duration: 620, easing: 'cubic-bezier(.16,1,.3,1)' });
+      // Caption and plate number settle in with the object rather than snapping.
+      for (const text of [caption, plate]) text.animate([{ opacity: 0, transform: 'translateY(3px)' }, { opacity: 1, transform: 'none' }], { duration: 520, delay: 60, easing: 'cubic-bezier(.33,1,.68,1)', fill: 'backwards' });
     }
   }
   function light() {
