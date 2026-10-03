@@ -49,6 +49,16 @@ export function createAcrylicPainter(canvas) {
   const texture = ctx.createPattern(grain, 'repeat');
   const hasFilter = 'filter' in ctx;
   let width = 1, height = 1, dpr = 1, quality = 0;
+  const prefixes = {};
+  let prefixNight = NaN;
+  // Blurred transmission is computed at buffer resolution, then scaled up: the soft buffer is
+  // already low-frequency, so blurring before upscaling matches the old full-resolution blur.
+  const blurred = document.createElement('canvas');
+  const blurCtx = blurred.getContext('2d');
+  // Backdrop (sky, sun, window light) depends only on size, theme and pointer, never on time.
+  const backdrop = document.createElement('canvas');
+  const backdropCtx = backdrop.getContext('2d', { alpha: false });
+  let backdropKey = '', pendingKey = '';
 
   function resize(w, h, ratio = 1, level = 0) {
     width = Math.max(1, w); height = Math.max(1, h); dpr = ratio; quality = level;
@@ -58,36 +68,53 @@ export function createAcrylicPainter(canvas) {
     // stair-steps in the reflected edges on large displays.
     soft.width = Math.max(1, Math.ceil(width / (quality ? 4 : 2)));
     soft.height = Math.max(1, Math.ceil(height / (quality ? 4 : 2)));
+    if (blurCtx) { blurred.width = soft.width; blurred.height = soft.height; }
+    if (backdropCtx) { backdrop.width = canvas.width; backdrop.height = canvas.height; backdropCtx.setTransform(dpr, 0, 0, dpr, 0, 0); }
+    backdropKey = pendingKey = '';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = softCtx.imageSmoothingEnabled = true;
   }
 
   function paint(time = 0, night = 0, tilt = 0, spread = 0, lift = 0) {
-    const color = (name, alpha = 1) => {
-      const [day, moon] = palette[name];
-      return `rgba(${day.map((v, i) => Math.round(mix(v, moon[i], night))).join(',')},${alpha})`;
-    };
+    // Build each palette prefix once per frame; hundreds of colour strings are made per paint.
+    if (night !== prefixNight) {
+      prefixNight = night;
+      for (const name in palette) {
+        const [day, moon] = palette[name];
+        prefixes[name] = `rgba(${day.map((v, i) => Math.round(mix(v, moon[i], night))).join(',')},`;
+      }
+    }
+    const color = (name, alpha = 1) => `${prefixes[name]}${alpha})`;
     const lightX = .23 + tilt * .065;
     const lightY = .12 + lift * .035;
-    const bg = ctx.createLinearGradient(0, 0, width * .2, height);
-    bg.addColorStop(0, color('sky')); bg.addColorStop(1, color('floor'));
-    ctx.fillStyle = bg; ctx.fillRect(0, 0, width, height);
-    const sun = ctx.createRadialGradient(width * lightX, height * lightY, 0, width * lightX, height * lightY, width * .65);
-    sun.addColorStop(0, color('light', mix(.72, .17, night)));
-    sun.addColorStop(.4, color('light', mix(.22, .07, night)));
-    sun.addColorStop(1, color('light', 0));
-    ctx.fillStyle = sun; ctx.fillRect(0, 0, width, height);
+    function paintBackdrop(c, lightX, lightY) {
+      const bg = c.createLinearGradient(0, 0, width * .2, height);
+      bg.addColorStop(0, color('sky')); bg.addColorStop(1, color('floor'));
+      c.fillStyle = bg; c.fillRect(0, 0, width, height);
+      const sun = c.createRadialGradient(width * lightX, height * lightY, 0, width * lightX, height * lightY, width * .65);
+      sun.addColorStop(0, color('light', mix(.72, .17, night)));
+      sun.addColorStop(.4, color('light', mix(.22, .07, night)));
+      sun.addColorStop(1, color('light', 0));
+      c.fillStyle = sun; c.fillRect(0, 0, width, height);
 
-    // Distant, broad illumination gives the frosted layers something to transmit.
-    ctx.save();
-    ctx.translate(width * (.28 + tilt * .045), 0); ctx.rotate(-.22);
-    const windowLight = ctx.createLinearGradient(-width * .25, 0, width * .25, 0);
-    windowLight.addColorStop(0, color('rim', 0));
-    windowLight.addColorStop(.43, color('rim', mix(.16, .07, night)));
-    windowLight.addColorStop(.52, color('rim', mix(.3, .11, night)));
-    windowLight.addColorStop(1, color('rim', 0));
-    ctx.fillStyle = windowLight; ctx.fillRect(-width * .25, -height, width * .5, height * 3);
-    ctx.restore();
+      // Distant, broad illumination gives the frosted layers something to transmit.
+      c.save();
+      c.translate(width * (.28 + tilt * .045), 0); c.rotate(-.22);
+      const windowLight = c.createLinearGradient(-width * .25, 0, width * .25, 0);
+      windowLight.addColorStop(0, color('rim', 0));
+      windowLight.addColorStop(.43, color('rim', mix(.16, .07, night)));
+      windowLight.addColorStop(.52, color('rim', mix(.3, .11, night)));
+      windowLight.addColorStop(1, color('rim', 0));
+      c.fillStyle = windowLight; c.fillRect(-width * .25, -height, width * .5, height * 3);
+      c.restore();
+    }
+    // Quantised key: 0.001 of tilt/lift moves the light by well under a device pixel.
+    const key = `${night.toFixed(4)}|${tilt.toFixed(3)}|${lift.toFixed(3)}`;
+    // Cache only once the key holds for two frames; while the pointer moves, paint directly.
+    if (backdropCtx && (key === backdropKey || key === pendingKey)) {
+      if (key !== backdropKey) { backdropKey = key; paintBackdrop(backdropCtx, lightX, lightY); }
+      ctx.drawImage(backdrop, 0, 0, width, height);
+    } else { pendingKey = key; paintBackdrop(ctx, lightX, lightY); }
 
     const amplitude = Math.min(height * .092, width * .115);
     const count = quality >= 2 ? 2 : 3;
@@ -123,19 +150,40 @@ export function createAcrylicPainter(canvas) {
       body.lineTo(width + 24, height + 24); body.lineTo(-24, height + 24); body.closePath();
 
       // Shadow falls down/right onto the already painted layer, away from the light.
-      ctx.save();
-      ctx.clip(body);
-      ctx.translate(3 + tilt * 3, 15 + index * 3 + lift * 2);
-      ctx.lineWidth = 8 + index * 3;
-      ctx.strokeStyle = color('shade', mix(.32, .22, night));
-      ctx.shadowColor = color('shade', mix(.58, .5, night)); ctx.shadowBlur = 22 * dpr;
-      ctx.stroke(edge);
-      ctx.restore();
+      if (blurCtx) {
+        // The cast shadow is a 22px blur; rendering it at buffer resolution is indistinguishable.
+        const sx = blurred.width / width, sy = blurred.height / height;
+        blurCtx.setTransform(1, 0, 0, 1, 0, 0); blurCtx.clearRect(0, 0, blurred.width, blurred.height);
+        blurCtx.setTransform(sx, 0, 0, sy, (3 + tilt * 3) * sx, (15 + index * 3 + lift * 2) * sy);
+        blurCtx.lineWidth = 8 + index * 3;
+        blurCtx.strokeStyle = color('shade', mix(.32, .22, night));
+        blurCtx.shadowColor = color('shade', mix(.58, .5, night)); blurCtx.shadowBlur = 22 * sx;
+        blurCtx.stroke(edge);
+        blurCtx.shadowBlur = 0; blurCtx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.save(); ctx.clip(body); ctx.drawImage(blurred, 0, 0, width, height); ctx.restore();
+      } else {
+        ctx.save();
+        ctx.clip(body);
+        ctx.translate(3 + tilt * 3, 15 + index * 3 + lift * 2);
+        ctx.lineWidth = 8 + index * 3;
+        ctx.strokeStyle = color('shade', mix(.32, .22, night));
+        ctx.shadowColor = color('shade', mix(.58, .5, night)); ctx.shadowBlur = 22 * dpr;
+        ctx.stroke(edge);
+        ctx.restore();
+      }
 
       softCtx.drawImage(canvas, 0, 0, soft.width, soft.height);
       ctx.save(); ctx.clip(body);
       // Blur the transmitted image only. The surface and rim below stay sharp.
-      if (hasFilter) {
+      if (hasFilter && blurCtx) {
+        // Same radius as before (5–8 CSS px), converted into buffer pixels.
+        blurCtx.clearRect(0, 0, blurred.width, blurred.height);
+        blurCtx.filter = `blur(${(5 + index * 1.5) * soft.width / (width + 20)}px)`;
+        blurCtx.drawImage(soft, 0, 0);
+        blurCtx.filter = 'none';
+        ctx.globalAlpha = .82;
+        ctx.drawImage(blurred, -8 - index * 2, -4 + index * 2, width + 20, height + 16);
+      } else if (hasFilter) {
         ctx.filter = `blur(${(5 + index * 1.5) * dpr}px)`;
         ctx.globalAlpha = .82;
         ctx.drawImage(soft, -8 - index * 2, -4 + index * 2, width + 20, height + 16);
@@ -157,8 +205,10 @@ export function createAcrylicPainter(canvas) {
       // A translucent, curved bevel: broad specular reflection, then a shaded inner face.
       // Shading strength follows the local slope instead of a uniform neon outline.
       const depth = Math.min(height * .19, 140) * (1 + index * .12);
-      for (let j = 0; j < points.length - 1; j++) {
-        const p = points[j], q = points[j + 1];
+      // Bevel shading per 12px span (was 6px): the slope varies slowly, so the result is unchanged
+      // to the eye while the number of gradient fills is halved.
+      for (let j = 0; j < points.length - 1; j += 2) {
+        const p = points[j], q = points[Math.min(j + 2, points.length - 1)];
         const slope = (q.y - p.y) / (q.x - p.x);
         // Daylight has less ambient fill and a stronger key light from the upper left.
         // Keep the moonlight endpoint unchanged while interpolating between themes.
@@ -224,7 +274,7 @@ export function createAcrylicPainter(canvas) {
       ctx.stroke(edge); ctx.restore();
     }
   }
-  return { resize, paint, dispose() { soft.width = soft.height = grain.width = grain.height = 1; } };
+  return { resize, paint, dispose() { soft.width = soft.height = grain.width = grain.height = blurred.width = blurred.height = backdrop.width = backdrop.height = 1; } };
 }
 
 export function createWaveScene(canvas, stage, { dark = false, paused = false, onFallback } = {}) {
@@ -233,7 +283,11 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   let frame = 0, last = 0, time = 0, night = Number(dark), targetNight = night;
   let tilt = 0, targetTilt = 0, tiltVelocity = 0, lift = 0, targetLift = 0, liftVelocity = 0;
   let spread = 0, quality = 0, slowFrames = 0;
-  let mobile = false, width = 0, height = 0, renderAverage = 0;
+  let mobile = false, width = 0, height = 0, renderAverage = 0, reported = 0;
+  // Ambient drift moves well under half a pixel per frame at 30fps, so it is drawn at 30fps.
+  // Pointer response, theme fades and scroll easing run at up to 60fps; 120Hz displays
+  // (ProMotion) would otherwise repaint the whole canvas twice as often for no visible gain.
+  const AMBIENT_FRAME = 1 / 30, ACTIVE_FRAME = 1 / 60;
   const pointer = matchMedia('(hover: hover) and (pointer: fine)');
   const hero = stage.closest('.hero') || stage;
   const life = new AbortController();
@@ -244,11 +298,20 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     painter.paint(time, night, tilt, spread, lift);
     const cost = performance.now() - start;
     renderAverage = renderAverage ? mix(renderAverage, cost, .05) : cost;
+    // Diagnostics are written a few times per second, not every frame, to avoid DOM churn.
+    if (start - reported > 250) report(start);
+  }
+  function report(now = performance.now()) {
+    reported = now;
     stage.dataset.renderMs = renderAverage.toFixed(1);
     stage.dataset.phase = time.toFixed(3);
     stage.dataset.tilt = tilt.toFixed(3);
     stage.dataset.lift = lift.toFixed(3);
   }
+  const settled = () => night === targetNight
+    && Math.abs(tilt - targetTilt) < .002 && Math.abs(tiltVelocity) < .01
+    && Math.abs(lift - targetLift) < .002 && Math.abs(liftVelocity) < .01
+    && Math.abs(clamp(-stage.getBoundingClientRect().top / height, 0, 1) - spread) < .001;
   function resize() {
     if (disposed) return;
     const rect = stage.getBoundingClientRect();
@@ -265,7 +328,8 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     frame = 0;
     if (disposed || document.hidden || !visible) { last = 0; return; }
     const elapsed = last ? (now - last) / 1000 : 1 / 60;
-    if (mobile && last && elapsed < 1 / 30 - .002) { frame = requestAnimationFrame(tick); return; }
+    const minFrame = mobile || settled() ? AMBIENT_FRAME : ACTIVE_FRAME;
+    if (last && elapsed < minFrame - .002) { frame = requestAnimationFrame(tick); return; }
     const dt = Math.min(elapsed, .05); last = now;
     const blend = 1 - Math.exp(-dt * 5);
     if (canMove()) {
@@ -293,6 +357,7 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   function sync() {
     cancelAnimationFrame(frame); frame = 0; last = 0;
     if (disposed) return;
+    report();
     stage.dataset.state = !visible || document.hidden ? 'idle' : paused ? 'paused' : 'running';
     if (visible && !document.hidden && (canMove() || night !== targetNight)) frame = requestAnimationFrame(tick);
   }
