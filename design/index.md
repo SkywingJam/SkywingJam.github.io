@@ -17,7 +17,7 @@ The page is a quiet gallery, not a product landing page. A visitor walks through
 The wave is the shared element that makes `index` and `lab` feel like one place.
 
 - On **index** it is a quiet contour field (`ambient-field.js`): fine lines in a single hue that breathe slowly, lean slightly toward the pointer, and slow down as the visitor leaves the hero.
-- On **lab** it is the same idea taken further: layered, light-aware waves behind frosted acrylic (`lab/wave-scene.js`).
+- On **lab** it is the same idea taken further: layered, light-aware waves behind frosted acrylic (`lab/wave-scene.js`). See [lab.md](lab.md) for the lab side of the guidance.
 - Both share the same character: **slow, fluid, low-contrast, never in competition with text.** The wave is something you notice after a moment, not something that announces itself.
 
 Rules for the wave:
