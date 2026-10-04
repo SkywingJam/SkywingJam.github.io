@@ -3,7 +3,7 @@ window.createAmbientField = function (canvas) {
     const ctx = canvas.getContext('2d');
     const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     const pointer = { x: 0, y: 0 }, current = { x: 0, y: 0 };
-    let width = 0, height = 0, time = 0, previous = null, frame;
+    let width = 0, height = 0, time = 0, speed = 1, previous = null, frame;
 
     let themeMix = document.documentElement.classList.contains('dark-mode') ? 1 : 0;
     let themeTarget = themeMix, themeOrigin = themeMix, themeStarted = 0;
@@ -21,7 +21,11 @@ window.createAmbientField = function (canvas) {
     function draw(timestamp = performance.now(), advance = true) {
         const delta = previous === null ? 0 : Math.min((timestamp - previous) / 1000, 0.05);
         previous = timestamp;
-        if (advance && !reducedMotion.matches) time += delta * (scrollY > height * 0.5 ? 0.45 : 1);
+        if (advance && !reducedMotion.matches) {
+            // Drift slows as the visitor leaves the hero, easing rather than switching.
+            speed += ((scrollY > height * 0.5 ? 0.45 : 1) - speed) * (1 - Math.exp(-delta * 3));
+            time += delta * speed;
+        }
         const target = document.documentElement.classList.contains('dark-mode') ? 1 : 0;
         if (target !== themeTarget) {
             themeOrigin = themeMix;

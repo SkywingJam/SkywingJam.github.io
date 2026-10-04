@@ -43,6 +43,10 @@ html.theme-ready { transition:--bg-color .45s ease-in-out,--text-main .45s ease-
     --nav-bg:rgba(241,240,235,.96);
     --glass-border:var(--line);
     --tag-bg:rgba(40,90,102,.045);
+    --shadow:0 10px 32px rgba(25,51,61,.09);
+    --ease:cubic-bezier(.2,.65,.3,1);
+    --t-fast:.25s;
+    --t-slow:.9s;
 }
 html.dark-mode {
     --bg-color:#101d28;
@@ -53,6 +57,7 @@ html.dark-mode {
     --line:rgba(153,190,209,.18);
     --nav-bg:rgba(16,29,40,.96);
     --tag-bg:rgba(131,186,206,.05);
+    --shadow:0 10px 32px rgba(0,0,0,.34);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 html { scroll-behavior:smooth; scroll-padding-top:110px; }
@@ -87,7 +92,7 @@ a:focus-visible,button:focus-visible { outline:2px solid var(--accent-color); ou
 .hero-role { max-width:460px; font-size:1.12rem; font-weight:450; line-height:1.55; margin-bottom:20px; }
 .hero-intro { max-width:410px; font-size:.87rem; color:var(--text-secondary); line-height:1.85; }
 .hero-actions { display:flex; align-items:center; gap:30px; margin-top:34px; flex-wrap:wrap; }
-.cta-btn { display:inline-flex; align-items:center; justify-content:center; gap:28px; padding:14px 21px; border:1px solid var(--accent-color); background:var(--accent-color); color:var(--bg-color); border-radius:3px; text-decoration:none; font-weight:550; font-size:.82rem; transition:transform .2s; }
+.cta-btn { display:inline-flex; align-items:center; justify-content:center; gap:28px; padding:14px 21px; border:1px solid var(--accent-color); background:var(--accent-color); color:var(--bg-color); border-radius:3px; text-decoration:none; font-weight:550; font-size:.82rem; }
 .cta-btn:hover { transform:translateY(-2px); }
 .text-link { display:inline-flex; align-items:center; gap:10px; text-decoration:none; font-size:.8rem; color:var(--text-secondary); }
 .text-link:hover { color:var(--accent-color); }
@@ -227,20 +232,13 @@ section { padding:85px 0; }
     .footer-inner>span { display:none; }
 }
 /* Motion uses short arrivals and slow ambient cycles, with no layout shifts. */
-.hero-copy { animation:soft-arrival 1.05s cubic-bezier(.2,.65,.3,1) both; }
-.hero-portrait { animation:soft-arrival 1.2s cubic-bezier(.2,.65,.3,1) both; }
 @keyframes soft-arrival {
     from { opacity:0; transform:translateY(28px); }
     to { opacity:1; transform:translateY(0); }
 }
-.project-card,.badge-card,.featured-project { transition:border-color .3s,box-shadow .3s; }
-.project-card:hover,.featured-project:hover { border-color:var(--accent-color); box-shadow:0 8px 30px rgba(0,0,0,.06); }
-.cta-btn,.action-btn { transition:transform .25s,border-color .25s,background-color .25s; }
+.cta-btn,.action-btn { transition:transform var(--t-fast) var(--ease),border-color var(--t-fast),color var(--t-fast),background-color var(--t-fast); }
 .cta-btn:active,.action-btn:active { transform:translateY(1px); }
-.cta-btn>span { transition:transform .25s; }
-.cta-btn:hover>span { transform:translate(2px,-2px); }
-.text-link { transition:color .25s; }
-.theme-toggle { transition:color .25s,border-color .25s; }
+.theme-toggle { transition:color var(--t-fast),border-color var(--t-fast),transform var(--t-fast) var(--ease); }
 .theme-toggle:hover { border-color:var(--accent-color); }
 .system-node:after {
     content:''; position:absolute; right:14px; bottom:14px;
@@ -272,7 +270,7 @@ section { padding:85px 0; }
 .arrival-pending { opacity:0; transform:translate3d(0,32px,0); }
 .arrival-pending.arrival-visible {
     opacity:1; transform:translate3d(0,0,0);
-    transition:opacity .85s ease,transform 1s cubic-bezier(.2,.65,.3,1),border-color .3s,box-shadow .3s;
+    transition:opacity var(--t-slow) var(--ease) var(--d,0s),transform 1.1s var(--ease) var(--d,0s),border-color .3s,box-shadow .3s,translate .3s var(--ease);
 }
 @media (max-width:760px) {
     .hero-copy { order:-1; }
@@ -337,11 +335,71 @@ section { padding:85px 0; }
     .system-node:after { right:7px; bottom:7px; }
 }
 
+/* Refinement layer: one easing curve, one hover language, one arrival sequence. */
+.nav-link { position:relative; transition:color var(--t-fast); }
+.nav-link.is-active { box-shadow:none; }
+.nav-link:after { content:''; position:absolute; left:14px; right:14px; bottom:3px; height:1px; background:var(--accent-color); transform:scaleX(0); transform-origin:left; transition:transform .45s var(--ease); }
+.nav-link.is-active:after { transform:scaleX(1); }
+.nav-link:not(.is-active):hover:after { transform:scaleX(.4); }
+.logo { transition:opacity var(--t-fast); }
+.logo:hover { opacity:.7; }
+.icon-swap { animation:icon-swap .5s var(--ease); }
+@keyframes icon-swap { from { opacity:0; transform:rotate(-70deg) scale(.6); } to { opacity:1; transform:none; } }
+
+/* Hero: copy arrives line by line, the portrait follows like a framed piece being hung. */
+.hero-copy>* { animation:soft-arrival 1s var(--ease) both; animation-delay:calc(var(--i,0) * 90ms + 60ms); }
+.hero-copy>:nth-child(2) { --i:1; }
+.hero-copy>:nth-child(3) { --i:2; }
+.hero-copy>:nth-child(4) { --i:3; }
+.hero-copy>:nth-child(5) { --i:4; }
+.hero-portrait { animation:soft-arrival 1.2s var(--ease) .25s both; }
+.hero-portrait:before { transform-origin:top left; animation:corner-in 1s var(--ease) .7s both; }
+@keyframes corner-in { from { opacity:0; transform:scale(.4); } to { opacity:1; transform:none; } }
+.portrait-frame img { transition:filter .8s var(--ease); }
+.portrait-frame:hover img { filter:saturate(.95); }
+
+/* Section rules draw in from the left as their section arrives. */
+.section-heading,.about-layout,.background-layout { position:relative; border-top:0; }
+.section-heading:before,.about-layout:before,.background-layout:before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--line); transform-origin:left; }
+.arrival-pending:not(.arrival-visible):before { transform:scaleX(0); }
+.arrival-visible:before { transition:transform 1.3s var(--ease); }
+.section-heading.arrival-pending { transform:translate3d(0,14px,0); }
+
+/* Cards, badges and capabilities share one hover: border, soft shadow, slight lift. */
+.project-card,.badge-card,.featured-project { transition:border-color .3s,box-shadow .4s var(--ease),translate .4s var(--ease); }
+.project-card:hover,.featured-project:hover,.badge-card:hover { border-color:var(--accent-color); box-shadow:var(--shadow); }
+.capability { transition:background-color .4s var(--ease); }
+.capability:hover { background:var(--tag-bg); }
+.tech-tag,.capsule { transition:color var(--t-fast),border-color var(--t-fast); }
+.project-card:hover .tech-tag,.project-card:hover .capsule,.capability:hover .capsule,.featured-project:hover .tech-tag { border-color:var(--accent-color); }
+.badge-card img { transition:transform .5s var(--ease); }
+.badge-card:hover img { transform:scale(1.05); }
+.badge-title { transition:color var(--t-fast); }
+.badge-card:hover .badge-title { color:var(--accent-color); }
+@media (prefers-reduced-motion:no-preference) {
+    .project-card:hover,.badge-card:hover { translate:0 -3px; }
+}
+
+/* Links and arrows: a small nudge in the direction the arrow points. */
+.text-link,.social-links a,.footer a,.contact-email { transition:color var(--t-fast); }
+.cta-btn>span,.text-link>span,.social-links a>span,.to-top>span { display:inline-flex; transition:transform var(--t-fast) var(--ease); }
+.cta-btn:hover>span,.text-link:hover>span,.social-links a:hover>span { transform:translate(2px,-2px); }
+.text-link:hover>.nudge-r { transform:translateX(3px); }
+.to-top:hover>span { transform:translateY(-2px); }
+.social-links a { display:inline-flex; align-items:center; gap:7px; }
+.contact-email:hover,.footer a:hover { color:var(--accent-color); }
+.contact-wave { transition:transform 1.6s var(--ease); }
+.contact-panel:hover .contact-wave { transform:rotate(-28deg) translate(-8px,6px); }
+
+/* Mobile navigation opens with the same arrival easing. */
+.nav-links.is-open { animation:menu-in .35s var(--ease); }
+@keyframes menu-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
+
 @media (prefers-reduced-motion:reduce) {
     html { scroll-behavior:auto; transition:none!important; }
     .arrival-pending { opacity:1; transform:none; }
     *,*:before,*:after { transition:none!important; animation:none!important; }
-    .cta-btn:hover,.cta-btn:hover>span,.cta-btn:active,.action-btn:active { transform:none; }
+    .cta-btn:hover,.cta-btn:hover>span,.cta-btn:active,.action-btn:active,.text-link:hover>span,.social-links a:hover>span,.to-top:hover>span,.badge-card:hover img,.contact-panel:hover .contact-wave { transform:none; }
 }
     /* Arrow icons are inline SVG, not Unicode: ↗ ↘ ↔ carry an emoji variant and iOS can
    substitute the colour emoji when the text font lacks the glyph. Sized and coloured like text. */
@@ -391,7 +449,7 @@ section { padding:85px 0; }
                 <h1>Haochen<br><span>Zhou.</span></h1>
                 <p class="hero-role">Engineering secure systems,<br>from first idea to final delivery.</p>
                 <p class="hero-intro">I build web systems and lead projects from design to delivery, connecting software engineering with a background in cybersecurity.</p>
-                <div class="hero-actions"><a href="#projects" class="cta-btn">Explore my work <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="#contact" class="text-link">Get in touch <span aria-hidden="true">→</span></a></div>
+                <div class="hero-actions"><a href="#projects" class="cta-btn">Explore my work <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="#contact" class="text-link">Get in touch <span class="nudge-r" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span></a></div>
             </div>
 
         </div>
@@ -450,16 +508,16 @@ section { padding:85px 0; }
             <div class="badge-grid">
                 
                 <!-- Badge 1: AWS CCP -->
-                <a href="https://www.credly.com/badges/e9123316-11cc-411e-b033-b8b5bb8ca75c/public_url" target="_blank" class="badge-card">
-                    <img src="https://images.credly.com/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png" alt="AWS Certified Cloud Practitioner" style="width: 120px; height: 120px; margin-bottom: 20px;">
+                <a href="https://www.credly.com/badges/e9123316-11cc-411e-b033-b8b5bb8ca75c/public_url" target="_blank" rel="noopener noreferrer" class="badge-card">
+                    <img src="https://images.credly.com/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png" alt="AWS Certified Cloud Practitioner">
                     <h3 class="badge-title">AWS Certified Cloud Practitioner</h3>
                     <div class="badge-issuer">Amazon Web Services</div>
                     <div class="badge-date">Issued: Nov 29, 2025<br>Expires: Jan 17, 2029</div>
                 </a>
 
                 <!-- Badge 2: AWS SAA -->
-                <a href="https://www.credly.com/badges/c58994b8-3fbb-4894-8926-675f1fe71ee5/public_url" target="_blank" class="badge-card">
-                    <img src="https://images.credly.com/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png" alt="AWS Solutions Architect - Associate" style="width: 120px; height: 120px; margin-bottom: 20px;">
+                <a href="https://www.credly.com/badges/c58994b8-3fbb-4894-8926-675f1fe71ee5/public_url" target="_blank" rel="noopener noreferrer" class="badge-card">
+                    <img src="https://images.credly.com/images/0e284c3f-5164-4b21-8660-0d84737941bc/image.png" alt="AWS Solutions Architect - Associate">
                     <h3 class="badge-title">AWS Solutions Architect — Associate</h3>
                     <div class="badge-issuer">Amazon Web Services</div>
                     <div class="badge-date">Issued: Jan 17, 2026<br>Expires: Jan 17, 2029</div>
@@ -480,7 +538,7 @@ section { padding:85px 0; }
 
     <section class="contact-section" id="contact"><div class="container contact-panel"><span class="eyebrow">06 / Contact</span><h2>Have something<br>in mind<span>?</span></h2><p>A project, an opportunity, or a conversation about building better systems — I’d love to hear from you.</p><a href="mailto:contact@skywingjam.com" class="cta-btn">Let’s talk <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="mailto:contact@skywingjam.com" class="contact-email">contact@skywingjam.com</a><div class="social-links"><a href="https://www.linkedin.com/in/haochen-zhou-shcn/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://github.com/skywingJam" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div><svg class="contact-wave" viewBox="0 0 1000 180" fill="none" aria-hidden="true"><path d="M-20 100C180-40 300 230 520 100S800-10 1020 100M-20 125C180-15 300 255 520 125S800 15 1020 125M-20 150C180 10 300 280 520 150S800 40 1020 150" stroke="currentColor" stroke-width="1.5"/></svg></div></section>
     </main>
-    <footer class="footer"><div class="container footer-inner"><p>© <span id="year">2026</span> Haochen Zhou</p><a href="#home">Back to top ↑</a><span>SkywingJam.</span></div></footer>
+    <footer class="footer"><div class="container footer-inner"><p>© <span id="year">2026</span> Haochen Zhou</p><a href="#home" class="to-top">Back to top <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span></a><span>SkywingJam.</span></div></footer>
     <script src="ambient-field.js"></script>
     <script>
         const field = window.createAmbientField(document.getElementById('waveCanvas'));
@@ -491,7 +549,11 @@ section { padding:85px 0; }
             const button = document.getElementById('themeToggle');
             button.setAttribute('aria-pressed', String(isDark));
             button.setAttribute('aria-label', isDark ? 'Switch to light theme' : 'Switch to dark theme');
-            button.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            const icon = button.querySelector('i');
+            icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            if (document.documentElement.classList.contains('theme-ready')) {
+                icon.classList.remove('icon-swap'); void icon.offsetWidth; icon.classList.add('icon-swap');
+            }
             document.querySelector('meta[name="theme-color"]').content = isDark ? '#101d28' : '#f1f0eb';
             field.repaint();
         }
@@ -530,13 +592,14 @@ section { padding:85px 0; }
         document.addEventListener('visibilitychange', syncArchitectureMotion);
         motionPreference.addEventListener('change', syncArchitectureMotion);
         const arrivalObserver = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
+            // Elements entering together (a card row, a badge pair) arrive in sequence.
+            entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {
+                entry.target.style.setProperty('--d', index * 90 + 'ms');
                 entry.target.classList.add('arrival-visible');
                 arrivalObserver.unobserve(entry.target);
             });
         }, { threshold:0, rootMargin:'0px 0px -40px 0px' });
-        const arrivalTargets = document.querySelectorAll('.featured-project,.project-card,.badge-card,.about-layout,.background-layout,.capability-grid,.contact-panel');
+        const arrivalTargets = document.querySelectorAll('.section-heading,.featured-project,.project-card,.badge-card,.about-layout,.background-layout,.capability-grid,.contact-panel');
         if (!motionPreference.matches) {
             arrivalTargets.forEach(element => {
                 const bounds = element.getBoundingClientRect();
