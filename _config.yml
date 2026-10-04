@@ -4,6 +4,7 @@
 exclude:
   - lab
   - docs
+  - design
   - scripts
   - archive
   - server.py
