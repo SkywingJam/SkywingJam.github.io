@@ -7,6 +7,9 @@ const controls = document.querySelector('.motion-controls');
 const motionButton = document.querySelector('.motion-toggle');
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const colorScheme = matchMedia('(prefers-color-scheme: dark)');
+// Inline SVG, not Unicode glyphs (Ⅱ ▷ can fall back to emoji or a different font on iOS).
+const ICON_PAUSE = '<svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg>';
+const ICON_PLAY = '<svg class="i-arrow i-fill" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5 3.5l7 4.5-7 4.5z"/></svg>';
 let scene = null, loading = false, loadGeneration = 0, userPaused = false, themeExplicit = false;
 try { themeExplicit = ['light', 'dark'].includes(localStorage.getItem('theme')); } catch {}
 
@@ -68,7 +71,7 @@ function updateMotionControls() {
   controls.hidden = !scene || reducedMotion.matches;
   motionButton.setAttribute('aria-pressed', String(userPaused));
   motionButton.querySelector('.motion-label').textContent = userPaused ? 'Resume motion' : 'Pause motion';
-  motionButton.querySelector('.motion-icon').textContent = userPaused ? '▷' : 'Ⅱ';
+  motionButton.querySelector('.motion-icon').innerHTML = userPaused ? ICON_PLAY : ICON_PAUSE;
   controls.querySelector('.motion-state').textContent = userPaused ? 'A MOMENT OF STILLNESS' : 'GENTLY IN MOTION';
 }
 motionButton.addEventListener('click', () => {

@@ -461,25 +461,25 @@ section { padding:85px 0; }
                 <div class="system-visual" role="img" aria-label="Architecture overview: React calls the Node.js and Express API. The API stores data through Prisma and SQLite, and calls FastAPI. FastAPI enqueues tasks in Redis; Celery workers process jobs and return results to the API through webhooks. FastAPI integrates with Gemini; Celery integrates with Qwen-VL.">
                     <div class="visual-topline"><span>System overview</span><span>Async by design</span></div>
                     <div class="system-node frontend-node"><small>01 / Web client</small><strong>React</strong></div>
-                    <div class="system-connector" aria-hidden="true"><span></span><b>REST requests ↓</b></div>
+                    <div class="system-connector" aria-hidden="true"><span></span><b>REST requests <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></b></div>
                     <div class="processing-flow">
                         <div class="api-data-row">
                             <div class="system-node core-node"><small>02 / Application</small><strong>Node.js / Express</strong><span>REST API · JWT auth</span></div>
                             <div class="data-branch" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M5 5.5L2.5 8 5 10.5M11 5.5l2.5 2.5-2.5 2.5"/></svg></div>
                             <div class="system-node data-node"><small>Persistence</small><strong>SQLite</strong><span>Prisma client</span></div>
                         </div>
-                        <div class="system-connector" aria-hidden="true"><span></span><b>ML requests ↓</b></div>
+                        <div class="system-connector" aria-hidden="true"><span></span><b>ML requests <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></b></div>
                         <div class="system-node ml-node"><small>03 / ML service</small><strong>FastAPI</strong><span>Analysis &amp; task orchestration</span></div>
-                        <div class="system-connector" aria-hidden="true"><span></span><b>Enqueue tasks ↓</b></div>
+                        <div class="system-connector" aria-hidden="true"><span></span><b>Enqueue tasks <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></b></div>
                         <div class="jobs-row">
                             <div class="system-node queue-node"><small>04 / Broker</small><strong>Redis</strong><span>Task queue</span></div>
                             <div class="job-connector" aria-hidden="true"><span><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M5 5.5L2.5 8 5 10.5M11 5.5l2.5 2.5-2.5 2.5"/></svg></span><small>Jobs</small></div>
                             <div class="system-node worker-node"><small>05 / Processing</small><strong>Celery</strong><span>Async workers</span></div>
                         </div>
-                        <div class="result-loop" aria-hidden="true"><span>›</span></div>
+                        <div class="result-loop" aria-hidden="true"><span><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3l5 5-5 5"/></svg></span></div>
                     </div>
-                    <div class="webhook-caption"><span aria-hidden="true">↵</span> Celery → API <span>Webhook results</span></div>
-                    <div class="external-integrations"><span class="eyebrow">External AI</span><div><span>FastAPI → Gemini</span><span>Celery → Qwen-VL</span></div></div>
+                    <div class="webhook-caption"><span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M13 3v5H4M7 5L4 8l3 3"/></svg></span> Celery <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg> API <span>Webhook results</span></div>
+                    <div class="external-integrations"><span class="eyebrow">External AI</span><div><span>FastAPI <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg> Gemini</span><span>Celery <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg> Qwen-VL</span></div></div>
                     <div class="visual-caption">Instagram Influencer Verification System</div>
                 </div>
                 <div class="featured-copy"><span class="project-type-badge">Featured project / 2025</span><h3>Instagram Influencer<br>Verification System</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2025</p><p class="project-desc">An end-to-end platform for influencer verification, connecting a web API with an asynchronous machine learning pipeline.</p><div class="contribution"><span class="eyebrow">My contribution</span><p>Led development, designed the Node.js / Express core API, and engineered distributed Python tasks with FastAPI and Celery.</p></div><div class="tech-stack"><span class="tech-tag">TypeScript</span><span class="tech-tag">Prisma</span><span class="tech-tag">Redis</span><span class="tech-tag">Python</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Instagram-Influencer-Verification-System" target="_blank" rel="noopener noreferrer" class="action-btn"><i class="fab fa-github" aria-hidden="true"></i>Portfolio</a><a href="https://www.youtube.com/watch?v=gl4OnjhNrPg" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div>

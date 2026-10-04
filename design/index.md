@@ -37,7 +37,7 @@ Rules for the wave:
 | Radius | Cards 6px, controls 3px, tags 2px. Do not introduce pill shapes or large radii. |
 | Type scale | Serif for display only. Body text stays small and calm (`.76rem`–`.95rem`). Metadata in monospace, `.58rem`–`.72rem`. |
 | Spacing | Sections breathe (`85px` vertical on desktop, `55px` on mobile). Do not tighten sections to fit more in. |
-| Icons | Arrows are inline SVG (`.i-arrow`), never Unicode arrows such as ↗ ↔, which can turn into colour emoji on iOS. |
+| Icons and glyphs | Never use Unicode arrows or symbol glyphs as icons or in labels (`↗ ↘ ↔ → ← ↑ ↓ ↵ ↺ ↳ › ＋ ◐ ▷ Ⅱ`). Many of them have an emoji variant, and iOS can swap in a colour emoji or a fallback font with different size and weight. Use inline SVG with the shared `.i-arrow` class: 16×16 viewBox, 1.5px stroke, `currentColor`, sized `.86em` so it follows the text. Mark it `aria-hidden="true"` and `focusable="false"`; put meaning in the visible text or an `aria-label`. Filled shapes (play) add `.i-fill`. Typographic punctuation such as `·`, `—`, `–` and `/` is fine. The same rule applies to text set from JavaScript: swap `innerHTML` with SVG, not `textContent` with a glyph. |
 | Themes | Light and dark are equal citizens. Colour changes are driven by registered `@property` variables so they transition together. |
 
 ## 4. Motion principles
@@ -73,6 +73,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 - Don't make the wave brighter, faster, or more detailed to "add life". If it draws attention away from the work, it is too much.
 - Don't put important information only inside an animation or only on hover.
 - Don't hard-code colours, durations, or easing curves in new components when a token exists.
+- Don't use Unicode arrows or symbol glyphs (`→ ↓ ↗ ↔ ↺ ＋ ▷`) anywhere, including diagram labels and JS-set text. Use `.i-arrow` SVG (see the Icons and glyphs rule).
 - Don't ship a motion without a reduced-motion fallback.
 - Don't publish `lab/` accidentally: it is excluded in `_config.yml` and its nav link is commented out in `index.html` until it is ready. Remove both together when publishing.
 
@@ -84,6 +85,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 - [ ] Does it work at ~375px with no horizontal scroll?
 - [ ] Is motion limited to `opacity` / `transform` / `translate`, and disabled by `prefers-reduced-motion`?
 - [ ] Is anything already visible on load left visible?
+- [ ] Are all arrows and icons inline SVG, with no Unicode arrow or symbol glyphs left? (`grep -nP "[↑↓←→↗↘↔↵↺↳›＋◐▷Ⅱ]" index.html lab/*`)
 - [ ] Is the wave still quiet, readable-behind, and consistent with `lab`?
 - [ ] No console errors; keyboard focus still visible.
 

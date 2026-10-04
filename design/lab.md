@@ -42,7 +42,7 @@ Rules for the wave:
 | Labels | Number everything: `FIG.`, `PLATE`, `001 /`, `I. II. III.`. It reinforces the lab-notebook feel. |
 | Surfaces | Frosted panels use translucent fills with small backdrop blur (3–5px), fine edge lines, and a moving reflection under the pointer (`[data-surface]`). |
 | Light | Prefer driving highlights and shadows from a light-direction variable (`--study-light`, `--study-key`, `--study-angle`) so objects respond together. |
-| Arrows | Inline SVG `.i-arrow`, not Unicode arrows (emoji substitution on iOS). Some text arrows (`→ ↓ ↑ ＋`) remain in the lab markup; replace them with SVG when touching those lines. |
+| Icons and glyphs | Same rule as the index guide ([index.md](index.md)): no Unicode arrows or symbol glyphs (`→ ↓ ↑ ↗ ↺ ＋ ↳ ◐ ▷ Ⅱ`) as icons or in labels, including text set from JavaScript (`lab.js` swaps pause/play as SVG). Use inline SVG `.i-arrow` (16×16 viewBox, 1.5px stroke, `currentColor`, `.86em`; `.i-fill` for solid shapes). `light-study.css` carries its own copy of the rule so the component stays portable. All lab markup follows this today; keep it that way. |
 | Themes | Light (day) and dark (moon) are both first-class. Check every new object in both. |
 
 ## 4. Motion principles
@@ -106,6 +106,7 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 - Reuse the tokens, the two easing curves, `data-surface`, `data-arrival` and the light-study variables.
 - Provide a still, no-JS and reduced-motion state for every effect.
 - Keep components independent of the page: host tokens in, no hard-coded copy in JS.
+- Before merging, check that no Unicode arrow or symbol glyph slipped in: `grep -nP "[↑↓←→↗↘↔↵↺↳›＋◐▷Ⅱ]" lab/index.html lab/*.js`.
 - Test in light and dark, at 320 / 480 / 1100 / 1440px, with pause on and off.
 - Run `node scripts/check-lab.cjs` and `node scripts/check-light-study.cjs` against `python3 server.py` before merging lab work.
 - Write up significant decisions and measurements in `docs/discovery/`.
@@ -119,6 +120,7 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 - Don't add a second easing system, a bouncy spring on ordinary UI, or confetti-like particle effects.
 - Don't rely on hover or on motion to convey information.
 - Don't hard-code palette values or copy inside a reusable component.
+- Don't use Unicode arrows or symbol glyphs as icons (`→ ↓ ↑ ↺ ＋ ◐ ▷ Ⅱ`); iOS may render them as emoji or in a fallback font. Use `.i-arrow` SVG, in HTML and in JS-set text.
 - Don't ship an effect without a poster or static fallback.
 - Don't publish the lab by accident. To publish, remove `lab` from `_config.yml` `exclude` and restore the nav link in `index.html` together, after replacing placeholder copy.
 
