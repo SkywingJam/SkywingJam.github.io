@@ -24,6 +24,6 @@ Plain HTML, CSS and JavaScript, served by GitHub Pages (Jekyll). No build step.
 python3 server.py
 ```
 
-Then open the address it prints. To publish the lab, remove `lab` from `exclude` in `_config.yml` and restore its nav link in `index.html`.
+Then open http://localhost:8001. To publish the lab, remove `lab` from `exclude` in `_config.yml` and restore its nav link in `index.html`.
 
 Co-create with: ChatGPT Codex and Claude Code
