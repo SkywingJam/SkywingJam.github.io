@@ -297,7 +297,12 @@ section { padding:85px 0; }
 .result-loop>span { position:absolute; left:0; top:-13px; width:18px; text-align:right; color:var(--accent-color); font-size:1rem; }
 .result-loop>span:before { content:''; position:absolute; left:0; right:4px; top:12px; border-top:1px dashed var(--line); }
 .result-loop:before { content:''; position:absolute; right:0; bottom:0; height:14px; border-right:1px dashed var(--line); }
-.result-loop:after { content:''; position:absolute; left:calc(100% - 1px); bottom:12px; width:2px; height:6px; background:var(--accent-color); opacity:0; animation:callback-signal 9s cubic-bezier(.4,0,.2,1) 6.8s infinite paused; }
+.result-loop:after {
+    content:''; position:absolute; left:0; top:0; width:4px; height:4px;
+    border-radius:50%; background:var(--accent-color); box-shadow:0 0 6px var(--accent-color);
+    offset-path:var(--callback-path,path('M 0 0')); offset-anchor:50% 50%; offset-rotate:0deg;
+    opacity:0; animation:callback-signal 9s linear 6.8s infinite paused;
+}
 .webhook-caption { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:7px; margin-top:15px; font-family:monospace; font-size:.58rem; color:var(--accent-color); }
 .webhook-caption>span:last-child { color:var(--text-secondary); }
 .external-integrations { border-top:1px solid var(--line); margin-top:20px; padding-top:15px; }
@@ -322,13 +327,10 @@ section { padding:85px 0; }
     17%,100% { transform:translateY(26px); opacity:0; }
 }
 @keyframes callback-signal {
-    0% { left:calc(100% - 1px); bottom:12px; opacity:0; }
-    2% { left:calc(100% - 1px); bottom:12px; opacity:.9; }
-    4% { left:calc(100% - 1px); bottom:-2px; opacity:.9; }
-    34% { left:-2px; bottom:-2px; opacity:.9; }
-    70% { left:-2px; bottom:calc(100% - 5px); opacity:.9; }
-    72% { left:14px; bottom:calc(100% - 5px); opacity:.9; }
-    77%,100% { left:14px; bottom:calc(100% - 5px); opacity:0; }
+    0% { offset-distance:0%; opacity:0; }
+    3% { offset-distance:0%; opacity:.9; }
+    70%,73% { offset-distance:100%; opacity:.9; }
+    78%,100% { offset-distance:100%; opacity:0; }
 }
 .system-visual.is-flowing .result-loop:after { animation-play-state:running; }
 @media (max-width:760px) {
@@ -583,6 +585,14 @@ section { padding:85px 0; }
         const navLinks = [...links.querySelectorAll('a')];
         const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
         const architecture = document.querySelector('.system-visual');
+        const callbackLoop = architecture.querySelector('.result-loop');
+        function syncCallbackPath() {
+            const width = callbackLoop.clientWidth, height = callbackLoop.clientHeight;
+            // Follow the drawn stub, bottom edge, 8px corner, and API entry as one path.
+            callbackLoop.style.setProperty('--callback-path', `path('M ${width} ${height - 14} V ${height} H 8 A 8 8 0 0 1 0 ${height - 8} V 0 H 18')`);
+        }
+        syncCallbackPath();
+        new ResizeObserver(syncCallbackPath).observe(callbackLoop);
         let architectureVisible = false;
         function syncArchitectureMotion() {
             architecture.classList.toggle('is-flowing', architectureVisible && !document.hidden && !motionPreference.matches);
