@@ -111,13 +111,18 @@ section { padding:85px 0; }
 .featured-slide.is-placeholder { grid-template-columns:1fr; align-items:center; justify-items:center; }
 .coming-soon { font-family:monospace; font-size:.72rem; letter-spacing:.4px; color:var(--text-secondary); }
 .featured-wrap { position:relative; }
-.featured-next { position:absolute; top:50%; left:100%; margin:-17px 0 0 14px; width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; background:var(--surface); color:var(--text-main); border:1px solid var(--line); border-radius:3px; cursor:pointer; z-index:2; }
+.featured-step { position:absolute; top:50%; width:24px; height:56px; margin-top:-28px; padding:0; display:inline-flex; align-items:center; justify-content:center; background:none; border:0; color:var(--text-secondary); cursor:pointer; z-index:2; transition:color var(--t-fast); }
+.featured-prev { right:100%; margin-right:10px; }
+.featured-next { left:100%; margin-left:10px; }
+.featured-step>svg { width:14px; height:38px; fill:none; stroke:currentColor; stroke-width:1.5; stroke-linecap:round; stroke-linejoin:round; transition:transform var(--t-fast) var(--ease); }
 @media (max-width:1120px) {
-    .featured-wrap { display:flex; flex-direction:column; }
-    .featured-next { position:static; align-self:flex-end; margin:12px 0 0; }
+    .featured-wrap { display:flex; flex-wrap:wrap; }
+    .featured-project { flex:0 0 100%; }
+    .featured-step { position:static; margin:10px 0 0; height:44px; }
+    .featured-next { margin-left:auto; }
 }
-.featured-next:hover { color:var(--accent-color); border-color:var(--accent-color); }
-.featured-next:focus-visible,.featured-dot:focus-visible { outline:2px solid var(--accent-color); outline-offset:2px; }
+.featured-step:hover { color:var(--accent-color); }
+.featured-step:focus-visible,.featured-dot:focus-visible { outline:2px solid var(--accent-color); outline-offset:2px; }
 .featured-dots { position:absolute; right:20px; bottom:12px; display:flex; gap:2px; z-index:2; }
 .featured-dot { width:26px; height:18px; padding:0; border:0; background:none; cursor:pointer; position:relative; }
 .featured-dot:before { content:''; position:absolute; left:3px; right:3px; top:8px; height:1px; background:var(--line); transition:background-color var(--t-fast); }
@@ -421,8 +426,8 @@ section { padding:85px 0; }
 .featured-slide { opacity:0; visibility:hidden; transform:translate3d(-28px,0,0); transition:opacity .6s var(--ease),transform .6s var(--ease),visibility 0s linear .6s; }
 .featured-slide.is-active { opacity:1; visibility:visible; transform:translate3d(0,0,0); transition:opacity .6s var(--ease),transform .6s var(--ease),visibility 0s; }
 .featured-slide.is-entering { transform:translate3d(28px,0,0); transition:none; }
-.featured-next>svg { transition:transform var(--t-fast) var(--ease); }
 .featured-next:hover>svg { transform:translateX(2px); }
+.featured-prev:hover>svg { transform:translateX(-2px); }
 
 @media (prefers-reduced-motion:reduce) {
     html { scroll-behavior:auto; transition:none!important; }
@@ -520,7 +525,8 @@ section { padding:85px 0; }
                 </div>
                 <div class="featured-dots" role="tablist" aria-label="Choose featured project"><button type="button" class="featured-dot" role="tab" aria-selected="true" aria-label="Project 1"></button><button type="button" class="featured-dot" role="tab" aria-selected="false" aria-label="Project 2"></button></div>
             </article>
-            <button type="button" class="featured-next" id="featuredNext" aria-label="Next featured project" aria-controls="featuredSlides"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3l5 5-5 5"/></svg></button>
+            <button type="button" class="featured-step featured-prev" id="featuredPrev" aria-label="Previous featured project" aria-controls="featuredSlides"><svg viewBox="0 0 14 38" aria-hidden="true" focusable="false"><path d="M11 3L3 19l8 16"/></svg></button>
+            <button type="button" class="featured-step featured-next" id="featuredNext" aria-label="Next featured project" aria-controls="featuredSlides"><svg viewBox="0 0 14 38" aria-hidden="true" focusable="false"><path d="M3 3l8 16-8 16"/></svg></button>
             </div>
             <div class="projects-grid supporting-projects">
                 <article class="project-card"><div class="project-topline"><span class="project-type-badge">Geospatial / 2025</span><span aria-hidden="true">01</span></div><h3 class="project-title">Urban Tree Explorer</h3><p class="project-subtitle">Tech Lead · Mar – Jun 2025</p><p class="project-desc">An interactive platform exploring Melbourne’s urban trees. Coordinated Agile delivery and extended WP Go Maps with geospatial search, clustering, and dynamic legends.</p><div class="tech-stack"><span class="tech-tag">WordPress</span><span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Urban-Tree-Explorer" target="_blank" rel="noopener noreferrer" class="text-link">Portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://youtu.be/T_lrE1xrhLo" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></article>
@@ -673,6 +679,7 @@ section { padding:85px 0; }
                 rotateTimer = setTimeout(() => { showSlide((slideIndex + 1) % slides.length); scheduleRotation(); }, rotateEvery);
             }
         }
+        document.getElementById('featuredPrev').addEventListener('click', () => { showSlide((slideIndex - 1 + slides.length) % slides.length); scheduleRotation(); });
         document.getElementById('featuredNext').addEventListener('click', () => { showSlide((slideIndex + 1) % slides.length); scheduleRotation(); });
         dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); scheduleRotation(); }));
         carousel.addEventListener('pointerenter', () => { carouselHeld = true; scheduleRotation(); });
