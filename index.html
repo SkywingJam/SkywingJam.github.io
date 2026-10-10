@@ -105,7 +105,7 @@ section { padding:85px 0; }
 .section-heading>p { font-size:.8rem; color:var(--text-secondary); max-width:330px; }
 .featured-project { display:grid; grid-template-columns:1fr 1.15fr; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
 .featured-project+.featured-project { margin-top:24px; }
-.featured-project.is-placeholder { position:relative; display:grid; grid-template-columns:1fr; place-items:center; min-height:240px; padding:44px; }
+.featured-project.is-placeholder { position:relative; display:grid; grid-template-columns:1fr; place-items:center; min-height:var(--card-height,240px); padding:44px; }
 .featured-project.is-placeholder .project-index { position:absolute; top:22px; right:26px; font-family:monospace; font-size:.7rem; color:var(--text-secondary); }
 .coming-soon { font-family:monospace; font-size:.72rem; letter-spacing:.4px; color:var(--text-secondary); }
 .featured-copy { padding:44px; }
@@ -644,6 +644,17 @@ section { padding:85px 0; }
         flowVisuals.forEach(visual => flowObserver.observe(visual));
         document.addEventListener('visibilitychange', syncFlowMotion);
         motionPreference.addEventListener('change', syncFlowMotion);
+        // The placeholder card stands as tall as the project cards below it.
+        const placeholderCard = document.querySelector('.featured-project.is-placeholder');
+        const gridCards = [...document.querySelectorAll('.projects-grid .project-card')];
+        function syncPlaceholderHeight() {
+            if (!placeholderCard || !gridCards.length) return;
+            placeholderCard.style.setProperty('--card-height', Math.max(...gridCards.map(card => card.offsetHeight)) + 'px');
+        }
+        syncPlaceholderHeight();
+        const placeholderObserver = new ResizeObserver(syncPlaceholderHeight);
+        gridCards.forEach(card => placeholderObserver.observe(card));
+
         const arrivalObserver = new IntersectionObserver(entries => {
             // Elements entering together (a card row, a badge pair) arrive in sequence.
             entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {
