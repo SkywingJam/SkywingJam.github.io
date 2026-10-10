@@ -248,8 +248,8 @@ section { padding:85px 0; }
 .queue-node:after { animation-delay:2.5s; }
 .worker-node:after { animation-delay:5s; }
 @keyframes node-signal {
-    0%,26%,100% { opacity:.2; box-shadow:0 0 0 0 transparent; }
-    8%,18% { opacity:1; box-shadow:0 0 8px 1px var(--accent-color); }
+    0%,18%,100% { opacity:.2; box-shadow:0 0 0 0 transparent; }
+    5.54%,12.46% { opacity:1; box-shadow:0 0 8px 1px var(--accent-color); }
 }
 .system-connector:after {
     content:''; position:absolute; top:0; left:calc(50% - 1px);
@@ -277,7 +277,7 @@ section { padding:85px 0; }
 }
 
 /* Overview separates the request path, persistence, and result callback. */
-.system-visual { padding:28px; }
+.system-visual { padding:28px; --flow-cycle:13s; }
 .visual-topline { margin-bottom:22px; }
 .system-node { padding:14px 16px; min-width:0; }
 .system-node small { margin-bottom:5px; font-size:.57rem; letter-spacing:.2px; }
@@ -301,7 +301,7 @@ section { padding:85px 0; }
     content:''; position:absolute; left:0; top:0; width:4px; height:4px;
     border-radius:50%; background:var(--accent-color); box-shadow:0 0 6px var(--accent-color);
     offset-path:var(--callback-path,path('M 0 0')); offset-anchor:50% 50%; offset-rotate:0deg;
-    opacity:0; animation:callback-signal 9s linear 6.8s infinite paused;
+    opacity:0; animation:callback-signal var(--flow-cycle) linear 6.8s infinite paused;
 }
 .webhook-caption { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:7px; margin-top:15px; font-family:monospace; font-size:.58rem; color:var(--accent-color); }
 .webhook-caption>span:last-child { color:var(--text-secondary); }
@@ -309,28 +309,29 @@ section { padding:85px 0; }
 .external-integrations .eyebrow { font-size:.55rem; margin-bottom:8px; }
 .external-integrations>div { display:flex; flex-wrap:wrap; gap:8px 16px; font-family:monospace; font-size:.57rem; color:var(--text-secondary); }
 .visual-caption { margin-top:18px; }
-.system-node:after { animation-duration:9s; }
+.system-node:after { animation-duration:var(--flow-cycle); }
 .frontend-node:after { animation-delay:0s; }
 .core-node:after { animation-delay:1.5s; }
 .data-node:after { animation:none; opacity:.25; }
 .ml-node:after { animation-delay:3s; }
 .queue-node:after { animation-delay:4.5s; }
 .worker-node:after { animation-delay:6s; }
-.system-connector:after { animation-duration:9s; animation-delay:.6s; height:6px; }
+.system-connector:after { animation-duration:var(--flow-cycle); animation-delay:.6s; height:6px; }
 .api-data-row+.system-connector:after { animation-delay:2.1s; }
 .ml-node+.system-connector { width:calc((100% - 32px)/2); }
 .ml-node+.system-connector:after { animation-delay:3.6s; }
 @keyframes task-signal {
     0% { transform:translateY(0); opacity:0; }
-    2% { opacity:.9; }
-    12% { transform:translateY(24px); opacity:.9; }
-    17%,100% { transform:translateY(26px); opacity:0; }
+    1.38% { opacity:.9; }
+    8.31% { transform:translateY(24px); opacity:.9; }
+    11.77%,100% { transform:translateY(26px); opacity:0; }
 }
+/* Preserve each pulse's speed within a longer cycle; the callback clears at 11.8s. */
 @keyframes callback-signal {
     0% { offset-distance:0%; opacity:0; }
-    3% { offset-distance:0%; opacity:.9; }
-    47.7%,50.7% { offset-distance:100%; opacity:.9; }
-    55.7%,100% { offset-distance:100%; opacity:0; }
+    2.08% { offset-distance:0%; opacity:.9; }
+    33.02%,35.1% { offset-distance:100%; opacity:.9; }
+    38.56%,100% { offset-distance:100%; opacity:0; }
 }
 .system-visual.is-flowing .result-loop:after { animation-play-state:running; }
 @media (max-width:760px) {
