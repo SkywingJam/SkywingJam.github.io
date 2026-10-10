@@ -95,6 +95,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 | --- | --- |
 | `index.html` | Page markup, all CSS (tokens at the top, "Refinement layer" near the end), and page scripts (theme, nav, arrival, active section). |
 | `fonts/` | Self-hosted Instrument Serif and TikTok Sans (woff2, latin and latin-ext) and their `@font-face` rules. Shared by `index.html` and `lab/`. Icons are inline SVG; there is no icon font or CDN. |
+| `og-image.jpg` | 1200×630 link preview (name in the serif with the italic accent, portrait, quiet contour lines). Regenerate it when the name, role line, or portrait changes. |
 | `ambient-field.js` | Contour-field wave behind the index page. |
 | `lab/` | Experimental page (unpublished): wave scene, frosted acrylic, light study. |
 | `docs/discovery/` | Notes on lab design and performance decisions. |
