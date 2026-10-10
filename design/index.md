@@ -111,7 +111,8 @@ Every featured project is an `article.featured-project` with a media side and a 
 | Part | Rule |
 | --- | --- |
 | Media | `.featured-media` for a screenshot or still (an `img` with `width`, `height`, `alt`, `loading="lazy"`), or `.system-visual` for an animated diagram. Both share the same tinted panel and 1px divider. The media is always on the left, the copy on the right, and it stacks media-first below 760px. |
-| Copy order | Topline (`Featured project / YEAR` and the project number) → `h3` title → `.project-subtitle` (role · dates) → `.project-desc` (one or two sentences) → `.contribution` (what I did) → `.tech-stack` → `.card-actions`. Do not reorder or drop parts; leave out only the links that do not exist. |
+| Copy order | Topline (`Featured project / YEAR` and the project number) → `h3` title → `.project-subtitle` (role · dates) → `.project-desc` (one or two sentences) → `.contribution` (what I did, then an optional `.outcomes` list) → `.tech-stack` → `.card-actions`. Do not reorder or drop parts; leave out only the links that do not exist. |
+| Outcomes | Two to four `li` items in `.outcomes`, inside `.contribution`. Each is a verifiable result or delivered artefact (tests passing, pipelines, handoff), not a duty. Bold only the number or noun that carries the claim; say "in a local run" when a figure is not from CI. No invented metrics. |
 | Visual weight | A featured card carries real media. A placeholder is a framed `Coming Soon...` card only while the project does not exist yet; do not stretch it with fake content. |
 | Spacing | Featured cards are 24px apart (`.featured-project + .featured-project`), the same gap as the grid below. |
 | Actions | One primary `.action-btn` (the repository) and at most one `.text-link` (demo). |
