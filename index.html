@@ -301,7 +301,7 @@ section { padding:85px 0; }
     content:''; position:absolute; left:0; top:0; width:4px; height:4px;
     border-radius:50%; background:var(--accent-color); box-shadow:0 0 6px var(--accent-color);
     offset-path:var(--callback-path,path('M 0 0')); offset-anchor:50% 50%; offset-rotate:0deg;
-    opacity:0; animation:callback-signal var(--flow-cycle) linear 6.8s infinite paused;
+    opacity:0; animation:callback-signal var(--flow-cycle) cubic-bezier(.4,0,.2,1) 6.8s infinite paused;
 }
 .webhook-caption { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:7px; margin-top:15px; font-family:monospace; font-size:.58rem; color:var(--accent-color); }
 .webhook-caption>span:last-child { color:var(--text-secondary); }
