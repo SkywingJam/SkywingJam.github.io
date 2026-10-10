@@ -297,7 +297,7 @@ section { padding:85px 0; }
 .result-loop>span { position:absolute; left:0; top:-13px; width:18px; text-align:right; color:var(--accent-color); font-size:1rem; }
 .result-loop>span:before { content:''; position:absolute; left:0; right:4px; top:12px; border-top:1px dashed var(--line); }
 .result-loop:before { content:''; position:absolute; right:0; bottom:0; height:14px; border-right:1px dashed var(--line); }
-.result-loop:after { content:''; position:absolute; left:calc(100% - 1px); bottom:12px; width:3px; height:5px; background:var(--accent-color); opacity:0; animation:callback-signal 9s linear infinite paused; }
+.result-loop:after { content:''; position:absolute; left:calc(100% - 1px); bottom:12px; width:2px; height:6px; background:var(--accent-color); opacity:0; animation:callback-signal 9s cubic-bezier(.4,0,.2,1) 6.8s infinite paused; }
 .webhook-caption { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:7px; margin-top:15px; font-family:monospace; font-size:.58rem; color:var(--accent-color); }
 .webhook-caption>span:last-child { color:var(--text-secondary); }
 .external-integrations { border-top:1px solid var(--line); margin-top:20px; padding-top:15px; }
@@ -322,13 +322,13 @@ section { padding:85px 0; }
     17%,100% { transform:translateY(26px); opacity:0; }
 }
 @keyframes callback-signal {
-    0%,76% { left:calc(100% - 1px); bottom:12px; opacity:0; }
-    77% { left:calc(100% - 1px); bottom:12px; opacity:.9; }
-    78% { left:calc(100% - 1px); bottom:-2px; opacity:.9; }
-    84% { left:-2px; bottom:-2px; opacity:.9; }
-    92% { left:-2px; bottom:calc(100% - 5px); opacity:.9; }
-    94% { left:14px; bottom:calc(100% - 5px); opacity:.9; }
-    96%,100% { left:14px; bottom:calc(100% - 5px); opacity:0; }
+    0% { left:calc(100% - 1px); bottom:12px; opacity:0; }
+    2% { left:calc(100% - 1px); bottom:12px; opacity:.9; }
+    4% { left:calc(100% - 1px); bottom:-2px; opacity:.9; }
+    34% { left:-2px; bottom:-2px; opacity:.9; }
+    70% { left:-2px; bottom:calc(100% - 5px); opacity:.9; }
+    72% { left:14px; bottom:calc(100% - 5px); opacity:.9; }
+    77%,100% { left:14px; bottom:calc(100% - 5px); opacity:0; }
 }
 .system-visual.is-flowing .result-loop:after { animation-play-state:running; }
 @media (max-width:760px) {
