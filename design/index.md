@@ -99,3 +99,41 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 | `lab/` | Experimental page (unpublished): wave scene, frosted acrylic, light study. |
 | `docs/discovery/` | Notes on lab design and performance decisions. |
 | `design/` | Design guidance (this folder). |
+
+## 9. Featured projects (more than one on the page)
+
+Featured projects are the large, two-column cards at the top of `Selected work`. The first is the Instagram Influencer Verification System; a second sits below it as a placeholder until it is ready.
+
+### Template
+
+Every featured project is an `article.featured-project` with a media side and a copy side. The skeleton lives as a comment next to the placeholder in `index.html`.
+
+| Part | Rule |
+| --- | --- |
+| Media | `.featured-media` for a screenshot or still (an `img` with `width`, `height`, `alt`, `loading="lazy"`), or `.system-visual` for an animated diagram. Both share the same tinted panel and 1px divider. The media is always on the left, the copy on the right, and it stacks media-first below 760px. |
+| Copy order | Topline (`Featured project / YEAR` and the project number) → `h3` title → `.project-subtitle` (role · dates) → `.project-desc` (one or two sentences) → `.contribution` (what I did) → `.tech-stack` → `.card-actions`. Do not reorder or drop parts; leave out only the links that do not exist. |
+| Visual weight | A featured card carries real media. A placeholder is a framed `Coming Soon...` card only while the project does not exist yet; do not stretch it with fake content. |
+| Spacing | Featured cards are 24px apart (`.featured-project + .featured-project`), the same gap as the grid below. |
+| Actions | One primary `.action-btn` (the repository) and at most one `.text-link` (demo). |
+
+### Numbering
+
+Projects are numbered in one continuous sequence, in page order, as a two-digit mono number at the right of the topline.
+
+- Featured cards come first: `01`, `02`, ...
+- Grid cards (`.project-card`) continue the sequence: `03`, `04`, ...
+- When a project is added, renumber everything after it. The number is decorative (`aria-hidden`); the order of the page is the meaning.
+- The type badge says the kind of project and the year (`Featured project / 2025`, `Geospatial / 2025`). Featured cards use the fixed prefix `Featured project`.
+
+### Motion
+
+Several featured projects may each have a looping diagram, so loops follow these rules.
+
+1. **One loop at a time.** Only the most visible `.system-visual` (at least 20% in view) gets `.is-flowing`; all others rest. This is handled by the single observer in the page script, so a new diagram only needs the `.system-visual` class and a paused-by-default animation that `.is-flowing` sets to `running`.
+2. **Rest in a readable state.** A paused diagram must still be complete and legible (nodes, labels, links). Animation only adds the signal; it never reveals information.
+3. **Slow cycles.** A full cycle is 12s or longer, and signals travel at a calm pace. Do not shorten cycles to make a diagram feel busier.
+4. **Do not synchronise.** Give each diagram its own `--flow-cycle` and delays, so two diagrams never pulse together if both are partly in view.
+5. **Signals use the accent colour only**, as a small dot or line with the existing soft glow. No second colour, no trails.
+6. **Pause when it cannot be seen**: tab hidden, `prefers-reduced-motion`, or off-screen. Reduced motion shows the diagram at rest.
+7. **Media cards that are not diagrams do not loop.** Screenshots and stills use the normal arrival motion and hover language only.
+8. **No carousel.** Featured projects stack vertically; they are not rotated, paged, or auto-advanced.

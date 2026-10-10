@@ -105,7 +105,8 @@ section { padding:85px 0; }
 .section-heading>p { font-size:.8rem; color:var(--text-secondary); max-width:330px; }
 .featured-project { display:grid; grid-template-columns:1fr 1.15fr; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
 .featured-project+.featured-project { margin-top:24px; }
-.featured-project.is-placeholder { display:grid; grid-template-columns:1fr; place-items:center; min-height:240px; padding:44px; }
+.featured-project.is-placeholder { position:relative; display:grid; grid-template-columns:1fr; place-items:center; min-height:240px; padding:44px; }
+.featured-project.is-placeholder .project-index { position:absolute; top:22px; right:26px; font-family:monospace; font-size:.7rem; color:var(--text-secondary); }
 .coming-soon { font-family:monospace; font-size:.72rem; letter-spacing:.4px; color:var(--text-secondary); }
 .featured-copy { padding:44px; }
 .featured-copy h3 { font-size:clamp(1.7rem,2.4vw,2.2rem); font-weight:550; line-height:1.2; letter-spacing:-.8px; margin:22px 0 14px; }
@@ -114,7 +115,10 @@ section { padding:85px 0; }
 .contribution { border-top:1px solid var(--line); padding-top:22px; margin:24px 0; }
 .contribution .eyebrow { font-size:.6rem; }
 .contribution p { font-size:.82rem; color:var(--text-secondary); margin-top:10px; }
-.system-visual { background:var(--tag-bg); padding:34px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--line); }
+.system-visual,.featured-media { background:var(--tag-bg); padding:34px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--line); }
+.featured-media img { display:block; width:100%; height:auto; border:1px solid var(--line); border-radius:3px; }
+.featured-copy .project-topline { margin-bottom:0; }
+.featured-copy .project-topline .project-type-badge { font-size:.61rem; }
 .visual-topline { display:flex; justify-content:space-between; font-family:monospace; font-size:.64rem; color:var(--text-secondary); margin-bottom:32px; }
 .system-node { padding:20px; border:1px solid var(--line); border-radius:3px; position:relative; background:var(--surface); }
 .system-node small { display:block; font-family:monospace; font-size:.62rem; color:var(--accent-color); margin-bottom:8px; }
@@ -216,7 +220,7 @@ section { padding:85px 0; }
     .section-heading>p { margin-top:18px; }
     .section-title { font-size:2.2rem; }
     .featured-project { grid-template-columns:1fr; }
-    .system-visual { border-right:0; border-bottom:1px solid var(--line); padding:28px; }
+    .system-visual,.featured-media { border-right:0; border-bottom:1px solid var(--line); padding:28px; }
     .featured-copy { padding:28px; }
     .featured-copy h3 { font-size:1.8rem; }
     .projects-grid,.badge-grid { grid-template-columns:1fr; gap:18px; }
@@ -495,12 +499,24 @@ section { padding:85px 0; }
                     <div class="external-integrations"><span class="eyebrow">External AI</span><div><span>FastAPI <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg> Gemini</span><span>Celery <svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg> Qwen-VL</span></div></div>
                     <div class="visual-caption">Instagram Influencer Verification System</div>
                 </div>
-                <div class="featured-copy"><span class="project-type-badge">Featured project / 2025</span><h3>Instagram Influencer<br>Verification System</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2025</p><p class="project-desc">An end-to-end platform for influencer verification, connecting a web API with an asynchronous machine learning pipeline.</p><div class="contribution"><span class="eyebrow">My contribution</span><p>Led development, designed the Node.js / Express core API, and engineered distributed Python tasks with FastAPI and Celery.</p></div><div class="tech-stack"><span class="tech-tag">TypeScript</span><span class="tech-tag">Prisma</span><span class="tech-tag">Redis</span><span class="tech-tag">Python</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Instagram-Influencer-Verification-System" target="_blank" rel="noopener noreferrer" class="action-btn"><svg class="i-fa" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>Portfolio</a><a href="https://www.youtube.com/watch?v=gl4OnjhNrPg" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div>
+                <div class="featured-copy"><div class="project-topline"><span class="project-type-badge">Featured project / 2025</span><span aria-hidden="true">01</span></div><h3>Instagram Influencer<br>Verification System</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2025</p><p class="project-desc">An end-to-end platform for influencer verification, connecting a web API with an asynchronous machine learning pipeline.</p><div class="contribution"><span class="eyebrow">My contribution</span><p>Led development, designed the Node.js / Express core API, and engineered distributed Python tasks with FastAPI and Celery.</p></div><div class="tech-stack"><span class="tech-tag">TypeScript</span><span class="tech-tag">Prisma</span><span class="tech-tag">Redis</span><span class="tech-tag">Python</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Instagram-Influencer-Verification-System" target="_blank" rel="noopener noreferrer" class="action-btn"><svg class="i-fa" viewBox="0 0 496 512" aria-hidden="true" focusable="false"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>Portfolio</a><a href="https://www.youtube.com/watch?v=gl4OnjhNrPg" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div>
             </article>
-            <article class="featured-project is-placeholder"><span class="coming-soon">Coming Soon...</span></article>
+            <!-- Featured project template (rules: design/index.md section 9). Replace the placeholder below with:
+            <article class="featured-project">
+                <div class="featured-media"><img src="..." alt="..." width="..." height="..." loading="lazy"></div>
+                <div class="featured-copy">
+                    <div class="project-topline"><span class="project-type-badge">Featured project / YEAR</span><span aria-hidden="true">02</span></div>
+                    <h3>Title</h3><p class="project-subtitle">Role · Dates</p>
+                    <p class="project-desc">One-sentence summary.</p>
+                    <div class="contribution"><span class="eyebrow">My contribution</span><p>What I did.</p></div>
+                    <div class="tech-stack"><span class="tech-tag">Tag</span></div>
+                    <div class="card-actions">...</div>
+                </div>
+            </article> -->
+            <article class="featured-project is-placeholder"><span class="project-index" aria-hidden="true">02</span><span class="coming-soon">Coming Soon...</span></article>
             <div class="projects-grid supporting-projects">
-                <article class="project-card"><div class="project-topline"><span class="project-type-badge">Geospatial / 2025</span><span aria-hidden="true">01</span></div><h3 class="project-title">Urban Tree Explorer</h3><p class="project-subtitle">Tech Lead · Mar – Jun 2025</p><p class="project-desc">An interactive platform exploring Melbourne’s urban trees. Coordinated Agile delivery and extended WP Go Maps with geospatial search, clustering, and dynamic legends.</p><div class="tech-stack"><span class="tech-tag">WordPress</span><span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Urban-Tree-Explorer" target="_blank" rel="noopener noreferrer" class="text-link">Portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://youtu.be/T_lrE1xrhLo" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></article>
-                <article class="project-card"><div class="project-topline"><span class="project-type-badge">Accessible web / 2023</span><span aria-hidden="true">02</span></div><h3 class="project-title">Online Village</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2023</p><p class="project-desc">A web platform for elderly users, bringing together calendars, mini-games, and chat. Led a six-member Agile team and implemented the Flask backend for secure data handling.</p><div class="tech-stack"><span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">Accessibility</span></div><p class="project-footnote">University of Melbourne · Capstone project</p></article>
+                <article class="project-card"><div class="project-topline"><span class="project-type-badge">Geospatial / 2025</span><span aria-hidden="true">03</span></div><h3 class="project-title">Urban Tree Explorer</h3><p class="project-subtitle">Tech Lead · Mar – Jun 2025</p><p class="project-desc">An interactive platform exploring Melbourne’s urban trees. Coordinated Agile delivery and extended WP Go Maps with geospatial search, clustering, and dynamic legends.</p><div class="tech-stack"><span class="tech-tag">WordPress</span><span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Urban-Tree-Explorer" target="_blank" rel="noopener noreferrer" class="text-link">Portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://youtu.be/T_lrE1xrhLo" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></article>
+                <article class="project-card"><div class="project-topline"><span class="project-type-badge">Accessible web / 2023</span><span aria-hidden="true">04</span></div><h3 class="project-title">Online Village</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2023</p><p class="project-desc">A web platform for elderly users, bringing together calendars, mini-games, and chat. Led a six-member Agile team and implemented the Flask backend for secure data handling.</p><div class="tech-stack"><span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">Accessibility</span></div><p class="project-footnote">University of Melbourne · Capstone project</p></article>
             </div>
         </div>
     </section>
@@ -608,17 +624,22 @@ section { padding:85px 0; }
         }
         syncCallbackPath();
         new ResizeObserver(syncCallbackPath).observe(callbackLoop);
-        let architectureVisible = false;
-        function syncArchitectureMotion() {
-            architecture.classList.toggle('is-flowing', architectureVisible && !document.hidden && !motionPreference.matches);
+        // Looping diagrams: only the most visible one (at least 20% in view) runs at a time.
+        const flowVisuals = [...document.querySelectorAll('.system-visual')];
+        const flowRatios = new Map(flowVisuals.map(visual => [visual, 0]));
+        function syncFlowMotion() {
+            const allowed = !document.hidden && !motionPreference.matches;
+            let lead = null, best = 0.2;
+            flowRatios.forEach((ratio, visual) => { if (ratio >= best) { lead = visual; best = ratio; } });
+            flowVisuals.forEach(visual => visual.classList.toggle('is-flowing', allowed && visual === lead));
         }
-        const architectureObserver = new IntersectionObserver(entries => {
-            architectureVisible = entries[0].isIntersecting;
-            syncArchitectureMotion();
-        }, { threshold:0.2 });
-        architectureObserver.observe(architecture);
-        document.addEventListener('visibilitychange', syncArchitectureMotion);
-        motionPreference.addEventListener('change', syncArchitectureMotion);
+        const flowObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => flowRatios.set(entry.target, entry.intersectionRatio));
+            syncFlowMotion();
+        }, { threshold:[0, 0.2, 0.4, 0.6, 0.8, 1] });
+        flowVisuals.forEach(visual => flowObserver.observe(visual));
+        document.addEventListener('visibilitychange', syncFlowMotion);
+        motionPreference.addEventListener('change', syncFlowMotion);
         const arrivalObserver = new IntersectionObserver(entries => {
             // Elements entering together (a card row, a badge pair) arrive in sequence.
             entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {
