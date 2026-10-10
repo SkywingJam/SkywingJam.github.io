@@ -105,7 +105,23 @@ section { padding:85px 0; }
 .section-heading { display:flex; justify-content:space-between; align-items:end; gap:40px; margin-bottom:38px; padding-top:26px; border-top:1px solid var(--line); }
 .section-title { margin-top:14px; font-size:clamp(2rem,3.5vw,3rem); letter-spacing:-1.3px; font-weight:500; line-height:1.2; }
 .section-heading>p { font-size:.8rem; color:var(--text-secondary); max-width:330px; }
-.featured-project { display:grid; grid-template-columns:1fr 1.15fr; gap:0; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+.featured-project { position:relative; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+.featured-slides { display:grid; }
+.featured-slide { grid-area:1/1; display:grid; grid-template-columns:1fr 1.15fr; min-width:0; }
+.featured-slide.is-placeholder { grid-template-columns:1fr; align-items:center; justify-items:center; }
+.coming-soon { font-family:monospace; font-size:.72rem; letter-spacing:.4px; color:var(--text-secondary); }
+.featured-wrap { position:relative; }
+.featured-next { position:absolute; top:50%; left:100%; margin:-17px 0 0 14px; width:34px; height:34px; display:inline-flex; align-items:center; justify-content:center; background:var(--surface); color:var(--text-main); border:1px solid var(--line); border-radius:3px; cursor:pointer; z-index:2; }
+@media (max-width:1120px) {
+    .featured-wrap { display:flex; flex-direction:column; }
+    .featured-next { position:static; align-self:flex-end; margin:12px 0 0; }
+}
+.featured-next:hover { color:var(--accent-color); border-color:var(--accent-color); }
+.featured-next:focus-visible,.featured-dot:focus-visible { outline:2px solid var(--accent-color); outline-offset:2px; }
+.featured-dots { position:absolute; right:20px; bottom:12px; display:flex; gap:2px; z-index:2; }
+.featured-dot { width:26px; height:18px; padding:0; border:0; background:none; cursor:pointer; position:relative; }
+.featured-dot:before { content:''; position:absolute; left:3px; right:3px; top:8px; height:1px; background:var(--line); transition:background-color var(--t-fast); }
+.featured-dot:hover:before,.featured-dot[aria-selected="true"]:before { background:var(--accent-color); }
 .featured-copy { padding:44px; }
 .featured-copy h3 { font-size:clamp(1.7rem,2.4vw,2.2rem); font-weight:550; line-height:1.2; letter-spacing:-.8px; margin:22px 0 14px; }
 .project-subtitle { font-family:monospace; font-size:.72rem; color:var(--accent-color); margin-bottom:24px; }
@@ -212,7 +228,7 @@ section { padding:85px 0; }
     .section-heading { display:block; margin-bottom:28px; }
     .section-heading>p { margin-top:18px; }
     .section-title { font-size:2.2rem; }
-    .featured-project { grid-template-columns:1fr; }
+    .featured-slide { grid-template-columns:1fr; }
     .system-visual { border-right:0; border-bottom:1px solid var(--line); padding:28px; }
     .featured-copy { padding:28px; }
     .featured-copy h3 { font-size:1.8rem; }
@@ -401,6 +417,13 @@ section { padding:85px 0; }
 .nav-links.is-open { animation:menu-in .35s var(--ease); }
 @keyframes menu-in { from { opacity:0; transform:translateY(-8px); } to { opacity:1; transform:none; } }
 
+/* Featured carousel: the outgoing slide fades and drifts left, the incoming one arrives from the right. */
+.featured-slide { opacity:0; visibility:hidden; transform:translate3d(-28px,0,0); transition:opacity .6s var(--ease),transform .6s var(--ease),visibility 0s linear .6s; }
+.featured-slide.is-active { opacity:1; visibility:visible; transform:translate3d(0,0,0); transition:opacity .6s var(--ease),transform .6s var(--ease),visibility 0s; }
+.featured-slide.is-entering { transform:translate3d(28px,0,0); transition:none; }
+.featured-next>svg { transition:transform var(--t-fast) var(--ease); }
+.featured-next:hover>svg { transform:translateX(2px); }
+
 @media (prefers-reduced-motion:reduce) {
     html { scroll-behavior:auto; transition:none!important; }
     .arrival-pending { opacity:1; transform:none; }
@@ -463,7 +486,10 @@ section { padding:85px 0; }
     <section class="projects-section" id="projects">
         <div class="container">
             <div class="section-heading"><div><span class="eyebrow">01 / Selected work</span><h2 class="section-title">From ideas to systems.</h2></div><p>Full-stack platforms, thoughtful architecture,<br>and the teamwork that brings them together.</p></div>
-            <article class="featured-project">
+            <div class="featured-wrap">
+            <article class="featured-project" id="featuredCarousel" role="region" aria-roledescription="carousel" aria-label="Featured projects">
+                <div class="featured-slides" id="featuredSlides" aria-live="off">
+                <div class="featured-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2">
                 <div class="system-visual" role="img" aria-label="Architecture overview: React calls the Node.js and Express API. The API stores data through Prisma and SQLite, and calls FastAPI. FastAPI enqueues tasks in Redis; Celery workers process jobs and return results to the API through webhooks. FastAPI integrates with Gemini; Celery integrates with Qwen-VL.">
                     <div class="visual-topline"><span>System overview</span><span>Async by design</span></div>
                     <div class="system-node frontend-node"><small>01 / Web client</small><strong>React</strong></div>
@@ -489,7 +515,13 @@ section { padding:85px 0; }
                     <div class="visual-caption">Instagram Influencer Verification System</div>
                 </div>
                 <div class="featured-copy"><span class="project-type-badge">Featured project / 2025</span><h3>Instagram Influencer<br>Verification System</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2025</p><p class="project-desc">An end-to-end platform for influencer verification, connecting a web API with an asynchronous machine learning pipeline.</p><div class="contribution"><span class="eyebrow">My contribution</span><p>Led development, designed the Node.js / Express core API, and engineered distributed Python tasks with FastAPI and Celery.</p></div><div class="tech-stack"><span class="tech-tag">TypeScript</span><span class="tech-tag">Prisma</span><span class="tech-tag">Redis</span><span class="tech-tag">Python</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Instagram-Influencer-Verification-System" target="_blank" rel="noopener noreferrer" class="action-btn"><i class="fab fa-github" aria-hidden="true"></i>Portfolio</a><a href="https://www.youtube.com/watch?v=gl4OnjhNrPg" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div>
+                </div>
+                <div class="featured-slide is-placeholder" role="group" aria-roledescription="slide" aria-label="2 of 2" inert aria-hidden="true"><span class="coming-soon">Coming Soon...</span></div>
+                </div>
+                <div class="featured-dots" role="tablist" aria-label="Choose featured project"><button type="button" class="featured-dot" role="tab" aria-selected="true" aria-label="Project 1"></button><button type="button" class="featured-dot" role="tab" aria-selected="false" aria-label="Project 2"></button></div>
             </article>
+            <button type="button" class="featured-next" id="featuredNext" aria-label="Next featured project" aria-controls="featuredSlides"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M6 3l5 5-5 5"/></svg></button>
+            </div>
             <div class="projects-grid supporting-projects">
                 <article class="project-card"><div class="project-topline"><span class="project-type-badge">Geospatial / 2025</span><span aria-hidden="true">01</span></div><h3 class="project-title">Urban Tree Explorer</h3><p class="project-subtitle">Tech Lead · Mar – Jun 2025</p><p class="project-desc">An interactive platform exploring Melbourne’s urban trees. Coordinated Agile delivery and extended WP Go Maps with geospatial search, clustering, and dynamic legends.</p><div class="tech-stack"><span class="tech-tag">WordPress</span><span class="tech-tag">PHP</span><span class="tech-tag">JavaScript</span></div><div class="card-actions"><a href="https://github.com/SkywingJam/Urban-Tree-Explorer" target="_blank" rel="noopener noreferrer" class="text-link">Portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://youtu.be/T_lrE1xrhLo" target="_blank" rel="noopener noreferrer" class="text-link">Watch demo <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></article>
                 <article class="project-card"><div class="project-topline"><span class="project-type-badge">Accessible web / 2023</span><span aria-hidden="true">02</span></div><h3 class="project-title">Online Village</h3><p class="project-subtitle">Tech Lead · Aug – Nov 2023</p><p class="project-desc">A web platform for elderly users, bringing together calendars, mini-games, and chat. Led a six-member Agile team and implemented the Flask backend for secure data handling.</p><div class="tech-stack"><span class="tech-tag">Python</span><span class="tech-tag">Flask</span><span class="tech-tag">Accessibility</span></div><p class="project-footnote">University of Melbourne · Capstone project</p></article>
@@ -598,8 +630,9 @@ section { padding:85px 0; }
         syncCallbackPath();
         new ResizeObserver(syncCallbackPath).observe(callbackLoop);
         let architectureVisible = false;
+        let architectureSlideActive = true;
         function syncArchitectureMotion() {
-            architecture.classList.toggle('is-flowing', architectureVisible && !document.hidden && !motionPreference.matches);
+            architecture.classList.toggle('is-flowing', architectureVisible && architectureSlideActive && !document.hidden && !motionPreference.matches);
         }
         const architectureObserver = new IntersectionObserver(entries => {
             architectureVisible = entries[0].isIntersecting;
@@ -608,6 +641,48 @@ section { padding:85px 0; }
         architectureObserver.observe(architecture);
         document.addEventListener('visibilitychange', syncArchitectureMotion);
         motionPreference.addEventListener('change', syncArchitectureMotion);
+        // Featured carousel: timed rotation, paused while hovered, focused, off-screen or hidden.
+        const carousel = document.getElementById('featuredCarousel');
+        const slides = [...carousel.querySelectorAll('.featured-slide')];
+        const dots = [...carousel.querySelectorAll('.featured-dot')];
+        const rotateEvery = 12000;
+        let slideIndex = 0, rotateTimer = 0, carouselVisible = false, carouselHeld = false;
+        function showSlide(next) {
+            if (next === slideIndex) return;
+            const incoming = slides[next];
+            if (!motionPreference.matches) {
+                // Park the incoming slide on the right with no transition, then let it settle.
+                incoming.classList.add('is-entering');
+                void incoming.offsetWidth;
+                incoming.classList.remove('is-entering');
+            }
+            slides.forEach((slide, i) => {
+                const active = i === next;
+                slide.classList.toggle('is-active', active);
+                slide.toggleAttribute('inert', !active);
+                slide.setAttribute('aria-hidden', String(!active));
+            });
+            dots.forEach((dot, i) => dot.setAttribute('aria-selected', String(i === next)));
+            slideIndex = next;
+            architectureSlideActive = slides[next].contains(architecture);
+            syncArchitectureMotion();
+        }
+        function scheduleRotation() {
+            clearTimeout(rotateTimer);
+            if (carouselVisible && !carouselHeld && !document.hidden && !motionPreference.matches) {
+                rotateTimer = setTimeout(() => { showSlide((slideIndex + 1) % slides.length); scheduleRotation(); }, rotateEvery);
+            }
+        }
+        document.getElementById('featuredNext').addEventListener('click', () => { showSlide((slideIndex + 1) % slides.length); scheduleRotation(); });
+        dots.forEach((dot, i) => dot.addEventListener('click', () => { showSlide(i); scheduleRotation(); }));
+        carousel.addEventListener('pointerenter', () => { carouselHeld = true; scheduleRotation(); });
+        carousel.addEventListener('pointerleave', () => { carouselHeld = false; scheduleRotation(); });
+        carousel.addEventListener('focusin', () => { carouselHeld = true; scheduleRotation(); });
+        carousel.addEventListener('focusout', () => { carouselHeld = false; scheduleRotation(); });
+        new IntersectionObserver(entries => { carouselVisible = entries[0].isIntersecting; scheduleRotation(); }, { threshold:0.4 }).observe(carousel);
+        document.addEventListener('visibilitychange', scheduleRotation);
+        motionPreference.addEventListener('change', scheduleRotation);
+
         const arrivalObserver = new IntersectionObserver(entries => {
             // Elements entering together (a card row, a badge pair) arrive in sequence.
             entries.filter(entry => entry.isIntersecting).forEach((entry, index) => {

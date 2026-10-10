@@ -66,7 +66,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 
 ## 6. Don't
 
-- Don't add parallax, scroll-jacking, cursor trails, tilt cards, marquee text, or auto-playing carousels.
+- Don't add parallax, scroll-jacking, cursor trails, tilt cards, marquee text, or auto-playing carousels (the one exception is the featured project card: a slow 12s rotation that pauses on hover, focus, off-screen and hidden tab, never runs under reduced motion, and has a manual arrow outside the card).
 - Don't use gradients as fills on cards, glows on text, or heavy drop shadows. Shadows are soft and only appear on hover.
 - Don't add a second accent colour or saturated colours outside the palette.
 - Don't introduce bounce, spring overshoot, or looping animation on content (the lab uses a soft spring for liquid wave response only, not for page UI).
