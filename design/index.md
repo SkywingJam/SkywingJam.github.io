@@ -103,18 +103,18 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 
 ## 9. Featured projects (more than one on the page)
 
-Featured projects are the large, two-column cards at the top of `Selected work`. The first is the Instagram Influencer Verification System; a second sits below it as a placeholder until it is ready.
+Featured projects are the large, two-column cards at the top of `Selected work`. AU Job Board appears first (01), followed by the Instagram Influencer Verification System (02). The supporting grid continues at 03.
 
 ### Template
 
-Every featured project is an `article.featured-project` with a media side and a copy side. The skeleton lives as a comment next to the placeholder in `index.html`.
+Every featured project is an `article.featured-project` with a media side and a copy side. Use the two existing cards in `index.html` as the template.
 
 | Part | Rule |
 | --- | --- |
 | Media | `.featured-media` for a screenshot or still (an `img` with `width`, `height`, `alt`, `loading="lazy"`), or `.system-visual` for an animated diagram. Both share the same tinted panel and 1px divider. The media is always on the left, the copy on the right, and it stacks media-first below 760px. |
 | Copy order | Topline (`Featured project / YEAR` and the project number) → `h3` title → `.project-subtitle` (role · dates) → `.project-desc` (one or two sentences) → `.contribution` (what I did, then an optional `.outcomes` list) → `.tech-stack` → `.card-actions`. Do not reorder or drop parts; leave out only the links that do not exist. |
 | Outcomes | Two to four `li` items in `.outcomes`, inside `.contribution`. Each is a verifiable result or delivered artefact (tests passing, pipelines, handoff), not a duty. Bold only the number or noun that carries the claim; say "in a local run" when a figure is not from CI. No invented metrics. |
-| Visual weight | A featured card carries real media. A placeholder is a framed `Coming Soon...` card only while the project does not exist yet; do not stretch it with fake content. Its height follows the tallest `.project-card` in the grid below (the page script sets `--card-height`), so an empty slot never looks heavier or lighter than the cards under it. |
+| Visual weight | A featured card carries real media. Use a screenshot or a readable system diagram tied to the project; do not pad the media side with invented metrics or decorative interface controls. |
 | Spacing | Featured cards are 24px apart (`.featured-project + .featured-project`), the same gap as the grid below. |
 | Actions | One primary `.action-btn` (the repository) and at most one `.text-link` (demo). |
 
@@ -139,3 +139,11 @@ Several featured projects may each have a looping diagram, so loops follow these
 6. **Pause when it cannot be seen**: tab hidden, `prefers-reduced-motion`, or off-screen. Reduced motion shows the diagram at rest.
 7. **Media cards that are not diagrams do not loop.** Screenshots and stills use the normal arrival motion and hover language only.
 8. **No carousel.** Featured projects stack vertically; they are not rotated, paged, or auto-advanced.
+
+### AU Job Board card
+
+- **Source:** Fact v1, dated 2026-10-09. Copy selects delivered capabilities and the maintainer's product direction, AI-assisted implementation, and review responsibilities. No accuracy, time-saving, adoption, or application-success metrics are implied.
+- **Composition:** reuse the two-column featured frame and system-node vocabulary. Three source labels feed original listings, offline analysis, and a review panel. A separately framed records area makes the distinction between recomputable analysis and persistent human decisions visible.
+- **Motion:** a 16-second cycle uses the shared visibility controller; only one project diagram runs at a time. New signals animate opacity and transform with `--ease`, and the complete workflow remains readable at rest, with JavaScript disabled, or under reduced motion.
+- **Actions:** the public repository and 30-second video supplied by Fact v1. The diagram is a conceptual workflow, not a product screenshot or live demo.
+- **Integration:** the Instagram callback path is selected by `.result-loop`, independently of card order. Placeholder styles and the height observer were removed with the empty card.
