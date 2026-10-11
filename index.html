@@ -122,7 +122,7 @@ section { padding:85px 0; }
 .contribution .eyebrow { font-size:.6rem; }
 .contribution p { font-size:.82rem; color:var(--text-secondary); margin-top:10px; }
 .outcomes { list-style:none; margin-top:12px; display:grid; gap:7px; }
-.outcomes li { position:relative; padding-left:16px; font-size:.8rem; line-height:1.6; color:var(--text-secondary); }
+.outcomes li { position:relative; padding-left:16px; font-size:.82rem; line-height:1.6; color:var(--text-secondary); }
 .outcomes li:before { content:''; position:absolute; left:0; top:.78em; width:8px; border-top:1px solid var(--accent-color); }
 .outcomes strong { color:var(--text-main); font-weight:550; }
 .system-visual,.featured-media { background:var(--tag-bg); padding:34px; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--line); }
@@ -226,6 +226,7 @@ section { padding:85px 0; }
     .hero-portrait { width:80%; max-width:320px; justify-self:center; }
     .hero-portrait figcaption { text-align:left; }
     .hero-intro,.project-desc,.about-text p,.timeline-item p,.contact-panel>p { font-size:.95rem; }
+    .contribution p,.outcomes li { font-size:.88rem; }
     section { padding:55px 0; }
     .section-heading { display:block; margin-bottom:28px; }
     .section-heading>p { margin-top:18px; }
@@ -530,9 +531,9 @@ section { padding:85px 0; }
                         <span class="eyebrow">My contribution</span>
                         <p>Defined the workflow and product priorities, directed AI-assisted implementation, and reviewed the release for daily personal use.</p>
                         <ul class="outcomes">
-                            <li><strong>Traceable screening</strong> pairs rule matches with original text, alongside deduplication and ranking.</li>
-                            <li><strong>Repeatable offline analysis</strong> preserves personal labels and notes when rules change.</li>
-                            <li><strong>Open-source MIT release</strong> with a bilingual review panel, synthetic regression tests, and a recorded demo.</li>
+                            <li>Every rule exclusion keeps its <strong>rule ID and matched text</strong>, so a filtered job can be checked against the original listing.</li>
+                            <li>Analysis re-runs offline on saved listings and leaves personal labels and notes untouched.</li>
+                            <li><strong>MIT-licensed</strong> public release with a bilingual review panel, a synthetic-data regression suite passing in CI, and a 30-second demo.</li>
                         </ul>
                     </div>
                     <div class="tech-stack"><span class="tech-tag">Python</span><span class="tech-tag">SQLite</span><span class="tech-tag">JavaScript</span><span class="tech-tag">launchd</span></div>
