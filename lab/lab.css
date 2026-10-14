@@ -2051,18 +2051,18 @@ a.interest:after {
   display:flex;
   flex-direction:column;
   align-items:center;
-  transform:translate(-50%,-22px);
+  transform:translate(-50%,-27px);
   transition:opacity .6s
 }
 
 .net-node .acrylic {
   display:grid;
   place-items:center;
-  width:44px;
-  height:44px;
+  width:54px;
+  height:54px;
   border-radius:50%;
   color:var(--accent);
-  font-size:22px
+  font-size:27px
 }
 
 /* The icon fills a little under half the disc, leaving the sculpted rim room to read;
@@ -2759,6 +2759,14 @@ a.interest:after {
   .net-modes {
     top:44px
   }
+  .net-node .acrylic {
+    width:44px;
+    height:44px;
+    font-size:22px
+  }
+  .net-node {
+    transform:translate(-50%,-22px)
+  }
 }
 
 @media(max-width:700px) {
@@ -2892,11 +2900,17 @@ a.interest:after {
 /* Top-row nodes label upward so routes arriving from below never cross their text. */
 .net-node.label-top {
   flex-direction:column-reverse;
-  transform:translate(-50%,calc(-100% + 22px))
+  transform:translate(-50%,calc(-100% + 27px))
 }
 
 .net-node.label-top b {
   margin:0 0 8px
+}
+
+@media(max-width:1050px) {
+  .net-node.label-top {
+    transform:translate(-50%,calc(-100% + 22px))
+  }
 }
 
 @media(max-width:700px) {
