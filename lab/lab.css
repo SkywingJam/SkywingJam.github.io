@@ -1839,9 +1839,11 @@ a.interest:after {
   border-radius:22px
 }
 
-/* The round inlay on top: polished black, flush like the mark on the real lid. A smooth
-   vertical gradient and a wide, very soft sheen that drifts with the light; no inner bevel
-   shadows, which would make it read as a bump. */
+/* The round inlay on top: a flat black mirror set flush into the lid. Its light is drawn in
+   the lid's coordinates, not its own: each layer is sized to the whole lid (100% / 26%) and
+   centred, so the inlay shows only the middle slice of one lid-wide reflection. That keeps
+   the gradient shallow and unrelated to the circle's edge, and the hard-edged diagonal band
+   (which slides with the light) can only be read as a reflection on a flat surface. */
 .hw-lens {
   position:absolute;
   left:50%;
@@ -1850,11 +1852,19 @@ a.interest:after {
   aspect-ratio:1;
   border-radius:50%;
   transform:translate(-50%,-50%);
-  background:radial-gradient(120% 90% at calc(50% + var(--lx) * 24%) 0%,rgba(255,255,255,.14),transparent 78%),linear-gradient(175deg,#4a4e52 0%,#232628 50%,#0a0b0c 100%)
+  background:
+    linear-gradient(104deg,transparent calc(41% + var(--lx) * 10%),rgba(255,255,255,.15) calc(41% + var(--lx) * 10%),rgba(255,255,255,.15) calc(47% + var(--lx) * 10%),transparent calc(47% + var(--lx) * 10%)),
+    linear-gradient(180deg,#44484b 0%,#1e2123 50%,#0a0b0c 100%);
+  background-size:384.6% 384.6%;
+  background-position:50% 50%
 }
 
 .dark-mode .hw-lens {
-  background:radial-gradient(120% 90% at calc(50% + var(--lx) * 24%) 0%,rgba(190,220,250,.12),transparent 78%),linear-gradient(175deg,#2c3238 0%,#121619 50%,#050607 100%)
+  background:
+    linear-gradient(104deg,transparent calc(41% + var(--lx) * 10%),rgba(190,220,250,.12) calc(41% + var(--lx) * 10%),rgba(190,220,250,.12) calc(47% + var(--lx) * 10%),transparent calc(47% + var(--lx) * 10%)),
+    linear-gradient(180deg,#2c3238 0%,#121619 50%,#050607 100%);
+  background-size:384.6% 384.6%;
+  background-position:50% 50%
 }
 
 /* T7, drawn like a macOS drive icon: the top face tilts back in perspective, and a short
