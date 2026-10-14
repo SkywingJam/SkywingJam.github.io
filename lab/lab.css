@@ -1810,14 +1810,16 @@ a.interest:after {
   margin-bottom:6px
 }
 
-/* I. Hardware: two acrylic objects that tilt a little toward the light. */
+/* I. Hardware: a Mac mini seen from above and a T7 seen from the front, side by side on the
+   bench and joined by a cable. Labels share a baseline. */
 .hw-set {
+  --cable:8cqw;
   position:absolute;
   inset:12% 8% 16%;
   display:flex;
-  align-items:center;
+  align-items:flex-end;
   justify-content:center;
-  gap:0
+  gap:var(--cable)
 }
 
 .hw-item {
@@ -1837,26 +1839,70 @@ a.interest:after {
   border-radius:22px
 }
 
-/* A faint inner bevel reads as the top face. */
-.hw-mini:after {
-  content:'';
+/* The dark round window on top: black glass with a lens-like glare that slides left and
+   right with the light, and a faint bounce of light at the bottom edge. */
+.hw-lens {
   position:absolute;
   left:50%;
   top:50%;
-  width:22%;
+  width:26%;
   aspect-ratio:1;
   border-radius:50%;
   transform:translate(-50%,-50%);
-  box-shadow:inset calc(var(--lx) * -3px) calc(var(--ly) * -3px) 5px var(--lo),inset calc(var(--lx) * 3px) calc(var(--ly) * 3px) 5px var(--hi)
+  background:radial-gradient(circle at calc(50% + var(--lx) * 30%) 27%,rgba(255,255,255,.78) 0,rgba(255,255,255,.2) 13%,transparent 34%),radial-gradient(circle at 50% 68%,#2c3337 0,#12171a 60%,#060808 100%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.28),0 1px 1px 1px rgba(255,255,255,.6),inset 0 3px 7px rgba(0,0,0,.65),inset 0 -2px 4px rgba(255,255,255,.1)
+}
+
+.hw-lens:after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(ellipse 58% 26% at calc(50% - var(--lx) * 18%) 84%,rgba(170,205,235,.28),transparent 72%)
+}
+
+.dark-mode .hw-lens {
+  box-shadow:0 0 0 1px rgba(0,0,0,.45),0 1px 1px 1px rgba(150,190,230,.2),inset 0 3px 7px rgba(0,0,0,.7),inset 0 -2px 4px rgba(255,255,255,.08)
+}
+
+/* T7: a flat drive with a front lip split off by a groove, and its activity light. */
+.hw-drive {
+  width:min(150px,27cqw);
+  aspect-ratio:1.5;
+  border-radius:14px
+}
+
+.hw-drive-mark {
+  position:absolute;
+  left:0;
+  right:0;
+  top:30%;
+  text-align:center;
+  font:10px var(--mono);
+  letter-spacing:.24em;
+  color:color-mix(in srgb,var(--ink) 38%,transparent);
+  text-shadow:0 1px 0 var(--hi)
+}
+
+.hw-bezel {
+  position:absolute;
+  left:7%;
+  right:7%;
+  bottom:9%;
+  height:19%;
+  border-radius:7px;
+  border-top:1px solid color-mix(in srgb,var(--ink) 16%,transparent);
+  background:linear-gradient(var(--face-far),var(--art));
+  box-shadow:inset 0 2px 3px var(--lo),inset 0 -1px 0 var(--hi)
 }
 
 .hw-led {
   position:absolute;
-  left:50%;
-  bottom:7%;
+  right:9%;
+  top:50%;
   width:5px;
   height:5px;
-  margin-left:-2.5px;
+  margin-top:-2.5px;
   border-radius:50%;
   background:var(--accent);
   box-shadow:0 0 8px var(--accent);
@@ -1864,30 +1910,16 @@ a.interest:after {
   animation-play-state:paused
 }
 
-.hw-drive {
-  width:min(84px,15cqw);
-  aspect-ratio:.62;
-  border-radius:12px;
-  display:grid;
-  place-items:end center;
-  padding-bottom:12%
-}
-
-.hw-drive span {
-  font:9px var(--mono);
-  letter-spacing:.07em;
-  color:var(--muted)
-}
-
-/* The cable: a dashed hairline with a slow pulse, at object height. */
-.hw-link {
-  align-self:center;
-  width:9cqw;
+/* The cable runs from the drive's side across the gap to the Mac mini. */
+.hw-drive:after {
+  content:'';
+  position:absolute;
+  right:100%;
+  top:50%;
+  width:var(--cable);
   height:1px;
-  margin:0 2cqw 58px;
   background:repeating-linear-gradient(90deg,var(--muted) 0 3px,transparent 3px 7px);
-  opacity:.5;
-  position:relative
+  opacity:.5
 }
 
 .hw-name {
@@ -2872,9 +2904,6 @@ a.interest:after {
   .svc-tile i {
     top:10px;
     right:10px
-  }
-  .hw-link {
-    margin-bottom:50px
   }
   .notes-heading {
     position:static
