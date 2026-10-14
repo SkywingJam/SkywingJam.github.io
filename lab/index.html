@@ -75,7 +75,7 @@
         </div>
 
         <div class="layer-panel" data-switch-panel="hardware">
-          <figure class="lab-figure hw-figure" data-light-field data-ambient aria-hidden="true">
+          <figure class="lab-figure bench-grid hw-figure" data-light-field data-ambient aria-hidden="true">
             <div class="art-index"><span>FIG. 001 / I.</span><span>HARDWARE</span></div>
             <div class="hw-set">
               <div class="hw-item"><div class="acrylic hw-mini"><span class="hw-led"></span></div><span class="hw-name">Mac mini M4</span><span class="hw-spec">16 GB / 256 GB SSD</span></div>
@@ -95,7 +95,7 @@
         </div>
 
         <div class="layer-panel" data-switch-panel="services">
-          <figure class="lab-figure svc-figure" data-light-field data-ambient aria-hidden="true">
+          <figure class="lab-figure bench-grid svc-figure" data-light-field data-ambient aria-hidden="true">
             <div class="art-index"><span>FIG. 001 / II.</span><span>SERVICES</span></div>
             <div class="svc-grid">
               <div class="acrylic svc-tile is-container" style="--i:0"><svg class="i-arrow" viewBox="0 0 16 16" focusable="false"><path d="M2.5 4h11v8.5h-11zM2.5 10.5l3-3 2.5 2.5 2-2 3.5 3.5"/><circle cx="10.5" cy="6.5" r="1"/></svg><span>IMMICH</span><i></i></div>
@@ -123,9 +123,9 @@
 
         <div class="layer-panel" data-switch-panel="network">
           <div class="net-switch" data-switch data-active="home">
-            <figure class="lab-figure net-figure" data-light-field data-ambient>
+            <figure class="lab-figure bench-grid net-figure" data-light-field data-ambient>
               <div class="art-index"><span>FIG. 001 / III.</span><span>WHERE THE PACKETS GO</span></div>
-              <div class="net-modes recess" data-switch-tabs aria-label="Where my phone is" hidden>
+              <div class="net-modes" data-switch-tabs aria-label="Where my phone is" hidden>
                 <button type="button" data-switch-tab="home">Home Wi-Fi</button>
                 <button type="button" data-switch-tab="away">Away</button>
                 <button type="button" data-switch-tab="exit">Public Wi-Fi</button>
@@ -171,7 +171,7 @@
     <section class="archive wrap" id="index" aria-labelledby="archive-title">
       <div class="section-heading" data-arrival><div><p class="eyebrow">02 / BUILDS AND STUDIES</p><h2 id="archive-title">Small layers, <em>added carefully.</em></h2></div><p>Code that sits on top of something else: a closed-source app,<br>someone else’s project, and this page’s own background.</p></div>
       <article class="experiment" id="extension-layer" data-arrival>
-        <div class="experiment-art inject-art" data-light-field aria-hidden="true"><div class="art-index"><span>FIG. 002</span><span>HOST / INJECTION</span></div>
+        <div class="experiment-art inject-art bench-grid" data-light-field aria-hidden="true"><div class="art-index"><span>FIG. 002</span><span>HOST / INJECTION</span></div>
           <div class="inject-stack">
             <div class="inject-tiles">
               <span class="acrylic inject-tile" style="--i:0"><svg class="i-arrow" viewBox="0 0 16 16" focusable="false"><path d="M2 7.5v1M4.5 5.5v5M7 3v10M9.5 6v4M12 4.5v7M14 7v2"/></svg><i></i></span>
@@ -187,15 +187,14 @@
         <div class="experiment-copy"><div class="entry-meta"><span>002 / EXTENSION LAYER</span><span class="status"><i aria-hidden="true"></i> In use</span></div><h3>A layer on top, host untouched.</h3><p>NeoKikoeru is a closed-source audio library I host at home. Rather than edit its files, an nginx proxy injects my own JavaScript into the pages it serves. Five modules live there: a waveform heatmap, live subtitles with picture-in-picture, watch later, work marks with filters, and a parametric EQ on Web Audio that imports Equalizer APO presets.</p><p>The hard parts belong to the host: when its player sets a source and starts playing, what iOS Safari lets an AudioContext do, and sharing state between scripts that load separately. The host stays pinned at 0.26.3. Moving to 3.x means a reindex and retesting the whole injection layer, and that hasn’t been worth it yet.</p><div class="tags"><span>nginx sub_filter</span><span>Web Audio</span><span>Picture-in-picture</span></div><div class="entry-links"><span class="entry-aside">Private: the host is closed source</span></div></div>
       </article>
       <article class="experiment" id="crosspet" data-arrival>
-        <div class="experiment-art diagram-art pr-art" data-light-field aria-hidden="true"><div class="art-index"><span>FIG. 003</span><span>PULL REQUESTS</span></div>
-          <svg viewBox="0 0 640 380" fill="none">
-            <path class="track" d="M70 200h500"/>
-            <g class="pr pr-closed"><circle cx="110" cy="200" r="7"/><path d="M104 206l12-12"/><text x="110" y="172">#9</text><text class="note" x="110" y="236">CLOSED</text></g>
-            <g class="pr pr-merged"><circle class="halo" cx="220" cy="200" r="15"/><circle cx="220" cy="200" r="7"/><text x="220" y="172">#11</text><text class="note" x="220" y="236">MERGED</text><text class="note" x="220" y="254">13 OCT</text></g>
-            <g class="pr pr-merged"><circle class="halo" cx="330" cy="200" r="15"/><circle cx="330" cy="200" r="7"/><text x="330" y="172">#13</text><text class="note" x="330" y="236">MERGED</text><text class="note" x="330" y="254">13 OCT</text></g>
-            <g class="pr pr-merged"><circle class="halo" cx="440" cy="200" r="15"/><circle cx="440" cy="200" r="7"/><text x="440" y="172">#15</text><text class="note" x="440" y="236">MERGED</text><text class="note" x="440" y="254">14 OCT</text></g>
-            <g class="pr pr-open"><circle class="ring" cx="550" cy="200" r="11"/><circle cx="550" cy="200" r="4"/><text x="550" y="172">#17</text><text class="note" x="550" y="236">OPEN</text></g>
-          </svg>
+        <div class="experiment-art pr-art bench-grid" data-light-field aria-hidden="true"><div class="art-index"><span>FIG. 003</span><span>PULL REQUESTS</span></div>
+          <div class="pr-track">
+            <div class="pr pr-closed"><b>#9</b><span class="recess pr-dot"><i></i></span><small>CLOSED</small></div>
+            <div class="pr pr-merged"><b>#11</b><span class="acrylic pr-dot"></span><small>MERGED<br>13 OCT</small></div>
+            <div class="pr pr-merged"><b>#13</b><span class="acrylic pr-dot"></span><small>MERGED<br>13 OCT</small></div>
+            <div class="pr pr-merged"><b>#15</b><span class="acrylic pr-dot"></span><small>MERGED<br>14 OCT</small></div>
+            <div class="pr pr-open"><b>#17</b><span class="acrylic pr-dot"><i></i></span><small>OPEN</small></div>
+          </div>
           <span class="art-label">LOKICORVUS / CROSSPET</span></div>
         <div class="experiment-copy"><div class="entry-meta"><span>003 / OPEN SOURCE</span><span class="status"><i aria-hidden="true"></i> 3 merged / 1 open</span></div><h3>Fixes for a desktop pet.</h3><p>CrossPet is a small desktop companion for macOS and Windows that changes character with the AI tool you’re using and acts out what it’s doing. I’ve been sending it pull requests, mostly from the macOS side. Status as of 14 Oct 2026:</p>
           <dl class="ledger ledger-compact">

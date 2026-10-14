@@ -1540,13 +1540,13 @@ a.interest:after {
 @property --lx {
   syntax:"<number>";
   inherits:true;
-  initial-value:-.45
+  initial-value:0
 }
 
 @property --ly {
   syntax:"<number>";
   inherits:true;
-  initial-value:-.7
+  initial-value:-.85
 }
 
 .experiment-copy>p+p {
@@ -1555,7 +1555,7 @@ a.interest:after {
 
 /* Light fields: --lx/--ly lean toward the pointer (lab.js) and ease back on leave. */
 [data-light-field] {
-  transition:--lx 1.1s var(--ease-settle),--ly 1.1s var(--ease-settle)
+  transition:--lx 1.1s var(--ease-settle)
 }
 
 /* Sculpted surface (soft neumorphism): objects are raised out of the same ground they sit on.
@@ -2062,7 +2062,11 @@ a.interest:after {
   height:44px;
   border-radius:50%;
   color:var(--accent);
-  font-size:18px
+  font-size:16px
+}
+
+.net-node .i-arrow {
+  stroke-width:1.05
 }
 
 .net-node b,.net-tag,.net-badge,.net-legend {
@@ -2131,7 +2135,11 @@ a.interest:after {
 }
 
 .net-modes {
-  gap:2px
+  gap:2px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  backdrop-filter:blur(5px);
+  -webkit-backdrop-filter:blur(5px)
 }
 
 .net-modes button {
@@ -2150,11 +2158,10 @@ a.interest:after {
   transition:background-color .35s,color .35s,box-shadow .5s var(--ease-settle)
 }
 
-/* The chosen scenario rises out of the recessed track. */
+/* Frosted like the featured file: a lighter pane of the same material, no relief. */
 .net-modes button[aria-selected="true"] {
   color:var(--ink);
-  background:linear-gradient(calc(135deg + var(--lx) * 30deg),var(--face-lit),var(--art) 60%,var(--face-far));
-  box-shadow:calc(var(--lx) * 4px) calc(var(--ly) * 4px) 8px var(--hi),calc(var(--lx) * -5px) calc(var(--ly) * -5px) 9px var(--lo),inset 0 1px 0 var(--edge)
+  background:color-mix(in srgb,var(--ink) 8%,var(--panel))
 }
 
 .net-modes button:focus-visible {
@@ -2308,74 +2315,118 @@ a.interest:after {
   box-shadow:0 1px 0 rgba(120,160,205,.18)
 }
 
-/* FIG. 003 pull requests (SVG). */
-.diagram-art {
+/* FIG. 003 pull requests: sculpted beads on a line. Merged beads are raised accent drops,
+   the open one carries a slowly turning dashed ring, the closed one is pressed in. */
+.pr-art {
+  container-type:inline-size;
   color:var(--accent);
-  background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--accent) 11%,transparent),transparent 70%),var(--art)
+  background:radial-gradient(ellipse at calc(50% + var(--lx) * 30%) 10%,rgba(255,255,255,.32),transparent 62%),var(--art)
 }
 
-.diagram-art svg {
+.dark-mode .pr-art {
+  background:radial-gradient(ellipse at calc(50% + var(--lx) * 30%) 10%,rgba(173,206,237,.08),transparent 62%),var(--art)
+}
+
+.pr-track {
   position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  stroke:currentColor;
-  stroke-width:1
+  left:9%;
+  right:9%;
+  top:50%;
+  transform:translateY(-50%);
+  display:flex;
+  justify-content:space-between
 }
 
-.diagram-art text {
-  font:11px var(--mono);
+/* The line is an engraved groove behind the beads. */
+.pr-track:before {
+  content:'';
+  position:absolute;
+  left:-4%;
+  right:-4%;
+  top:43px;
+  border-top:1px solid color-mix(in srgb,var(--ink) 20%,transparent);
+  box-shadow:0 1px 0 rgba(255,255,255,.7)
+}
+
+.dark-mode .pr-track:before {
+  box-shadow:0 1px 0 rgba(120,160,205,.16)
+}
+
+.pr {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:14px;
+  width:0
+}
+
+.pr b,.pr small {
+  font:400 11px/1.5 var(--mono);
   letter-spacing:.07em;
-  fill:var(--ink);
-  stroke:none;
-  text-anchor:middle
+  color:var(--ink);
+  white-space:nowrap
 }
 
-.diagram-art text.note {
+.pr small {
   font-size:9px;
-  fill:var(--muted)
+  color:var(--muted);
+  text-align:center
 }
 
-.pr-art .track {
-  stroke-opacity:.45
+.pr-dot {
+  position:relative;
+  display:block;
+  flex:none;
+  width:26px;
+  height:26px;
+  border-radius:50%
 }
 
-.pr circle {
-  fill:var(--art)
+.pr-merged .pr-dot {
+  --face-lit:color-mix(in srgb,var(--accent) 62%,#fff);
+  --face-far:color-mix(in srgb,var(--accent) 82%,#000);
+  background:var(--grain) 0 0 / 120px 120px,radial-gradient(circle at calc(50% + var(--lx) * 22%) calc(50% + var(--ly) * 26%),var(--face-lit),var(--accent) 58%,var(--face-far))
 }
 
-.pr-merged circle:not(.halo) {
-  fill:currentColor
+.dark-mode .pr-merged .pr-dot {
+  --face-lit:color-mix(in srgb,var(--accent) 70%,#fff);
+  --face-far:color-mix(in srgb,var(--accent) 45%,#000)
 }
 
-.pr-merged .halo {
-  fill:none;
-  stroke-opacity:.25
-}
-
-.pr-closed {
-  color:var(--muted)
-}
-
-.pr-closed text:not(.note) {
-  fill:var(--muted)
-}
-
-.pr-open .ring {
-  fill:none;
-  stroke-dasharray:3 3;
-  transform-box:fill-box;
-  transform-origin:center;
+.pr-open .pr-dot i {
+  position:absolute;
+  inset:-7px;
+  border-radius:50%;
+  border:1px dashed var(--accent);
   animation:ring-turn 14s linear infinite;
   animation-play-state:paused
+}
+
+.pr-open .pr-dot:after {
+  content:'';
+  position:absolute;
+  inset:9px;
+  border-radius:50%;
+  background:var(--accent)
 }
 
 @keyframes ring-turn {
   to {transform:rotate(360deg)}
 }
 
-.pr-open circle:not(.ring) {
-  fill:currentColor
+.pr-closed .pr-dot i {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:12px;
+  height:1px;
+  background:var(--muted);
+  transform:translate(-50%,-50%) rotate(-45deg)
+}
+
+.pr-closed b {
+  color:var(--muted)
 }
 
 .entry-aside {
@@ -2413,8 +2464,8 @@ a.interest:after {
   margin-top:-24px;
   overflow:hidden;
   border-radius:8px;
-  border:1px solid var(--study-edge);
-  box-shadow:inset 0 1px 0 var(--study-edge),calc(var(--study-light) * 12px) -10px 22px color-mix(in srgb,var(--study-reflect) 80%,transparent),calc(var(--study-light) * -16px) 16px 28px var(--study-shadow);
+  border:1px solid color-mix(in srgb,var(--study-line) 60%,transparent);
+  box-shadow:calc(var(--study-light) * -16px) 16px 28px var(--study-shadow);
   transform:rotate(calc(-3deg + var(--study-turn))) skewY(1.5deg);
   transition:transform .25s ease-out,box-shadow .25s ease-out
 }
@@ -2442,7 +2493,7 @@ a.interest:after {
   inset:-60%;
   pointer-events:none;
   background:linear-gradient(90deg,transparent 42%,var(--study-reflect) 50%,transparent 58%);
-  opacity:.45;
+  opacity:.22;
   transform:translateX(calc((var(--study-key) - 50%) * .7)) rotate(var(--study-angle));
   transition:transform .25s ease-out
 }
@@ -2655,11 +2706,11 @@ a.interest:after {
 }
 
 /* Ambient loops run only on screen and never after Pause. */
-.in-view .hw-led,.in-view .svc-tile i,.in-view .route .flow,.in-view .inject-tile i,.in-view .pr-open .ring {
+.in-view .hw-led,.in-view .svc-tile i,.in-view .route .flow,.in-view .inject-tile i,.in-view .pr-open .pr-dot i {
   animation-play-state:running
 }
 
-:root.motion-paused .hw-led,:root.motion-paused .svc-tile i,:root.motion-paused .route .flow,:root.motion-paused .inject-tile i,:root.motion-paused .pr-open .ring {
+:root.motion-paused .hw-led,:root.motion-paused .svc-tile i,:root.motion-paused .route .flow,:root.motion-paused .inject-tile i,:root.motion-paused .pr-open .pr-dot i {
   animation-play-state:paused
 }
 
@@ -2759,7 +2810,7 @@ a.interest:after {
   .net-node .acrylic {
     width:36px;
     height:36px;
-    font-size:15px
+    font-size:14px
   }
   .net-node {
     transform:translate(-50%,-18px)
@@ -2818,7 +2869,7 @@ a.interest:after {
 }
 
 @media(prefers-reduced-motion:reduce) {
-  .hw-led,.svc-tile i,.route .flow,.inject-tile i,.pr-open .ring {animation:none!important}
+  .hw-led,.svc-tile i,.route .flow,.inject-tile i,.pr-open .pr-dot i {animation:none!important}
   .inject-tile i {opacity:0}
 }
 
@@ -2840,5 +2891,26 @@ a.interest:after {
 @media(max-width:700px) {
   .net-node.label-top {
     transform:translate(-50%,calc(-100% + 18px))
+  }
+}
+
+/* Workbench ground: a faint tiled grid under figures 001–003 (the design study has its own). */
+.bench-grid:before {
+  content:'';
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,var(--line) 1px,transparent 1px) 50% 50% / 33px 33px,linear-gradient(var(--line) 1px,transparent 1px) 50% 50% / 33px 33px;
+  opacity:.42
+}
+
+.dark-mode .bench-grid:before {
+  opacity:.26
+}
+
+@media(max-width:700px) {
+  .pr-track {
+    left:13%;
+    right:13%
   }
 }

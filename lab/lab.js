@@ -151,13 +151,13 @@ finePointer.addEventListener('change', () => resetSurface());
 reducedMotion.addEventListener('change', () => resetSurface());
 document.addEventListener('visibilitychange', () => { if (document.hidden) resetSurface(); });
 
-// Light fields ([data-light-field]): acrylic objects inside share one light direction (--lx, --ly,
-// −1…1) that leans toward the pointer and eases back when it leaves (registered properties).
+// Light fields ([data-light-field]): objects inside share one light. It always falls from above
+// (--ly is fixed in CSS); only its left/right lean (--lx, −1…1) follows the pointer and eases back.
 const lightFields = [...document.querySelectorAll('[data-light-field]')];
-let lightFrame = 0, lightTarget = null, lightX = 0, lightY = 0;
+let lightFrame = 0, lightTarget = null, lightX = 0;
 function resetLight(target = null) {
   if (!target || target === lightTarget) { cancelAnimationFrame(lightFrame); lightFrame = 0; }
-  for (const field of target ? [target] : lightFields) { field.style.removeProperty('--lx'); field.style.removeProperty('--ly'); }
+  for (const field of target ? [target] : lightFields) field.style.removeProperty('--lx');
 }
 for (const field of lightFields) {
   field.addEventListener('pointermove', event => {
@@ -165,12 +165,10 @@ for (const field of lightFields) {
     const rect = field.getBoundingClientRect();
     lightTarget = field;
     lightX = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
-    lightY = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1));
     if (lightFrame) return;
     lightFrame = requestAnimationFrame(() => {
       lightFrame = 0;
       lightTarget.style.setProperty('--lx', lightX.toFixed(3));
-      lightTarget.style.setProperty('--ly', lightY.toFixed(3));
     });
   }, { passive: true });
   field.addEventListener('pointerleave', () => resetLight(field));
