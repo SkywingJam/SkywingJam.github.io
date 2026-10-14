@@ -1836,7 +1836,7 @@ a.interest:after {
 .hw-mini {
   width:min(220px,38cqw);
   aspect-ratio:1;
-  border-radius:22px
+  border-radius:20%
 }
 
 /* The round inlay on top: a flat black mirror set flush into the lid. Its light is drawn in
@@ -1884,11 +1884,20 @@ a.interest:after {
 }
 
 /* The Mac mini is silver aluminium in both themes; only the ground around it changes. */
-.acrylic.hw-mini,.dark-mode .acrylic.hw-mini {
+.acrylic.hw-mini {
   --art:#d6d9dc;
   --face-lit:#f3f4f5;
   --face-far:#aab0b5;
   --edge:rgba(255,255,255,.9)
+}
+
+/* At night the same aluminium sits in low, cool light: darker overall and with more
+   contrast between lit and far edges, so it reads as metal rather than white ceramic. */
+.dark-mode .acrylic.hw-mini {
+  --art:#8e959c;
+  --face-lit:#c3c9cf;
+  --face-far:#5f666d;
+  --edge:rgba(225,235,245,.55)
 }
 
 /* T7, drawn like a macOS drive icon: the top face tilts back in perspective, and a short
@@ -2072,8 +2081,20 @@ a.interest:after {
   stroke-linejoin:round
 }
 
+/* Two route colours that must stay apart in both themes: DNS in the accent (a clearer,
+   more saturated blue at night), everything else in a quieter neutral. */
+.net-figure {
+  --dns:var(--accent);
+  --web:color-mix(in srgb,var(--ink) 72%,transparent)
+}
+
+.dark-mode .net-figure {
+  --dns:#7fbcff;
+  --web:color-mix(in srgb,var(--ink) 40%,transparent)
+}
+
 .net-map .tunnel {
-  stroke:var(--accent);
+  stroke:var(--dns);
   stroke-width:22;
   opacity:0;
   transition:opacity .6s
@@ -2085,11 +2106,11 @@ a.interest:after {
 }
 
 .route.dns {
-  stroke:var(--accent)
+  stroke:var(--dns)
 }
 
 .route.web {
-  stroke:color-mix(in srgb,var(--ink) 72%,transparent)
+  stroke:var(--web)
 }
 
 .route .track {
@@ -2192,7 +2213,7 @@ a.interest:after {
 .tag-tunnel {
   left:59%;
   top:52%;
-  color:var(--accent)
+  color:var(--dns)
 }
 
 .tag-out {
@@ -2276,7 +2297,7 @@ a.interest:after {
 }
 
 .key-dns {
-  color:var(--accent)!important
+  color:var(--dns)!important
 }
 
 .net-caption {
