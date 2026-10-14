@@ -449,6 +449,10 @@
 .study-control-foot button:not(:disabled):hover {color:var(--study-ink)}
 .study-choices button:focus-visible {outline-offset:3px;z-index:1}
 .light-study[data-still="true"] * {transition:none!important}
+/* While a finger or pointer drags the light, everything follows it directly. Easing on each
+   update would restart from wherever the last one had got to, so the light would lag and then
+   catch up, which reads as uneven speed. Slider, keyboard and reset keep the smooth easing. */
+.light-study.study-dragging .study-scene,.light-study.study-dragging .study-scene * {transition:none!important}
 @media(hover:hover) and (pointer:fine) {
   .study-choices button:hover {color:var(--study-ink)}
   .study-choices button:hover .study-choice-mark {opacity:1;transform:none}
