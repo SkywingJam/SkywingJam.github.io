@@ -94,7 +94,9 @@ export function createLightStudy(root) {
     if (root.classList.contains('study-dragging')) root.classList.remove('study-dragging');
   }
   scene?.addEventListener('pointerdown', event => {
-    if (!event.isPrimary || event.button !== 0) return;
+    // Touch is handled below with touch events: iOS Safari cancels touch pointers as soon as it
+    // considers scrolling, which cut every drag short.
+    if (!event.isPrimary || event.button !== 0 || event.pointerType === 'touch') return;
     drag = { id: event.pointerId, x: event.clientX, y: event.clientY, value: Number(input.value), width: scene.getBoundingClientRect().width, started: false };
   }, options);
   scene?.addEventListener('pointermove', event => {
@@ -111,6 +113,34 @@ export function createLightStudy(root) {
     input.value = String(Math.round(Math.max(min, Math.min(max, drag.value + dx / drag.width * span * 4 / 3))));
     light();
   }, options);
+  // Touch: decide the gesture once it has moved a few pixels. Mostly horizontal moves the light,
+  // and from then on every move is claimed (preventDefault) so the browser cannot take it over;
+  // mostly vertical is left alone for page scrolling.
+  let touch = null;
+  scene?.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1) { endTouch(); return; }
+    const point = event.touches[0];
+    touch = { x: point.clientX, y: point.clientY, value: Number(input.value), width: scene.getBoundingClientRect().width, mode: null };
+  }, { ...options, passive: true });
+  scene?.addEventListener('touchmove', event => {
+    if (!touch || event.touches.length !== 1) return;
+    const point = event.touches[0], dx = point.clientX - touch.x, dy = point.clientY - touch.y;
+    if (!touch.mode) {
+      if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+      touch.mode = Math.abs(dx) > Math.abs(dy) ? 'light' : 'scroll';
+      if (touch.mode === 'light') root.classList.add('study-dragging');
+    }
+    if (touch.mode !== 'light') return;
+    event.preventDefault();
+    input.value = String(Math.round(Math.max(min, Math.min(max, touch.value + dx / touch.width * span * 4 / 3))));
+    light();
+  }, { ...options, passive: false });
+  function endTouch() {
+    if (touch?.mode === 'light') root.classList.remove('study-dragging');
+    touch = null;
+  }
+  scene?.addEventListener('touchend', endTouch, options);
+  scene?.addEventListener('touchcancel', endTouch, options);
   scene?.addEventListener('pointerup', endDrag, options);
   scene?.addEventListener('pointercancel', endDrag, options);
   scene?.addEventListener('lostpointercapture', () => { drag = null; root.classList.remove('study-dragging'); }, options);
@@ -120,7 +150,7 @@ export function createLightStudy(root) {
     root.dataset.observing = String(visible && !document.hidden);
     root.dataset.still = String(still());
     if (still() || document.hidden || !visible) animation?.cancel();
-    if (document.hidden || !visible) endDrag();
+    if (document.hidden || !visible) { endDrag(); endTouch(); }
   }
   input.addEventListener('input', light, options);
   reset.addEventListener('click', () => { input.value = input.defaultValue; light(); }, options);
@@ -144,7 +174,7 @@ export function createLightStudy(root) {
   if (hint?.dataset.studyHintActive) hint.textContent = hint.dataset.studyHintActive;
   const api = {
     dispose() {
-      endDrag(); life.abort(); observer.disconnect(); motionObserver.disconnect(); animation?.cancel();
+      endDrag(); endTouch(); life.abort(); observer.disconnect(); motionObserver.disconnect(); animation?.cancel();
       if (hint) hint.textContent = initialHint;
       root.dataset.observing = 'false'; group.hidden = true; root.querySelector('[data-study-controls]').hidden = true;
       root.classList.remove('study-enhanced'); instances.delete(root);

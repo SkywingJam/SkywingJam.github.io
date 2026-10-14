@@ -75,6 +75,7 @@ A display case with swappable specimens, a light-angle slider, and an editorial 
 - Initialise with `enhanceLightStudies(root)` or `createLightStudy(section)`; dispose with `instance.dispose()`.
 - Light is shared through CSS variables; new specimens should use them so they react to the slider and dragging.
 - Without JavaScript, the first specimen shows statically and unusable controls stay hidden.
+- Touch dragging uses touch events, not pointer events: once a gesture is mostly horizontal it is claimed with `preventDefault()`, mostly vertical gestures scroll the page. iOS Safari cancels touch pointers as soon as it considers scrolling, which made drags stop after a few pixels.
 
 ### Wave scene (`wave-scene.js`)
 
