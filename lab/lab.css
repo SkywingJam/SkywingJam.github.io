@@ -1867,6 +1867,30 @@ a.interest:after {
   background-position:50% 50%
 }
 
+/* Engraved edge: a hairline ring just outside the inlay, as if it sits in a shallow cut. With
+   light from above, the cut's upper wall is in shadow and its lower lip catches the light; the
+   split turns a little with the light's left/right lean. */
+.hw-lens:before {
+  content:'';
+  position:absolute;
+  inset:-1.5px;
+  padding:1.5px;
+  border-radius:50%;
+  pointer-events:none;
+  background:linear-gradient(calc(180deg + var(--lx) * 28deg),rgba(0,0,0,.42) 0%,rgba(0,0,0,.18) 38%,rgba(255,255,255,.55) 62%,rgba(255,255,255,.95) 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)
+}
+
+/* The Mac mini is silver aluminium in both themes; only the ground around it changes. */
+.acrylic.hw-mini,.dark-mode .acrylic.hw-mini {
+  --art:#d6d9dc;
+  --face-lit:#f3f4f5;
+  --face-far:#aab0b5;
+  --edge:rgba(255,255,255,.9)
+}
+
 /* T7, drawn like a macOS drive icon: the top face tilts back in perspective, and a short
    front face below carries the lip and the activity light. */
 .hw-drive {
