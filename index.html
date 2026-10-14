@@ -415,8 +415,8 @@ section { padding:85px 0; }
 .section-heading.arrival-pending { transform:translate3d(0,14px,0); }
 
 /* Cards, badges and capabilities share one hover: border, soft shadow, slight lift. */
-.project-card,.badge-card,.featured-project { transition:border-color .3s,box-shadow .4s var(--ease),translate .4s var(--ease); }
-.project-card:hover,.featured-project:hover,.badge-card:hover { border-color:var(--accent-color); box-shadow:var(--shadow); }
+.project-card,.badge-card,.featured-project,.lab-teaser { transition:border-color .3s,box-shadow .4s var(--ease),translate .4s var(--ease); }
+.project-card:hover,.featured-project:hover,.badge-card:hover,.lab-teaser:hover { border-color:var(--accent-color); box-shadow:var(--shadow); }
 .capability { transition:background-color .4s var(--ease); }
 .capability:hover { background:var(--tag-bg); }
 .tech-tag,.capsule { transition:color var(--t-fast),border-color var(--t-fast); }
@@ -439,6 +439,32 @@ section { padding:85px 0; }
 .contact-email:hover,.footer a:hover { color:var(--accent-color); }
 .contact-wave { transition:transform 1.6s var(--ease); }
 .contact-panel:hover .contact-wave { transform:rotate(-28deg) translate(-8px,6px); }
+
+/* Lab teaser: a framed window onto the lab. The still is the lab's own wave poster, swapped
+   with the theme; the copy is a short index of what is inside. Same frame, hover and arrival
+   as the project cards. */
+.lab-teaser { display:grid; grid-template-columns:1.1fr 1fr; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
+.lab-window { position:relative; display:block; min-height:340px; background:var(--tag-bg); border-right:1px solid var(--line); overflow:hidden; }
+.lab-poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 62%; transition:transform .9s var(--ease); }
+.lab-poster-dark,html.dark-mode .lab-poster-light { display:none; }
+html.dark-mode .lab-poster-dark { display:block; }
+.lab-window-label { position:absolute; left:22px; bottom:18px; font-family:monospace; font-size:.6rem; letter-spacing:.06em; color:var(--text-secondary); }
+.lab-teaser-copy { padding:44px; display:flex; flex-direction:column; }
+.lab-teaser-copy h3 { font-size:clamp(1.6rem,2.2vw,2rem); font-weight:550; line-height:1.2; letter-spacing:-.8px; margin:22px 0 22px; }
+.lab-index { list-style:none; border-top:1px solid var(--line); margin-bottom:30px; }
+.lab-index li { display:grid; grid-template-columns:34px 1fr; gap:2px 12px; padding:13px 0; border-bottom:1px solid var(--line); font-size:.8rem; line-height:1.65; color:var(--text-secondary); }
+.lab-index span { grid-row:span 2; font-family:monospace; font-size:.62rem; color:var(--accent-color); padding-top:3px; }
+.lab-index strong { font-weight:550; color:var(--text-main); }
+.lab-teaser:hover .lab-poster { transform:scale(1.03); }
+@media (max-width:1000px) {
+    .lab-teaser-copy { padding:30px; }
+}
+@media (max-width:760px) {
+    .lab-teaser { grid-template-columns:1fr; }
+    .lab-window { min-height:0; aspect-ratio:1.6; border-right:0; border-bottom:1px solid var(--line); }
+    .lab-teaser-copy { padding:28px; }
+    .lab-index li { font-size:.88rem; }
+}
 
 /* Mobile navigation opens with the same arrival easing. */
 .nav-links.is-open { animation:menu-in .35s var(--ease); }
@@ -610,7 +636,29 @@ section { padding:85px 0; }
     </section>
 
 
-    <section class="contact-section" id="contact"><div class="container contact-panel"><span class="eyebrow">06 / Contact</span><h2>Have something<br><em>in mind<span>?</span></em></h2><p>A project, an opportunity, or a conversation about building better systems — I’d love to hear from you.</p><a href="mailto:contact@skywingjam.com" class="cta-btn">Let’s talk <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="mailto:contact@skywingjam.com" class="contact-email">contact@skywingjam.com</a><div class="social-links"><a href="https://www.linkedin.com/in/haochen-zhou-shcn/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://github.com/skywingJam" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div><svg class="contact-wave" viewBox="0 0 1000 180" fill="none" aria-hidden="true"><path d="M-20 100C180-40 300 230 520 100S800-10 1020 100M-20 125C180-15 300 255 520 125S800 15 1020 125M-20 150C180 10 300 280 520 150S800 40 1020 150" stroke="currentColor" stroke-width="1.5"/></svg></div></section>
+    <section class="lab-section" id="lab">
+        <div class="container">
+            <div class="section-heading"><div><span class="eyebrow">06 / Lab</span><h2 class="section-title">The workshop<br>behind the work.</h2></div><p>Where the side projects live: a small server at home, code layered onto other software, and notes from when things broke.</p></div>
+            <article class="lab-teaser">
+                <a class="lab-window" href="/lab/" tabindex="-1" aria-hidden="true">
+                    <img class="lab-poster lab-poster-light" src="lab/assets/wave-poster-light.webp" width="1600" height="1000" alt="" loading="lazy">
+                    <img class="lab-poster lab-poster-dark" src="lab/assets/wave-poster-dark.webp" width="1600" height="1000" alt="" loading="lazy">
+                    <span class="lab-window-label">LAB / ACRYLIC WAVE</span>
+                </a>
+                <div class="lab-teaser-copy">
+                    <div class="project-topline"><span class="project-type-badge">Personal lab / Vol. 01</span><span>Oct 2026</span></div>
+                    <h3>Things that run out of sight.</h3>
+                    <ul class="lab-index">
+                        <li><span>01</span><strong>Homelab</strong>One Mac mini in three layers: hardware, services and the network paths home.</li>
+                        <li><span>02</span><strong>Builds</strong>An extension layer over a closed-source app, and fixes for an open-source desktop pet.</li>
+                        <li><span>03</span><strong>Field notes</strong>What broke, what I looked at, and what I can and can’t claim afterwards.</li>
+                    </ul>
+                    <div class="card-actions"><a class="action-btn" href="/lab/">Visit the lab <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div>
+                </div>
+            </article>
+        </div>
+    </section>
+    <section class="contact-section" id="contact"><div class="container contact-panel"><span class="eyebrow">07 / Contact</span><h2>Have something<br><em>in mind<span>?</span></em></h2><p>A project, an opportunity, or a conversation about building better systems — I’d love to hear from you.</p><a href="mailto:contact@skywingjam.com" class="cta-btn">Let’s talk <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="mailto:contact@skywingjam.com" class="contact-email">contact@skywingjam.com</a><div class="social-links"><a href="https://www.linkedin.com/in/haochen-zhou-shcn/" target="_blank" rel="noopener noreferrer">LinkedIn <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a href="https://github.com/skywingJam" target="_blank" rel="noopener noreferrer">GitHub <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div><svg class="contact-wave" viewBox="0 0 1000 180" fill="none" aria-hidden="true"><path d="M-20 100C180-40 300 230 520 100S800-10 1020 100M-20 125C180-15 300 255 520 125S800 15 1020 125M-20 150C180 10 300 280 520 150S800 40 1020 150" stroke="currentColor" stroke-width="1.5"/></svg></div></section>
     </main>
     <footer class="footer"><div class="container footer-inner"><p>© <span id="year">2026</span> Haochen Zhou</p><a href="#home" class="to-top">Back to top <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 13V3M4 7l4-4 4 4"/></svg></span></a><span>SkywingJam.</span></div></footer>
     <script src="ambient-field.js"></script>
@@ -691,7 +739,7 @@ section { padding:85px 0; }
                 arrivalObserver.unobserve(entry.target);
             });
         }, { threshold:0, rootMargin:'0px 0px -40px 0px' });
-        const arrivalTargets = document.querySelectorAll('.section-heading,.featured-project,.project-card,.badge-card,.about-layout,.background-layout,.capability-grid,.contact-panel');
+        const arrivalTargets = document.querySelectorAll('.section-heading,.featured-project,.project-card,.badge-card,.lab-teaser,.about-layout,.background-layout,.capability-grid,.contact-panel');
         if (!motionPreference.matches) {
             arrivalTargets.forEach(element => {
                 const bounds = element.getBoundingClientRect();
@@ -710,7 +758,7 @@ section { padding:85px 0; }
         const navigationSections = [
             ['home', null], ['projects', 'projects'], ['about', 'about'],
             ['skills', 'about'], ['experience', 'experience'],
-            ['education', 'experience'], ['badges', 'experience'], ['contact', 'contact']
+            ['education', 'experience'], ['badges', 'experience'], ['lab', null], ['contact', 'contact']
         ];
         function updateActiveNavigation() {
             let current = null;

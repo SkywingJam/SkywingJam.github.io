@@ -75,7 +75,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 - Don't hard-code colours, durations, or easing curves in new components when a token exists.
 - Don't use Unicode arrows or symbol glyphs (`→ ↓ ↗ ↔ ↺ ＋ ▷`) anywhere, including diagram labels and JS-set text. Use `.i-arrow` SVG (see the Icons and glyphs rule).
 - Don't ship a motion without a reduced-motion fallback.
-- Don't publish `lab/` accidentally: it is excluded in `_config.yml` and its nav link is commented out in `index.html` until it is ready. Remove both together when publishing.
+- Don't let the index and the lab drift apart. The lab is published; the nav link and the Lab section (06) point to it. If the lab is ever taken down, remove both and add `lab` back to `_config.yml` `exclude` in the same commit.
 
 ## 7. Checklist before merging a design change
 
@@ -97,7 +97,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 | `fonts/` | Self-hosted Instrument Serif and TikTok Sans (woff2, latin and latin-ext) and their `@font-face` rules. Shared by `index.html` and `lab/`. Icons are inline SVG; there is no icon font or CDN. |
 | `og-image.jpg` | 1200×630 link preview (name in the serif with the italic accent, portrait, quiet contour lines). Regenerate it when the name, role line, or portrait changes. |
 | `ambient-field.js` | Contour-field wave behind the index page. |
-| `lab/` | Experimental page (unpublished): wave scene, frosted acrylic, light study. |
+| `lab/` | The lab (`/lab/`): homelab, builds, field notes and trade-offs, with its own components. Linked from the nav and from section 06. |
 | `docs/discovery/` | Notes on lab design and performance decisions. |
 | `design/` | Design guidance (this folder). |
 
@@ -147,3 +147,12 @@ Several featured projects may each have a looping diagram, so loops follow these
 - **Motion:** a 16-second cycle uses the shared visibility controller; only one project diagram runs at a time. New signals animate opacity and transform with `--ease`, and the complete workflow remains readable at rest, with JavaScript disabled, or under reduced motion.
 - **Actions:** the public repository and 30-second video supplied by Fact v1. The diagram is a conceptual workflow, not a product screenshot or live demo.
 - **Integration:** the Instagram callback path is selected by `.result-loop`, independently of card order. Placeholder styles and the height observer were removed with the empty card.
+
+## 10. Lab section (06)
+
+A single framed piece between Credentials and Contact that points to the lab. It follows the gallery rules rather than the lab's: one `article.lab-teaser` with the same frame, radius, hover and arrival as the project cards.
+
+- **Media**: the lab's own wave poster (`lab/assets/wave-poster-light.webp` / `-dark.webp`), swapped with the theme, in a window with a small monospace wall label. It is a still, so it costs nothing and keeps the index quiet; the live wave belongs to the lab.
+- **Copy**: topline, a one-line title taken from the lab's theme, and a short numbered index of what is inside (Homelab, Builds, Field notes), then one `.action-btn` to the lab. Keep the index to three rows and in step with the lab's sections.
+- **Navigation**: the section is in the active-section list with no nav target, so no nav item lights up while it is in view; the nav's "Lab" link leaves the page.
+
