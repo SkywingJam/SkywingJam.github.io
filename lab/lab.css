@@ -613,20 +613,6 @@ h1 em {
   background:var(--art)
 }
 
-.liquid-art {
-  background-image:var(--poster);
-  background-size:cover;
-  background-position:center 62%
-}
-
-.liquid-art:after {
-  content:'';
-  position:absolute;
-  inset:0;
-  background:linear-gradient(var(--bg),transparent 25%,transparent 78%,var(--bg));
-  opacity:.4
-}
-
 .art-index {
   position:absolute;
   left:23px;
@@ -644,15 +630,6 @@ h1 em {
   bottom:20px;
   left:23px;
   font-size:9px;
-  z-index:1
-}
-
-.art-cross {
-  position:absolute;
-  right:22px;
-  bottom:20px;
-  color:var(--muted);
-  font:22px var(--mono);
   z-index:1
 }
 
@@ -739,19 +716,6 @@ h1 em {
   padding:12px 0
 }
 
-.contour-art {
-  color:var(--accent);
-  background:radial-gradient(ellipse at 60% 55%,rgba(75,145,149,.12),transparent 70%),var(--art)
-}
-
-.contour-art svg {
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  opacity:.7
-}
-
 .interest-grid {
   display:grid;
   grid-template-columns:repeat(3,1fr);
@@ -806,16 +770,6 @@ h1 em {
 
 .interest-foot span {
   font-size:18px
-}
-
-a.interest:hover .interest-foot {
-  color:var(--accent)
-}
-
-.open-interest h3 {
-  font-family:var(--serif);
-  font-size:30px;
-  font-style:italic
 }
 
 .notes {
@@ -957,31 +911,6 @@ a.interest:hover .interest-foot {
   transform:scaleX(1)
 }
 
-a.interest {
-  position:relative
-}
-
-a.interest:after {
-  content:'';
-  position:absolute;
-  left:0;
-  right:0;
-  bottom:-1px;
-  height:1px;
-  background:var(--accent);
-  transform:scaleX(0);
-  transform-origin:left;
-  transition:transform .4s
-}
-
-.interest h3,.interest-foot span,.art-cross {
-  transition:transform .45s cubic-bezier(.2,.7,.2,1),color .25s
-}
-
-.contour-art svg {
-  transition:transform .8s cubic-bezier(.2,.7,.2,1)
-}
-
 .motion-toggle {
   transition:border-color .25s,color .25s,background-color .25s,transform .2s
 }
@@ -1000,24 +929,12 @@ a.interest:after {
 }
 
 @media(hover:hover) and (pointer:fine) {
-  .top-nav a:hover:after,.text-link:hover:after,.quiet-link:hover:after,a.interest:hover:after,a.interest:focus-visible:after {
+  .top-nav a:hover:after,.text-link:hover:after,.quiet-link:hover:after {
     transform:scaleX(1)
   }
   :root:not(.motion-paused) .featured-file.surface-active {
     transform:translateY(-3px);
     box-shadow:0 12px 30px -20px rgba(24,40,58,.24)
-  }
-  :root:not(.motion-paused) a.interest:hover h3,:root:not(.motion-paused) a.interest:focus-visible h3 {
-    transform:translateX(3px)
-  }
-  :root:not(.motion-paused) a.interest:hover .interest-foot span {
-    transform:translate(2px,-2px)
-  }
-  :root:not(.motion-paused) .experiment:hover .art-cross {
-    transform:rotate(90deg)
-  }
-  :root:not(.motion-paused) .experiment:hover .contour-art svg {
-    transform:translateY(-3px) scale(1.015)
   }
   :root:not(.motion-paused) .scroll-cue:hover>span:last-child {
     transform:translateY(3px)
@@ -1101,7 +1018,8 @@ a.interest:after {
   .top-nav a {
     font-size:11px
   }
-  .top-nav a:nth-child(2) {
+  /* Phones read the page top to bottom: keep only the way back to the portfolio. */
+  .top-nav .nav-section {
     display:none
   }
   .icon-button {
@@ -1336,9 +1254,6 @@ a.interest:after {
   .top-nav a {
     font-size:10px
   }
-  .top-nav a:last-child {
-    display:none
-  }
   .hero-copy h1 {
     font-size:clamp(43px,13.5vw,49px)
   }
@@ -1371,15 +1286,10 @@ a.interest:after {
     opacity:1;
     transform:none
   }
-  .featured-file.surface-active,.theme-toggle>span,a.interest:hover h3,a.interest:focus-visible h3,
-  a.interest:hover .interest-foot span,.experiment:hover .art-cross,.experiment:hover .contour-art svg,
+  .featured-file.surface-active,.theme-toggle>span,
   .scroll-cue:hover>span:last-child,.icon-button:active,.motion-toggle:active {
     transform:none!important
   }
-}
-
-.compact-name {
-  display:none
 }
 
 @media(max-width:700px) {
@@ -1389,12 +1299,6 @@ a.interest:after {
   }
   .top-nav {
     gap:12px
-  }
-  .wide-name,.top-nav .nav-arrow {
-    display:none
-  }
-  .compact-name {
-    display:inline
   }
 }
 
@@ -1454,36 +1358,6 @@ a.interest:after {
   }
 }
 
-/* Experiments breathe while they are on screen. */
-@keyframes contour-drift {
-  from {translate:0 -3px}
-  to {translate:0 4px}
-}
-.contour-art path {
-  animation:contour-drift 9s ease-in-out infinite alternate both;
-  /* Negative, staggered delays send a slow ripple down the stack of lines. */
-  animation-delay:calc(var(--i,0) * -.42s);
-  animation-play-state:paused
-}
-.liquid-art {
-  background-image:none
-}
-.liquid-art:before {
-  content:'';
-  position:absolute;
-  inset:-3%;
-  background:var(--poster) center 62% / cover;
-  animation:poster-drift 18s ease-in-out infinite alternate both;
-  animation-play-state:paused;
-  transition:scale 1.4s var(--ease-settle)
-}
-@keyframes poster-drift {
-  from {translate:-1.2% 0}
-  to {translate:1.2% -.8%}
-}
-.experiment-art.in-view path,.experiment-art.in-view:before {animation-play-state:running}
-:root.motion-paused .contour-art path,:root.motion-paused .liquid-art:before {animation-play-state:paused}
-
 /* A gentle nod on the scroll cue, only while nothing else is asking for attention. */
 @keyframes cue-nod {
   0%,60%,100% {translate:0 0}
@@ -1491,27 +1365,7 @@ a.interest:after {
 }
 :root:not(.motion-paused) .scroll-cue>span:last-child {animation:cue-nod 2.8s ease-in-out 2.4s infinite}
 
-/* Surfaces: a soft light follows the pointer across cards (fine pointers only). */
-.interest[data-surface] {isolation:isolate}
-.interest[data-surface]:before {
-  content:'';
-  position:absolute;
-  inset:0;
-  z-index:-1;
-  pointer-events:none;
-  opacity:0;
-  background:radial-gradient(300px circle at var(--surface-x,50%) var(--surface-y,40%),color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%);
-  /* Feather all four sides so the light never shows the card's rectangle. */
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(transparent,#000 14%,#000 86%,transparent);
-  -webkit-mask-composite:source-in;
-  mask-image:linear-gradient(90deg,transparent,#000 14%,#000 86%,transparent),linear-gradient(transparent,#000 14%,#000 86%,transparent);
-  mask-composite:intersect;
-  transition:opacity .6s
-}
-.interest.surface-active:before {opacity:1}
-
 @media(hover:hover) and (pointer:fine) {
-  :root:not(.motion-paused) .experiment:hover .liquid-art:before {scale:1.035}
   .motion-toggle:hover {background:color-mix(in srgb,var(--accent) 7%,transparent)}
   .icon-button {transition:border-color .2s,transform .5s var(--ease-soft)}
   :root:not(.motion-paused) .icon-button:hover {transform:rotate(-12deg) scale(1.04)}
@@ -1531,7 +1385,7 @@ a.interest:after {
 :root.theme-switching {-webkit-user-select:none;user-select:none}
 
 @media(prefers-reduced-motion:reduce) {
-  .hero-top,.hero-bottom,.contour-art path,.liquid-art:before,.scroll-cue>span:last-child {animation:none!important}
+  .hero-top,.hero-bottom,.scroll-cue>span:last-child {animation:none!important}
   ::view-transition-new(root) {animation:none}
 }
 

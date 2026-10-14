@@ -1,8 +1,7 @@
 # GitHub Pages builds this repo with Jekyll (no .nojekyll, no Actions workflow).
-# Work in progress is kept in the repository but left out of the published site.
-# To publish the lab: remove "lab" (and the matching nav link comment in index.html).
+# Working material is kept in the repository but left out of the published site.
+# The lab (lab/) is published and linked from the portfolio nav in index.html.
 exclude:
-  - lab
   - docs
   - design
   - scripts
