@@ -1839,8 +1839,9 @@ a.interest:after {
   border-radius:22px
 }
 
-/* The round window on top: flat black glass set flush into the face. A soft, blurred
-   reflection band slides across it with the light; no depth, no spherical highlight. */
+/* The round inlay on top: polished black, like the mark on the real lid. A smooth vertical
+   gradient (lighter where it faces the light above), a soft sheen that drifts left and right
+   with the light, and no rim, so it reads as flush. */
 .hw-lens {
   position:absolute;
   left:50%;
@@ -1849,13 +1850,13 @@ a.interest:after {
   aspect-ratio:1;
   border-radius:50%;
   transform:translate(-50%,-50%);
-  background:linear-gradient(calc(118deg + var(--lx) * 18deg),transparent calc(28% + var(--lx) * 16%),rgba(255,255,255,.13) calc(46% + var(--lx) * 16%),transparent calc(64% + var(--lx) * 16%)),#0d1012;
-  box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 0 2px rgba(255,255,255,.45),0 0 14px 2px rgba(0,0,0,.08)
+  background:radial-gradient(70% 45% at calc(50% + var(--lx) * 24%) 18%,rgba(255,255,255,.2),transparent 70%),linear-gradient(172deg,#5c6064 0%,#26292b 42%,#050606 100%);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,.12),inset 0 -2px 3px rgba(0,0,0,.45),0 0 10px 1px rgba(0,0,0,.06)
 }
 
 .dark-mode .hw-lens {
-  background:linear-gradient(calc(118deg + var(--lx) * 18deg),transparent calc(28% + var(--lx) * 16%),rgba(190,220,250,.11) calc(46% + var(--lx) * 16%),transparent calc(64% + var(--lx) * 16%)),#05080b;
-  box-shadow:0 0 0 1px rgba(0,0,0,.5),0 0 0 2px rgba(150,190,230,.16),0 0 14px 2px rgba(0,0,0,.25)
+  background:radial-gradient(70% 45% at calc(50% + var(--lx) * 24%) 18%,rgba(190,220,250,.14),transparent 70%),linear-gradient(172deg,#2c3238 0%,#101417 46%,#040506 100%);
+  box-shadow:inset 0 1px 1px rgba(190,220,250,.1),inset 0 -2px 3px rgba(0,0,0,.6),0 0 10px 1px rgba(0,0,0,.2)
 }
 
 /* T7, drawn like a macOS drive icon: the top face tilts back in perspective, and a short
