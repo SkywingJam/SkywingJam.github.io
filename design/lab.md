@@ -94,7 +94,7 @@ FIG. 002 is HTML (sculpted tiles with SVG icons, an engraved proxy line, the hos
 
 ### Loupe (`loupe.js`)
 
-A draggable magnifier over real HTML content: `[data-loupe]` root (focusable, arrow keys move the lens, Shift for larger steps), `[data-loupe-source]`, and a hidden `[data-loupe-lens]` holding `.loupe-view`, which receives a scaled copy. Options: `data-loupe-zoom`, `data-loupe-start="x,y"`. Used on the router log, where the copy highlights the key lines. Without JavaScript the content reads as it is.
+A draggable magnifier over real HTML content: `[data-loupe]` root (focusable, arrow keys move the lens, Shift for larger steps), `[data-loupe-source]`, and a hidden `[data-loupe-lens]` holding `.loupe-view`, which receives a scaled copy. Options: `data-loupe-zoom`, `data-loupe-start="x,y"`. Used on the router log, where the copy highlights the key lines. The log's failing lines are a live feed (`[data-log-feed]` in `lab.js`): new lines arrive at irregular intervals and push the oldest out of a fixed six-line window, every feed (including the loupe's copy) steps together, and it only runs on screen and before Pause. Without JavaScript the content reads as it is.
 
 ### Field note figures and limits
 

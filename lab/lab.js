@@ -235,6 +235,44 @@ window.addEventListener('pagehide', () => {
 });
 window.addEventListener('pageshow', event => { if (event.persisted) enhanceWave(); });
 
+// Router log: "Failed to get IP" lines keep arriving at irregular intervals and push the oldest
+// out of the top, while the two key lines above stay put. Every [data-log-feed] steps together,
+// so the copy inside the loupe stays in sync. Runs only on screen, never after Pause.
+const logFigure = document.querySelector('.log-figure');
+if (logFigure) {
+  let logTimer = 0, logVisible = false;
+  const logStill = () => reducedMotion.matches || userPaused || document.hidden || !logVisible;
+  const pushLogLine = () => {
+    for (const feed of document.querySelectorAll('[data-log-feed]')) {
+      const track = feed.firstElementChild;
+      // Settle any step still in flight (animations stall while a tab isn't painting, timers don't).
+      track.getAnimations().forEach(animation => animation.cancel());
+      feed.dataset.lines ||= String(track.children.length);
+      while (track.children.length > Number(feed.dataset.lines)) track.firstElementChild.remove();
+      const first = track.firstElementChild;
+      const line = first.cloneNode(true);
+      track.append(line);
+      const step = parseFloat(getComputedStyle(first).height);
+      const slide = track.animate([{ transform: 'none' }, { transform: `translateY(${-step}px)` }], { duration: 720, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'forwards' });
+      first.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 480, fill: 'forwards' });
+      line.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 560, delay: 120, fill: 'backwards' });
+      // Drop the old line and the held transform in the same task, so nothing jumps.
+      slide.finished.then(() => { first.remove(); slide.cancel(); }, () => first.remove());
+    }
+  };
+  const scheduleLog = () => {
+    clearTimeout(logTimer);
+    if (logStill()) return;
+    // Mostly a few seconds apart, sometimes two in quick succession.
+    const delay = Math.random() < .3 ? 820 : 1400 + Math.random() * 2600;
+    logTimer = setTimeout(() => { if (!logStill()) pushLogLine(); scheduleLog(); }, delay);
+  };
+  new IntersectionObserver(entries => { logVisible = entries[0].isIntersecting; scheduleLog(); }).observe(logFigure);
+  document.addEventListener('visibilitychange', scheduleLog);
+  reducedMotion.addEventListener('change', scheduleLog);
+  motionButton.addEventListener('click', scheduleLog);
+}
+
 // Independent reusable blocks: no animation loop or renderer dependency.
 enhanceLightStudies(document);
 enhanceSwitches(document);

@@ -2624,6 +2624,13 @@ a.interest:after {
   white-space:nowrap
 }
 
+/* The failing lines scroll like a live log: a fixed six-line window, new lines enter from
+   below and the oldest leaves at the top (lab.js). */
+.log-feed {
+  height:calc(6 * 1.9em);
+  overflow:hidden
+}
+
 .log-quiet {
   height:15.2px;
   display:flex;
