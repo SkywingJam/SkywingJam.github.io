@@ -128,11 +128,17 @@ export function createLightStudy(root) {
     if (!touch.mode) {
       if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
       touch.mode = Math.abs(dx) > Math.abs(dy) ? 'light' : 'scroll';
-      if (touch.mode === 'light') root.classList.add('study-dragging');
+      if (touch.mode === 'light') {
+        root.classList.add('study-dragging');
+        // Start measuring from here. Counting the few pixels spent deciding would make the
+        // light jump to catch up and then slow back to finger speed.
+        touch.x = point.clientX;
+      }
     }
     if (touch.mode !== 'light') return;
     event.preventDefault();
-    input.value = String(Math.round(Math.max(min, Math.min(max, touch.value + dx / touch.width * span * 4 / 3))));
+    const moved = point.clientX - touch.x;
+    input.value = String(Math.round(Math.max(min, Math.min(max, touch.value + moved / touch.width * span * 4 / 3))));
     light();
   }, { ...options, passive: false });
   function endTouch() {
