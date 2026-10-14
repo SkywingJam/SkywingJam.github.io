@@ -10,7 +10,7 @@ The lab is where personal engineering and hobby work lives: the homelab, small l
 
 **Theme: things that run out of sight.** The hero says it ("Things that run *out of sight.*"), and every section answers it: the homelab keeps a second copy and stays out of the way, the extension layer sits behind a host app, the wave is literally the page's background, and the field notes ("Back in *sight.*") are the times something surfaced. **Layers** carry the theme visually: three acrylic layers in the wave, three tabs of the homelab (hardware, services, network), a thin layer of scripts over a host in FIG. 002. New entries should fit one of those two readings, or the theme should be revised here first.
 
-- **A workbench, not a brochure.** The index page presents finished work in frames. The lab presents work in progress, with specimen labels (`FIG. 001`, `004 / DESIGN STUDY`), status markers (`In use`, `Running above`, `3 merged / 1 open`), field notes and trade-offs.
+- **A workbench, not a brochure.** The index page presents finished work in frames. The lab presents work in progress, with specimen labels (`FIG. 001`, `004 / DESIGN STUDY`), status markers (`In use`, `Running above`, `4 merged`), field notes and trade-offs.
 - **Light and material carry the design.** Quality comes from how things are lit: transmission through frosted acrylic in the wave, objects sculpted out of the ground in the figures, edge highlights, soft shadows, a warm daylight palette and a cool moonlight palette. Flat blocks and generic cards are the exception, not the default.
 - **Not bound by conventional graphic design.** Grid regularity, uniform spacing and a minimal palette are tools, not rules. It is fine for the hero to be a full-bleed light study, for a component to break the layout, or for an object to be the layout.
 - **Technique is allowed to be expensive, within reason.** The lab may use canvas rendering, backdrop blur, layered gradients, View Transitions and scroll-driven animation where they make the material convincing. It should not be held back by "what is cheapest" as the first question. It must still be usable (see section 6).
@@ -58,7 +58,7 @@ The lab is allowed more motion than the index, but it follows a clear vocabulary
 4. **Scroll.** Hero copy drifts up and fades via CSS scroll-driven animation (compositor only, no JS; unsupported browsers stay still). Layers below the hero translate only, they do not fade, so frosted glass keeps working.
 5. **Theme change is an event.** A circular View Transition opens from the toggle button. The wave jumps to the new palette while the reveal acts as the transition, and is paused during it. Falls back to a colour cross-fade.
 6. **Pointer responses are local.** Only the surface under the pointer lights up, and a light field only leans while the pointer is over it; the featured file lifts slightly. Nothing animates on its own except designed ambient loops.
-7. **Ambient loops run only while visible.** Experiment art and `[data-ambient]` figures (`.in-view`: packet flow on routes, injection pulses, status lights, the open-PR ring), the light-study float and the wave pause when off-screen or when the tab is hidden. Loops move inside fixed geometry (dashes along a path, a pulse along a connector); they never translate an object across a neighbouring line.
+7. **Ambient loops run only while visible.** Experiment art and `[data-ambient]` figures (`.in-view`: packet flow on routes, injection pulses, status lights, the open-PR ring when a pull request is open), the light-study float and the wave pause when off-screen or when the tab is hidden. Loops move inside fixed geometry (dashes along a path, a pulse along a connector); they never translate an object across a neighbouring line.
 8. **The visitor can stop it.** A visible Pause motion control sets `.motion-paused` on `<html>`, which every ambient effect must honour, alongside `prefers-reduced-motion`.
 9. **Interaction beats ambience.** Dragging the light, choosing a specimen and pointer tilt are always available, even when ambient motion is paused or reduced.
 
@@ -91,7 +91,7 @@ Each tab is a `.layer-panel`: a `.lab-figure` (sculpted objects, decorative and 
 
 ### Diagram figures
 
-Both are HTML. FIG. 002: sculpted tiles with SVG icons, an engraved proxy line and the host plate, with spacing that tightens through container queries on narrow figures. FIG. 003: sculpted beads on an engraved groove (merged beads raised in the accent, the open one with a turning dashed ring, the closed one pressed in). Figure text is decorative (`aria-hidden`); the copy beside says the same thing. Icons are 16×16 `.i-arrow` SVGs, never text abbreviations.
+Both are HTML. FIG. 002: sculpted tiles with SVG icons, an engraved proxy line and the host plate, with spacing that tightens through container queries on narrow figures. FIG. 003: sculpted beads on an engraved groove (merged beads raised in the accent, the closed one pressed in). An open pull request uses `.pr-open`, a bead with a turning dashed ring; none is open right now, so its markup sits commented out next to the figure, ready to reuse. Figure text is decorative (`aria-hidden`); the copy beside says the same thing. Icons are 16×16 `.i-arrow` SVGs, never text abbreviations.
 
 ### Loupe (`loupe.js`)
 
