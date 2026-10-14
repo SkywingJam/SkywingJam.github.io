@@ -2062,13 +2062,13 @@ a.interest:after {
   height:44px;
   border-radius:50%;
   color:var(--accent);
-  font-size:16px
+  font-size:22px
 }
 
-/* The icon sits small inside the disc (about a third of it) so the sculpted rim reads as
-   the object and the glyph as a mark on it; a light stroke matches the routes. */
+/* The icon fills a little under half the disc, leaving the sculpted rim room to read;
+   a light stroke (about 1.3px here) keeps it close to the route lines. */
 .net-node .i-arrow {
-  stroke-width:1.2
+  stroke-width:1.1
 }
 
 .net-node b,.net-tag,.net-badge,.net-legend {
@@ -2821,7 +2821,7 @@ a.interest:after {
   .net-node .acrylic {
     width:36px;
     height:36px;
-    font-size:13px
+    font-size:18px
   }
   .net-node {
     transform:translate(-50%,-18px)
