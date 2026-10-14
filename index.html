@@ -431,8 +431,8 @@ section { padding:85px 0; }
 
 /* Links and arrows: a small nudge in the direction the arrow points. */
 .text-link,.social-links a,.footer a,.contact-email { transition:color var(--t-fast); }
-.cta-btn>span,.text-link>span,.social-links a>span,.to-top>span { display:inline-flex; transition:transform var(--t-fast) var(--ease); }
-.cta-btn:hover>span,.text-link:hover>span,.social-links a:hover>span { transform:translate(2px,-2px); }
+.cta-btn>span,.text-link>span,.social-links a>span,.to-top>span,.action-btn>span,.nav-link>span { display:inline-flex; transition:transform var(--t-fast) var(--ease); }
+.cta-btn:hover>span,.text-link:hover>span,.social-links a:hover>span,.action-btn:hover>span,.nav-link:hover>span,.action-btn:focus-visible>span,.nav-link:focus-visible>span { transform:translate(2px,-2px); }
 .text-link:hover>.nudge-r { transform:translateX(3px); }
 .to-top:hover>span { transform:translateY(-2px); }
 .social-links a { display:inline-flex; align-items:center; gap:7px; }
@@ -474,7 +474,7 @@ html.dark-mode .lab-poster-dark { display:block; }
     html { scroll-behavior:auto; transition:none!important; }
     .arrival-pending { opacity:1; transform:none; }
     *,*:before,*:after { transition:none!important; animation:none!important; }
-    .cta-btn:hover,.cta-btn:hover>span,.cta-btn:active,.action-btn:active,.text-link:hover>span,.social-links a:hover>span,.to-top:hover>span,.badge-card:hover img,.contact-panel:hover .contact-wave { transform:none; }
+    .cta-btn:hover,.cta-btn:hover>span,.cta-btn:active,.action-btn:active,.text-link:hover>span,.social-links a:hover>span,.action-btn:hover>span,.nav-link:hover>span,.to-top:hover>span,.badge-card:hover img,.contact-panel:hover .contact-wave { transform:none; }
 }
     /* Arrow icons are inline SVG, not Unicode: ↗ ↘ ↔ carry an emoji variant and iOS can
    substitute the colour emoji when the text font lacks the glyph. Sized and coloured like text. */
