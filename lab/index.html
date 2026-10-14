@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Lab — SkywingJam</title>
-  <meta name="description" content="A personal archive of small experiments, visual explorations, and things made out of curiosity. By Haochen Zhou.">
+  <meta name="description" content="Haochen Zhou’s personal lab: a Mac mini homelab, small layers of code on top of other software, field notes from what broke, and a few visual studies.">
   <meta name="theme-color" content="#f2eee5">
   <link rel="canonical" href="https://skywingjam.com/lab/">
   <meta property="og:title" content="Lab — SkywingJam">
-  <meta property="og:description" content="Small experiments. Open questions. A little room for curiosity.">
+  <meta property="og:description" content="Things that run out of sight, and notes from the times they surfaced.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://skywingjam.com/lab/">
   <meta property="og:image" content="https://skywingjam.com/lab/assets/wave-poster-light.webp">
@@ -35,7 +35,7 @@
     <a class="wordmark" href="/" aria-label="SkywingJam home">SKYWINGJAM<span class="wordmark-sub">INDEPENDENT EXPLORATIONS</span></a>
     <a class="lab-mark" href="#main">LAB<span class="lab-mark-dot" aria-hidden="true"></span></a>
     <nav class="top-nav" aria-label="Main navigation">
-      <a href="#index">Index <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 4.5l7 7M11.5 5.5v6h-6"/></svg></span></a>
+      <a href="#homelab">Index <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 4.5l7 7M11.5 5.5v6h-6"/></svg></span></a>
       <a href="#about">About</a>
       <a href="/" aria-label="Portfolio home"><span class="wide-name">Portfolio</span><span class="compact-name">Home</span><span class="nav-arrow" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a>
     </nav>
@@ -45,10 +45,10 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-top wrap">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="tiny-square" aria-hidden="true"></span> A SPACE FOR THE IN-BETWEEN</p>
-          <h1 id="hero-title"><span class="line">Things I make,</span><br><em class="line">just because.</em></h1>
+          <p class="eyebrow"><span class="tiny-square" aria-hidden="true"></span> A WORKSHOP FOR QUIET SYSTEMS</p>
+          <h1 id="hero-title"><span class="line">Things that run</span><br><em class="line">out of sight.</em></h1>
         </div>
-        <div class="hero-aside"><span class="eyebrow">PERSONAL LAB / VOL. 01</span><p>Small experiments. <br>Open questions. <br>A little room for curiosity.</p><span class="aside-coordinate">MELBOURNE, AUSTRALIA</span></div>
+        <div class="hero-aside"><span class="eyebrow">PERSONAL LAB / VOL. 01</span><p>A small server at home. <br>Code layered on other code. <br>Notes from when it broke.</p><span class="aside-coordinate">MELBOURNE, AUSTRALIA</span></div>
       </div>
       <div class="wave-stage" aria-hidden="true">
         <div class="wave-poster"></div>
@@ -56,28 +56,118 @@
         <div class="wave-vignette"></div>
       </div>
       <div class="hero-bottom wrap">
-        <div class="specimen-caption"><span class="eyebrow">MATERIAL STUDY / 001</span><p>Light, held in acrylic.</p><div class="scale" aria-hidden="true"><span>0</span><i></i><span>1</span></div></div>
-        <a class="featured-file" href="#liquid-archive" data-surface><div class="file-top"><span class="eyebrow">SELECTED EXPERIMENT</span><span class="eyebrow">001 / ONGOING</span></div><div class="file-title"><h2>Liquid archive</h2><span class="arrow" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></div><p>Sunlit warmth. Moonlit blue. A surface in between.</p><span class="file-access">Explore the study <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span></span></a>
+        <div class="specimen-caption"><span class="eyebrow">FIG. 004 / ACRYLIC WAVE</span><p>This page’s own background, three layers deep.</p><div class="scale" aria-hidden="true"><span>0</span><i></i><span>1</span></div></div>
+        <a class="featured-file" href="#homelab" data-surface><div class="file-top"><span class="eyebrow">SELECTED / FIG. 001</span><span class="eyebrow">RUNNING</span></div><div class="file-title"><h2>The homelab</h2><span class="arrow" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></div><p>One Mac mini, one external drive, three layers of quiet work.</p><span class="file-access">Read the layers <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M2.5 8h11M9.5 4l4 4-4 4"/></svg></span></span></a>
       </div>
-      <div class="hero-foot wrap"><a class="scroll-cue" href="#index"><span class="eyebrow">SCROLL TO EXPLORE</span><span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a><div class="motion-controls" hidden><span class="motion-state">GENTLY IN MOTION</span><button class="motion-toggle" type="button" aria-pressed="false"><span class="motion-icon" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg></span><span class="motion-label">Pause motion</span></button></div><span class="hero-edition">AN OPEN-ENDED COLLECTION</span></div>
+      <div class="hero-foot wrap"><a class="scroll-cue" href="#homelab"><span class="eyebrow">SCROLL TO EXPLORE</span><span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a><div class="motion-controls" hidden><span class="motion-state">GENTLY IN MOTION</span><button class="motion-toggle" type="button" aria-pressed="false"><span class="motion-icon" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M5.5 3.5v9M10.5 3.5v9"/></svg></span><span class="motion-label">Pause motion</span></button></div><span class="hero-edition">NOTES AS OF OCT 2026</span></div>
+    </section>
+
+    <!-- Homelab: a stacked-plate figure (decorative) beside a ledger that carries all the facts.
+         Hovering a layer lights its plate; nothing depends on hover. -->
+    <section class="homelab wrap" id="homelab" aria-labelledby="homelab-title">
+      <div class="section-heading" data-arrival><div><p class="eyebrow">01 / THE HOMELAB</p><h2 id="homelab-title">One small machine, <em>three layers.</em></h2></div><p>A Mac mini on a shelf at home. Its job is to keep<br>a second copy of things and stay out of the way.</p></div>
+      <div class="stack-layout">
+        <figure class="experiment-art stack-figure" data-arrival>
+          <div class="art-index"><span>FIG. 001</span><span>SYSTEM / LAYERS</span></div>
+          <div class="stack-scene" aria-hidden="true">
+            <div class="stack-plate" data-layer="network" style="--layer:2"></div>
+            <div class="stack-plate" data-layer="services" style="--layer:1"></div>
+            <div class="stack-plate" data-layer="hardware" style="--layer:0"></div>
+            <span class="stack-tag" data-layer="network" style="--layer:2">III. NETWORK</span>
+            <span class="stack-tag" data-layer="services" style="--layer:1">II. SERVICES</span>
+            <span class="stack-tag" data-layer="hardware" style="--layer:0">I. HARDWARE</span>
+          </div>
+          <figcaption class="art-label">MAC MINI M4 / 16 GB / T7 2 TB</figcaption>
+        </figure>
+        <div class="stack-ledger">
+          <article class="layer" data-layer="hardware" data-arrival>
+            <div class="layer-head"><span class="layer-number">I.</span><h3>Hardware</h3><span class="eyebrow">THE BASE</span></div>
+            <p>Everything sits on one Mac mini and one external drive. There’s no RAID, and nothing here is the only copy of anything important, so a dead drive means downtime, not loss. That trade is deliberate.</p>
+            <dl class="ledger">
+              <div><dt>Mac mini M4</dt><dd>16 GB unified memory, 256 GB internal SSD. Idles around 5–6 W, by my own reading rather than a proper measurement.</dd><dd class="ledger-run">ALWAYS ON</dd></div>
+              <div><dt>Samsung T7, 2 TB</dt><dd>Photo library, sync folders and their versions, the Time Machine image, manual iPhone backups, the audio library.</dd><dd class="ledger-run">SINGLE DISK</dd></div>
+            </dl>
+          </article>
+          <article class="layer" data-layer="services" data-arrival>
+            <div class="layer-head"><span class="layer-number">II.</span><h3>Services</h3><span class="eyebrow">SIX, MOSTLY NATIVE</span></div>
+            <p>Each runs as its own process, and only one lives in a container.</p>
+            <dl class="ledger">
+              <div><dt>Immich</dt><dd>A second copy of photos and videos, viewable from any device.</dd><dd class="ledger-run">COMPOSE / ORBSTACK</dd></div>
+              <div><dt>AdGuard Home</dt><dd>DNS filtering at home and for devices on Tailscale.</dd><dd class="ledger-run">NATIVE / LAUNCHD</dd></div>
+              <div><dt>Syncthing</dt><dd>Two-way sync between devices. Staggered versions: about 30 days for personal files, about 180 for work and uni.</dd><dd class="ledger-run">NATIVE</dd></div>
+              <div><dt>SMB share</dt><dd>Time Machine target for the MacBook (about 800 GB quota), and a direct way to fetch files when a sync client misbehaves.</dd><dd class="ledger-run">MACOS SHARING</dd></div>
+              <div><dt>NeoKikoeru</dt><dd>A self-hosted audio library, behind an nginx proxy that carries my extensions (<a href="#extension-layer">FIG. 002</a>).</dd><dd class="ledger-run">NATIVE / LAUNCHD</dd></div>
+              <div><dt><a href="https://github.com/SkywingJam/au-job-board">AU Job Board</a></dt><dd>My job-search tool. Collects, filters and ranks listings every morning; the web view stays up.</dd><dd class="ledger-run">LAUNCHD / 07:30</dd></div>
+            </dl>
+          </article>
+          <article class="layer" data-layer="network" data-arrival>
+            <div class="layer-head"><span class="layer-number">III.</span><h3>Network</h3><span class="eyebrow">REACHING HOME</span></div>
+            <p>Getting back to home from anywhere, without routing everything through home.</p>
+            <dl class="ledger">
+              <div><dt>Split tunnel</dt><dd>On home Wi-Fi, Tailscale switches off by network name. Anywhere else it connects by itself: DNS still goes home to AdGuard, everything else leaves from the network I’m on.</dd><dd class="ledger-run">VPN ON DEMAND</dd></div>
+              <div><dt>Subnet router</dt><dd>Remote devices reach services at their usual home addresses.</dd><dd class="ledger-run">TAILSCALE</dd></div>
+              <div><dt>Exit node</dt><dd>Off by default. I turn it on by hand on hotel or public Wi-Fi.</dd><dd class="ledger-run">ON REQUEST</dd></div>
+              <div><dt>DNS fallback</dt><dd>None, on purpose. If home DNS fails I want to notice straight away; the fix is a manual switch.</dd><dd class="ledger-run">DELIBERATE</dd></div>
+            </dl>
+          </article>
+          <p class="stack-note" data-arrival><span class="eyebrow">WHAT IT ISN’T</span> Not a cluster, no SLA, no monitoring dashboard: I read logs when something feels off. What still isn’t done is listed under <a href="#open-items">open items</a>.</p>
+        </div>
+      </div>
     </section>
 
     <section class="archive wrap" id="index" aria-labelledby="archive-title">
-      <div class="section-heading" data-arrival><div><p class="eyebrow">01 / EXPERIMENTS</p><h2 id="archive-title">Made out of <em>curiosity.</em></h2></div><p>Little ideas, taken a little further.<br>A growing collection of things in progress.</p></div>
-      <article class="experiment" id="liquid-archive" data-arrival>
-        <div class="experiment-art liquid-art"><div class="art-index"><span>FIG. 001</span><span>LIGHT / FORM</span></div><div class="art-cross" aria-hidden="true">+</div><span class="art-label">LIQUID ARCHIVE</span></div>
-        <div class="experiment-copy"><div class="entry-meta"><span>001 / MATERIAL STUDY</span><span class="status"><i aria-hidden="true"></i> Ongoing</span></div><h3>Liquid archive</h3><p>What happens when a surface feels almost weightless? Three layers of frosted acrylic, shaped by warm daylight or cool moonlight. Soft transmission, fine edges, and movement that leaves space to think.</p><div class="tags"><span>Creative coding</span><span>Light &amp; material</span><span>Interaction</span></div><div class="entry-links"><a class="text-link" href="#main">Return to the live study <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a class="quiet-link" href="./wave-scene.js" download="wave-scene.js">Source <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a></div></div>
+      <div class="section-heading" data-arrival><div><p class="eyebrow">02 / BUILDS AND STUDIES</p><h2 id="archive-title">Small layers, <em>added carefully.</em></h2></div><p>Code that sits on top of something else: a closed-source app,<br>someone else’s project, and this page’s own background.</p></div>
+      <article class="experiment" id="extension-layer" data-arrival>
+        <div class="experiment-art diagram-art layer-art"><div class="art-index"><span>FIG. 002</span><span>HOST / INJECTION</span></div>
+          <svg viewBox="0 0 640 380" fill="none" aria-hidden="true">
+            <g class="layer-tiles">
+              <g style="--i:0"><path class="link" d="M156 176v34"/><rect x="120" y="116" width="72" height="60"/><text x="156" y="151">HEAT</text></g>
+              <g style="--i:1"><path class="link" d="M238 176v34"/><rect x="202" y="116" width="72" height="60"/><text x="238" y="151">SUBS</text></g>
+              <g style="--i:2"><path class="link" d="M320 176v34"/><rect x="284" y="116" width="72" height="60"/><text x="320" y="151">LATER</text></g>
+              <g style="--i:3"><path class="link" d="M402 176v34"/><rect x="366" y="116" width="72" height="60"/><text x="402" y="151">MARKS</text></g>
+              <g style="--i:4"><path class="link" d="M484 176v34"/><rect x="448" y="116" width="72" height="60"/><text x="484" y="151">EQ</text></g>
+            </g>
+            <path class="proxy" d="M100 210h440"/><text class="note" x="540" y="232" text-anchor="end">NGINX / SUB_FILTER</text>
+            <rect class="host" x="120" y="250" width="400" height="64"/><text class="note" x="138" y="287" text-anchor="start">HOST APP / UNCHANGED</text>
+          </svg>
+          <span class="art-label">EXTENSION LAYER</span></div>
+        <div class="experiment-copy"><div class="entry-meta"><span>002 / EXTENSION LAYER</span><span class="status"><i aria-hidden="true"></i> In use</span></div><h3>A layer on top, host untouched.</h3><p>NeoKikoeru is a closed-source audio library I host at home. Rather than edit its files, an nginx proxy injects my own JavaScript into the pages it serves. Five modules live there: a waveform heatmap, live subtitles with picture-in-picture, watch later, work marks with filters, and a parametric EQ on Web Audio that imports Equalizer APO presets.</p><p>The hard parts belong to the host: when its player sets a source and starts playing, what iOS Safari lets an AudioContext do, and sharing state between scripts that load separately. The host stays pinned at 0.26.3. Moving to 3.x means a reindex and retesting the whole injection layer, and that hasn’t been worth it yet.</p><div class="tags"><span>nginx sub_filter</span><span>Web Audio</span><span>Picture-in-picture</span></div><div class="entry-links"><span class="entry-aside">Private: the host is closed source</span></div></div>
+      </article>
+      <article class="experiment" id="crosspet" data-arrival>
+        <div class="experiment-art diagram-art pr-art"><div class="art-index"><span>FIG. 003</span><span>PULL REQUESTS</span></div>
+          <svg viewBox="0 0 640 380" fill="none" aria-hidden="true">
+            <path class="track" d="M70 200h500"/>
+            <g class="pr pr-closed"><circle cx="110" cy="200" r="7"/><path d="M104 206l12-12"/><text x="110" y="172">#9</text><text class="note" x="110" y="236">CLOSED</text></g>
+            <g class="pr pr-merged"><circle class="halo" cx="220" cy="200" r="15"/><circle cx="220" cy="200" r="7"/><text x="220" y="172">#11</text><text class="note" x="220" y="236">MERGED</text><text class="note" x="220" y="254">13 OCT</text></g>
+            <g class="pr pr-merged"><circle class="halo" cx="330" cy="200" r="15"/><circle cx="330" cy="200" r="7"/><text x="330" y="172">#13</text><text class="note" x="330" y="236">MERGED</text><text class="note" x="330" y="254">13 OCT</text></g>
+            <g class="pr pr-merged"><circle class="halo" cx="440" cy="200" r="15"/><circle cx="440" cy="200" r="7"/><text x="440" y="172">#15</text><text class="note" x="440" y="236">MERGED</text><text class="note" x="440" y="254">14 OCT</text></g>
+            <g class="pr pr-open"><circle class="ring" cx="550" cy="200" r="11"/><circle cx="550" cy="200" r="4"/><text x="550" y="172">#17</text><text class="note" x="550" y="236">OPEN</text></g>
+          </svg>
+          <span class="art-label">LOKICORVUS / CROSSPET</span></div>
+        <div class="experiment-copy"><div class="entry-meta"><span>003 / OPEN SOURCE</span><span class="status"><i aria-hidden="true"></i> 3 merged / 1 open</span></div><h3>Fixes for a desktop pet.</h3><p>CrossPet is a small desktop companion for macOS and Windows that changes character with the AI tool you’re using and acts out what it’s doing. I’ve been sending it pull requests, mostly from the macOS side. Status as of 14 Oct 2026:</p>
+          <dl class="ledger ledger-compact">
+            <div><dt><a href="https://github.com/lokicorvus/crosspet/pull/11">#11</a></dt><dd>Show every provider’s quota together in the quota window, off by default.</dd><dd class="ledger-run">MERGED</dd></div>
+            <div><dt><a href="https://github.com/lokicorvus/crosspet/pull/13">#13</a></dt><dd>Bring back the last character after a macOS restart.</dd><dd class="ledger-run">MERGED</dd></div>
+            <div><dt><a href="https://github.com/lokicorvus/crosspet/pull/15">#15</a></dt><dd>The pet vanished after leaving full screen for another desktop.</dd><dd class="ledger-run">MERGED</dd></div>
+            <div><dt><a href="https://github.com/lokicorvus/crosspet/pull/17">#17</a></dt><dd>Let custom characters react to other AI tools’ work events.</dd><dd class="ledger-run">OPEN</dd></div>
+            <div><dt><a href="https://github.com/lokicorvus/crosspet/pull/9">#9</a></dt><dd>Draft fix for SVG animation jumping after a Spaces switch.</dd><dd class="ledger-run">CLOSED</dd></div>
+          </dl>
+          <div class="tags"><span>macOS</span><span>Desktop app</span><span>Open source</span></div><div class="entry-links"><a class="text-link" href="https://github.com/lokicorvus/crosspet">View the repository <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div>
+      </article>
+      <article class="experiment" id="acrylic-wave" data-arrival>
+        <div class="experiment-art liquid-art"><div class="art-index"><span>FIG. 004</span><span>LIGHT / FORM</span></div><div class="art-cross" aria-hidden="true">+</div><span class="art-label">ACRYLIC WAVE</span></div>
+        <div class="experiment-copy"><div class="entry-meta"><span>004 / MATERIAL STUDY</span><span class="status"><i aria-hidden="true"></i> Running above</span></div><h3>Acrylic wave</h3><p>The moving background at the top of this page. Three layers of frosted acrylic, each with its own phase and speed, drawn in Canvas 2D: local highlights, soft transmission, shadows between layers, and a damped response to the pointer. It’s an approximation of a lit material, not an optics simulation.</p><p>It slows down when nobody is interacting, stops off-screen, in a hidden tab or when you press Pause, and falls back to a still image when motion is reduced or canvas isn’t available. An earlier Three.js version is archived.</p><div class="tags"><span>Canvas 2D</span><span>Light &amp; material</span><span>Reduced motion</span></div><div class="entry-links"><a class="text-link" href="#main">Return to the live study <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a class="quiet-link" href="./wave-scene.js" download="wave-scene.js">Source <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a></div></div>
       </article>
       <article class="experiment" id="ambient-field" data-arrival>
-        <div class="experiment-art contour-art"><div class="art-index"><span>FIG. 002</span><span>LINES / MOTION</span></div><svg viewBox="0 0 640 380" fill="none" aria-hidden="true"><g id="contour-lines" stroke="currentColor" stroke-width=".8"><path style="--i:0" d="M-40 160C100 20 160 310 330 170S530 70 690 160"/><path style="--i:1" d="M-40 169C100 29 160 319 330 179S530 79 690 169"/><path style="--i:2" d="M-40 178C100 38 160 328 330 188S530 88 690 178"/><path style="--i:3" d="M-40 187C100 47 160 337 330 197S530 97 690 187"/><path style="--i:4" d="M-40 196C100 56 160 346 330 206S530 106 690 196"/><path style="--i:5" d="M-40 205C100 65 160 355 330 215S530 115 690 205"/><path style="--i:6" d="M-40 214C100 74 160 364 330 224S530 124 690 214"/><path style="--i:7" d="M-40 223C100 83 160 373 330 233S530 133 690 223"/><path style="--i:8" d="M-40 232C100 92 160 382 330 242S530 142 690 232"/><path style="--i:9" d="M-40 241C100 101 160 391 330 251S530 151 690 241"/><path style="--i:10" d="M-40 250C100 110 160 400 330 260S530 160 690 250"/><path style="--i:11" d="M-40 259C100 119 160 409 330 269S530 169 690 259"/><path style="--i:12" d="M-40 268C100 128 160 418 330 278S530 178 690 268"/><path style="--i:13" d="M-40 277C100 137 160 427 330 287S530 187 690 277"/><path style="--i:14" d="M-40 286C100 146 160 436 330 296S530 196 690 286"/><path style="--i:15" d="M-40 295C100 155 160 445 330 305S530 205 690 295"/></g></svg><span class="art-label">AMBIENT FIELD</span></div>
-        <div class="experiment-copy"><div class="entry-meta"><span>002 / GENERATIVE STUDY</span><span class="status">In use</span></div><h3>Ambient field</h3><p>A landscape drawn with lines. Slow, overlapping contours bring a quiet sense of depth to the portfolio, with a gentle response to the pointer.</p><div class="tags"><span>Generative form</span><span>Canvas</span><span>Slow motion</span></div><div class="entry-links"><a class="text-link" href="/">Visit the portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a class="quiet-link" href="/ambient-field.js" download="ambient-field.js">Source <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a></div></div>
+        <div class="experiment-art contour-art"><div class="art-index"><span>FIG. 005</span><span>LINES / MOTION</span></div><svg viewBox="0 0 640 380" fill="none" aria-hidden="true"><g id="contour-lines" stroke="currentColor" stroke-width=".8"><path style="--i:0" d="M-40 160C100 20 160 310 330 170S530 70 690 160"/><path style="--i:1" d="M-40 169C100 29 160 319 330 179S530 79 690 169"/><path style="--i:2" d="M-40 178C100 38 160 328 330 188S530 88 690 178"/><path style="--i:3" d="M-40 187C100 47 160 337 330 197S530 97 690 187"/><path style="--i:4" d="M-40 196C100 56 160 346 330 206S530 106 690 196"/><path style="--i:5" d="M-40 205C100 65 160 355 330 215S530 115 690 205"/><path style="--i:6" d="M-40 214C100 74 160 364 330 224S530 124 690 214"/><path style="--i:7" d="M-40 223C100 83 160 373 330 233S530 133 690 223"/><path style="--i:8" d="M-40 232C100 92 160 382 330 242S530 142 690 232"/><path style="--i:9" d="M-40 241C100 101 160 391 330 251S530 151 690 241"/><path style="--i:10" d="M-40 250C100 110 160 400 330 260S530 160 690 250"/><path style="--i:11" d="M-40 259C100 119 160 409 330 269S530 169 690 259"/><path style="--i:12" d="M-40 268C100 128 160 418 330 278S530 178 690 268"/><path style="--i:13" d="M-40 277C100 137 160 427 330 287S530 187 690 277"/><path style="--i:14" d="M-40 286C100 146 160 436 330 296S530 196 690 286"/><path style="--i:15" d="M-40 295C100 155 160 445 330 305S530 205 690 295"/></g></svg><span class="art-label">AMBIENT FIELD</span></div>
+        <div class="experiment-copy"><div class="entry-meta"><span>005 / GENERATIVE STUDY</span><span class="status">In use</span></div><h3>Ambient field</h3><p>The wave’s quieter cousin: slow contour lines behind the front page of my portfolio. Also Canvas 2D, following the theme colours, answering the pointer a little, and settling down when motion is reduced. Same family, lower volume.</p><div class="tags"><span>Canvas 2D</span><span>Generative form</span><span>Slow motion</span></div><div class="entry-links"><a class="text-link" href="/">Visit the portfolio <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a><a class="quiet-link" href="/ambient-field.js" download="ambient-field.js">Source <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 2.5v11M4 9.5l4 4 4-4"/></svg></span></a></div></div>
       </article>
     </section>
 
     <!-- Reusable light-study block. Copy this section; all copy lives here (see docs/discovery/lab-light-study-pattern.md).
          Optional: data-study-theme="light|dark|auto", data-study-motion="paused". -->
     <section class="light-study wrap" id="optical-studies" data-light-study data-specimen="lens" aria-labelledby="light-study-title">
-      <div class="study-heading" data-arrival><p class="eyebrow">INTERLUDE / OPTICAL STUDIES</p><span class="study-edition">THREE WAYS OF SEEING</span></div>
+      <div class="study-heading" data-arrival><p class="eyebrow">INTERLUDE / OPTICAL STUDIES</p><span class="study-edition">THREE OBJECTS, ONE LIGHT</span></div>
       <div class="study-layout" data-arrival>
         <div class="study-display" data-study-display>
           <div class="study-scene" aria-hidden="true">
@@ -89,14 +179,14 @@
             <div class="study-art" data-study-art="prism" hidden><div class="study-object"><div class="prism-ray"></div><div class="optic-prism"><span class="prism-face prism-face-a"></span><span class="prism-face prism-face-b"></span><span class="prism-face prism-face-c"></span><svg viewBox="0 0 300 300" fill="none"><path d="M150 4 36 249 165 296 270 231 150 4 165 296M36 249 270 231"/></svg></div></div></div>
             <div class="study-scene-label"><span data-study-number>PLATE 01</span><span data-study-hint data-study-hint-active="DRAG TO MOVE LIGHT">LIGHT / MATTER</span></div>
           </div>
-          <p class="study-caption" data-study-caption>One surface. A different view from every angle.</p>
+          <p class="study-caption" data-study-caption>One curved surface, a different highlight from every angle.</p>
         </div>
         <div class="study-copy">
           <h2 id="light-study-title" data-study-title>A small atlas of <em>light.</em></h2>
-          <p class="study-intro">Three objects, one changing light. Take a moment to look closer.</p>
+          <p class="study-intro">A reusable display case made of CSS gradients, SVG, shadows and blur. Drag the light or use the slider. It studies how things look when lit, not how light really bends.</p>
           <div class="study-choices" data-study-choices aria-label="Optical study" hidden>
-            <button type="button" data-study-choice="lens" data-caption="One surface. A different view from every angle." data-number="PLATE 01"><span class="study-choice-index">01</span><span class="study-choice-name">Lens<small>CURVE / REFLECTION</small></span><span class="study-choice-mark" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></button>
-            <button type="button" data-study-choice="layers" data-caption="A little distance becomes a little depth." data-number="PLATE 02"><span class="study-choice-index">02</span><span class="study-choice-name">Layers<small>OVERLAP / DIFFUSION</small></span><span class="study-choice-mark" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></button>
+            <button type="button" data-study-choice="lens" data-caption="One curved surface, a different highlight from every angle." data-number="PLATE 01"><span class="study-choice-index">01</span><span class="study-choice-name">Lens<small>CURVE / REFLECTION</small></span><span class="study-choice-mark" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></button>
+            <button type="button" data-study-choice="layers" data-caption="Three frosted plates. A little distance becomes a little depth." data-number="PLATE 02"><span class="study-choice-index">02</span><span class="study-choice-name">Layers<small>OVERLAP / DIFFUSION</small></span><span class="study-choice-mark" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></button>
             <button type="button" data-study-choice="prism" data-caption="At the edge, a quiet separation of colour." data-number="PLATE 03"><span class="study-choice-index">03</span><span class="study-choice-name">Prism<small>EDGE / SPECTRUM</small></span><span class="study-choice-mark" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></button>
           </div>
           <div class="study-controls" data-study-controls hidden>
@@ -107,14 +197,24 @@
       </div>
     </section>
 
-    <section class="interests wrap" id="interests" aria-labelledby="interests-title">
-      <div class="section-heading" data-arrival><div><p class="eyebrow">02 / THREADS OF CURIOSITY</p><h2 id="interests-title">Following the <em>small things.</em></h2></div><p>The questions behind these experiments.</p></div>
-      <div class="interest-grid"><a class="interest" href="#liquid-archive" data-arrival data-surface><span class="interest-number">I.</span><h3>Light &amp; form</h3><p>How reflections, materials, and a change of angle can give a simple surface a different character.</p><span class="interest-foot">EXPLORE THE MATERIAL STUDY <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></span></a><a class="interest" href="#ambient-field" data-arrival data-surface><span class="interest-number">II.</span><h3>Quiet movement</h3><p>Finding a rhythm that makes an interface feel alive while leaving the reading undisturbed.</p><span class="interest-foot">EXPLORE THE CONTOUR STUDY <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></span></a><div class="interest open-interest" data-arrival><span class="interest-number">III.</span><h3>Room for more</h3><p>An open page for the next side project, a new interest, or an unexpected rabbit hole.</p><span class="interest-foot">TO BE CONTINUED <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10"/></svg></span></span></div></div>
+    <section class="notes wrap" id="notes" aria-labelledby="notes-title">
+      <div class="notes-heading" data-arrival><p class="eyebrow">03 / FIELD NOTES</p><h2 id="notes-title">Back in <em>sight.</em></h2><p>The times something in the background surfaced: what broke, what I looked at, and what I can and can’t claim afterwards.</p></div>
+      <div class="note-list">
+        <article class="note" data-arrival><time datetime="2026-10">OCT 2026</time><div><span class="eyebrow">01 / RECOVERY</span><h3>Leaving OneDrive without losing a file.</h3><p>OneDrive’s File Provider had to go, on two accounts. The university one was simple: most files were already local, so I checked them against the copy on the Mac mini and unlinked. The personal one wasn’t. Some files showed as not downloaded, but a script found they could still be read from the cache. I saved the cache first, reset OneDrive, and restored what the reset dropped from that saved copy. <code>rsync --ignore-existing</code> added 43,583 files back without overwriting anything.</p>
+          <dl class="note-figures"><div><dt>170,863</dt><dd>FILES COMPARED</dd></div><div><dt>0</dt><dd>MISSING, EXTRA OR WRONG SIZE</dd></div><div><dt>0</dt><dd>CLOUD-ONLY PLACEHOLDERS</dd></div><div><dt>1,200 / 1,200</dt><dd>SAMPLED HASHES MATCH</dd></div></dl>
+          <p class="note-bound"><span class="eyebrow">LIMITS</span> Paths and sizes were compared for every file against an independent copy; SHA-256 only for a sample of 600 per account.</p></div><span class="note-symbol" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.5v6.5h8M9 6l3 3-3 3"/></svg></span></article>
+        <article class="note" data-arrival><time datetime="2026-10-11">11 OCT 2026</time><div><span class="eyebrow">02 / BACKUP</span><h3>Time Machine that wouldn’t mount.</h3><p>The SMB share was reachable, but the backup image on it wasn’t. backupd logged an invalid mountpoint and a disconnected disk image (error 70), and a manual <code>tmutil startbackup</code> reproduced it. After a restart it got as far as mounting the image, and the backup completed.</p><p class="note-bound"><span class="eyebrow">LIMITS</span> The root cause is still unknown, and a backup that finishes is not a restore I’ve tested.</p></div><span class="note-symbol" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.5v6.5h8M9 6l3 3-3 3"/></svg></span></article>
+        <article class="note" data-arrival><time datetime="2026-08-10">10 AUG 2026</time><div><span class="eyebrow">03 / NETWORK</span><h3>Dropouts that kept a schedule.</h3><p>The first time the connection dropped I checked my own DNS; it was fine, and the ISP had been doing maintenance, so I waited. The second time it looked periodic, so I read the router log. The bottom was a wall of <code>Failed to get IP for interface ppp0</code>. Comparing that with the healthy entries at the top led to the middle: <code>No response to 9 echo-requests</code>, then <code>Serial link appears to be disconnected</code>. Superloop confirmed the service had moved from PPPoE to IPoE. After switching the router over, the dropouts stopped.</p><p class="note-bound"><span class="eyebrow">LIMITS</span> The log also showed Wi-Fi chip errors that I never tied to the problem. Why the old session failed on their side, I can’t say.</p></div><span class="note-symbol" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.5v6.5h8M9 6l3 3-3 3"/></svg></span></article>
+        <article class="note" data-arrival><span class="note-date">UNDATED</span><div><span class="eyebrow">04 / OPERATIONS</span><h3>Docker Desktop to OrbStack.</h3><p>On a 16 GB machine, Docker Desktop was holding 8–10 GB or more over long runs, with the odd stall and growing swap. Nothing was down; I wanted the memory back. I looked at Apple’s container tool first, but Compose support, Immich’s upgrade path, volume permissions and data safety pointed to OrbStack at the time. It took over the existing containers and Immich kept running. Later I saw it using about 1.77 GB.</p><p class="note-bound"><span class="eyebrow">LIMITS</span> Two observations under different conditions: not a benchmark, and not proof of a leak.</p></div><span class="note-symbol" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.5v6.5h8M9 6l3 3-3 3"/></svg></span></article>
+      </div>
     </section>
 
-    <section class="notes wrap" id="notes" aria-labelledby="notes-title"><div class="notes-heading" data-arrival><p class="eyebrow">03 / FIELD NOTES</p><h2 id="notes-title">From the <em>workbench.</em></h2></div><article class="note" data-arrival><time datetime="2026-10-02">02 OCT 2026</time><div><span class="eyebrow">DESIGN NOTE / 001</span><h3>Leaving space for the unfinished.</h3><p>This lab begins with two visual studies: a transparent wave and a field of lines. A place to keep small experiments, follow a question, and let the collection grow over time.</p></div><span class="note-symbol" aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4 2.5v6.5h8M9 6l3 3-3 3"/></svg></span></article></section>
+    <section class="interests wrap" id="open-items" aria-labelledby="interests-title">
+      <div class="section-heading" data-arrival><div><p class="eyebrow">04 / OPEN ITEMS</p><h2 id="interests-title">Not done <em>yet.</em></h2></div><p>Written down so the rest of the page stays honest.</p></div>
+      <div class="interest-grid"><div class="interest" data-arrival><span class="interest-number">I.</span><h3>A real restore</h3><p>I’ve browsed Time Machine and Syncthing history but never restored a file through either, or rebuilt the machine from backup. Power-on after an outage is set; the full recovery order hasn’t been rehearsed.</p><span class="interest-foot">NEXT: A RESTORE DRILL <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10"/></svg></span></span></div><div class="interest" data-arrival><span class="interest-number">II.</span><h3>Immich’s database</h3><p>The photos have a second copy. As far as I know, the database behind them has no scheduled backup, and media and metadata don’t recover the same way.</p><span class="interest-foot">NEXT: SCHEDULED DUMPS <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10"/></svg></span></span></div><div class="interest" data-arrival><span class="interest-number">III.</span><h3>An exposure audit</h3><p>Most services listen on every interface. Home IPv4 is behind NAT, but I haven’t gone through port forwarding, UPnP, IPv6 firewall rules or Tailnet access rules one by one.</p><span class="interest-foot">NEXT: CHECK EACH PATH <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 3v10M3 8h10"/></svg></span></span></div></div>
+    </section>
 
-    <section class="about wrap" id="about" aria-labelledby="about-title"><p class="eyebrow">A NOTE ABOUT THIS SPACE</p><div class="about-body" data-arrival><h2 id="about-title">A little less polished.<br>A little more <em>personal.</em></h2><div><p>I’m Haochen, a software engineer based in Melbourne. This is a small corner of my site for experiments beyond the project brief. Some will become something. Some are simply worth trying.</p><a class="text-link" href="/">Meet the person behind the lab <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div></section>
+    <section class="about wrap" id="about" aria-labelledby="about-title"><p class="eyebrow">A NOTE ABOUT THIS SPACE</p><div class="about-body" data-arrival><h2 id="about-title">The bench behind<br>the <em>portfolio.</em></h2><div><p>I’m Haochen, a software engineer based in Melbourne. The portfolio shows finished projects; this is where the rest lives: a small server at home, code layered onto other people’s software, and notes from when things broke. Figures here are my own observations, not benchmarks, and nothing private is on the page.</p><a class="text-link" href="/">Meet the person behind the lab <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg></span></a></div></div></section>
   </main>
   <footer class="footer wrap"><a class="footer-brand" href="/">SKYWINGJAM / LAB</a><span>© <span id="year">2026</span> HAOCHEN ZHOU</span><a href="#main">Back to top <span aria-hidden="true"><svg class="i-arrow" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 13.5v-11M4 6.5l4-4 4 4"/></svg></span></a></footer>
   <script type="module" src="./lab.js"></script>

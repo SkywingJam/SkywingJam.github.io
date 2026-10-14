@@ -2,18 +2,21 @@
 
 This document captures the design thinking behind the lab (`lab/`) and the rules for extending it. It is the counterpart to [index.md](index.md): the index page is a calm gallery, the lab is a workshop with the lights on. Read both, because the two pages share one thread, the wave.
 
-> **Status.** The lab is unpublished. `lab` is listed in `_config.yml` `exclude` and its nav link is commented out in `index.html`. Current copy is placeholder text. The page exists to validate design direction and to grow a set of reusable components.
+> **Status.** The lab is unpublished. `lab` is listed in `_config.yml` `exclude` and its nav link is commented out in `index.html`. Copy is real content as of October 2026 (homelab, builds, field notes, open items); facts are kept in a local reference file that is not committed. The page also grows a set of reusable components.
 
 ## 1. Core idea: a personal lab
 
-The lab is where personal engineering and hobby work will live: homelab builds, tooling, experiments, notes on what worked and what did not. The current content (frosted acrylic wave, optical studies, contour field) is a stand-in that proves the visual language.
+The lab is where personal engineering and hobby work lives: the homelab, small layers of code on top of other software, visual studies, and notes on what worked and what did not.
+
+**Theme: things that run out of sight.** The hero says it ("Things that run *out of sight.*"), and every section answers it: the homelab keeps a second copy and stays out of the way, the extension layer sits behind a host app, the wave is literally the page's background, and the field notes ("Back in *sight.*") are the times something surfaced. **Layers** carry the theme visually: three acrylic layers in the wave, three plates in the homelab figure, a thin layer of scripts over a host in FIG. 002. New entries should fit one of those two readings, or the theme should be revised here first.
 
 - **A workbench, not a brochure.** The index page presents finished work in frames. The lab presents work in progress, with specimen labels (`FIG. 001`, `PLATE 01`, `MATERIAL STUDY / 001`), status markers (`Ongoing`, `In use`), and field notes.
 - **Light and material carry the design.** Quality comes from how things are lit: transmission through frosted acrylic, edge highlights, soft shadows between layers, a warm daylight palette and a cool moonlight palette. Flat blocks and generic cards are the exception, not the default.
 - **Not bound by conventional graphic design.** Grid regularity, uniform spacing and a minimal palette are tools, not rules. It is fine for the hero to be a full-bleed light study, for a component to break the layout, or for an object to be the layout.
 - **Technique is allowed to be expensive, within reason.** The lab may use canvas rendering, backdrop blur, layered gradients, View Transitions and scroll-driven animation where they make the material convincing. It should not be held back by "what is cheapest" as the first question. It must still be usable (see section 6).
 - **Honest approximation.** Materials are artistic approximations (CSS gradients, SVG, 2D canvas), not physical simulations. Do not claim or chase physical accuracy; chase the feeling of a lit object.
-- **Personal, a little less polished.** Copy is first person and plain. The lab can say "just because".
+- **Personal, a little less polished.** Copy is first person and plain.
+- **Honest about limits.** Every claim is something observed or done, dated where possible. Figures are labelled as observations, not benchmarks. Field notes end with a `LIMITS` line saying what the evidence does not show, and unfinished work goes in Open items rather than being implied as done. Never publish addresses, credentials, endpoints, private media or personal paths.
 
 ## 2. Wave: the thread through index and lab
 
@@ -21,7 +24,7 @@ The wave links the two pages and is the lab's signature.
 
 - On **index** it is a quiet contour field (`ambient-field.js`): single hue, slow, low contrast.
 - On **lab** it is the full expression (`lab/wave-scene.js`): three layers of frosted acrylic lit by daylight or moonlight, with transmission, bevels, edge highlights, layer shadows, and a liquid pointer response.
-- `FIG. 002 / Ambient field` in the lab explicitly credits the index contour field as part of the same family. Keep that relationship visible.
+- `FIG. 005 / Ambient field` in the lab explicitly credits the index contour field as part of the same family, and `FIG. 004 / Acrylic wave` documents the hero itself. Keep that relationship visible.
 
 Rules for the wave:
 
@@ -77,6 +80,18 @@ A display case with swappable specimens (Lens, Layers, Prism), a light-angle sli
 
 `createAcrylicPainter(canvas)` is the painter (also used to export posters at a fixed phase); `createWaveScene(canvas, stage, options)` adds the loop, pointer, theme and lifecycle. It exposes `setTheme`, `setPaused`, `dispose`, and an `onFallback` hook.
 
+### Stack figure and ledger (`lab.css`)
+
+The homelab pattern: a sticky `figure.experiment-art.stack-figure` of frosted `.stack-plate`s (one per layer, `--layer` sets height) with `.stack-tag` labels, beside `.layer` articles that hold a `dl.ledger` (name / description / `ledger-run` mono status). Matching `data-layer` values let a hovered or focused layer light its plate through `:has()`, with no JavaScript; the figure is decorative and the ledger carries every fact. `.ledger-compact` is the narrow variant (used for the pull request list). Plates float only while `.in-view`, never after Pause or with reduced motion.
+
+### Diagram figures (`.diagram-art`)
+
+Inline SVG on the art ground with thin accent strokes and mono labels (FIG. 002 injection layer, FIG. 003 pull requests). Text in these figures is decorative (`aria-hidden`); the copy beside them says the same thing. Small ambient loops reuse `contour-drift` and `quiet-breath` and follow the same `.in-view` / `.motion-paused` gates.
+
+### Field note figures and limits
+
+`dl.note-figures` puts a few key numbers in a row inside a note; `p.note-bound` with a `LIMITS` eyebrow closes a note with what the evidence does not show. Log lines and commands go in `<code>`.
+
 ### Surface (`[data-surface]`)
 
 Any card can opt in to the pointer reflection by adding the attribute. The behaviour is in `lab.js`, the look in `lab.css`.
@@ -122,23 +137,27 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 - Don't hard-code palette values or copy inside a reusable component.
 - Don't use Unicode arrows or symbol glyphs as icons (`→ ↓ ↑ ↺ ＋ ◐ ▷ Ⅱ`); iOS may render them as emoji or in a fallback font. Use `.i-arrow` SVG, in HTML and in JS-set text.
 - Don't ship an effect without a poster or static fallback.
-- Don't publish the lab by accident. To publish, remove `lab` from `_config.yml` `exclude` and restore the nav link in `index.html` together, after replacing placeholder copy.
+- Don't publish the lab by accident. To publish, remove `lab` from `_config.yml` `exclude` and restore the nav link in `index.html` together, after a final review of the copy against the facts.
 
-## 9. Content direction (planned)
+## 9. Content structure
 
-Future entries are personal engineering and hobby write-ups, for example homelab builds, networking and storage, self-hosting, automation, small tools. Suggested entry shape, reusing existing patterns:
+| Section | Content | Pattern |
+| --- | --- | --- |
+| Hero | Theme line, wave, featured link to the homelab | Wave scene, featured file |
+| 01 / The homelab | Hardware, services, network as three layers | Stack figure and ledger |
+| 02 / Builds and studies | FIG. 002 extension layer, FIG. 003 open-source PRs, FIG. 004 acrylic wave, FIG. 005 ambient field | `.experiment` with diagram or poster art |
+| Interlude | Optical studies | Light study |
+| 03 / Field notes | Incidents and decisions, newest first, each with limits | `.note` list with figures |
+| 04 / Open items | Known gaps and the next step for each | Three-column grid |
+| About | Who and why | About block |
 
-- A specimen or figure (diagram, photo, rack render, or a lit study object) with `FIG.` number and status.
-- A short plain-language summary, tags, and links (repo, source download).
-- Field notes: what was tried, what broke, what was measured, what is next.
-
-Placeholder copy ("Liquid archive", "Threads of curiosity", "From the workbench") will be replaced; keep the structure and numbering so the design survives the content change.
+Adding an entry: give it the next `FIG.` number, a status, a plain summary, tags and links; write what was learned and what is not claimed. Status that changes (pull requests, open items) carries an "as of" date in the copy; update it rather than letting it go stale.
 
 ## 10. Where things live
 
 | File | Role |
 | --- | --- |
-| `lab/index.html` | Page markup and placeholder copy. |
+| `lab/index.html` | Page markup and all copy. |
 | `lab/lab.css` | Page styles, tokens, motion vocabulary, surfaces, arrivals. |
 | `lab/lab.js` | Theme (View Transition reveal), pause control, wave lifecycle, surfaces, arrivals. |
 | `lab/wave-scene.js` | Acrylic painter and wave scene (canvas 2D). |
