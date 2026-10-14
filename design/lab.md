@@ -8,7 +8,7 @@ This document captures the design thinking behind the lab (`lab/`) and the rules
 
 The lab is where personal engineering and hobby work lives: the homelab, small layers of code on top of other software, visual studies, and notes on what worked and what did not.
 
-**Theme: things that run out of sight.** The hero says it ("Things that run *out of sight.*"), and every section answers it: the homelab keeps a second copy and stays out of the way, the extension layer sits behind a host app, the wave is literally the page's background, and the field notes ("Back in *sight.*") are the times something surfaced. **Layers** carry the theme visually: three acrylic layers in the wave, three plates in the homelab figure, a thin layer of scripts over a host in FIG. 002. New entries should fit one of those two readings, or the theme should be revised here first.
+**Theme: things that run out of sight.** The hero says it ("Things that run *out of sight.*"), and every section answers it: the homelab keeps a second copy and stays out of the way, the extension layer sits behind a host app, the wave is literally the page's background, and the field notes ("Back in *sight.*") are the times something surfaced. **Layers** carry the theme visually: three acrylic layers in the wave, three tabs of the homelab (hardware, services, network), a thin layer of scripts over a host in FIG. 002. New entries should fit one of those two readings, or the theme should be revised here first.
 
 - **A workbench, not a brochure.** The index page presents finished work in frames. The lab presents work in progress, with specimen labels (`FIG. 001`, `PLATE 01`, `MATERIAL STUDY / 001`), status markers (`Ongoing`, `In use`), and field notes.
 - **Light and material carry the design.** Quality comes from how things are lit: transmission through frosted acrylic, edge highlights, soft shadows between layers, a warm daylight palette and a cool moonlight palette. Flat blocks and generic cards are the exception, not the default.
@@ -24,7 +24,7 @@ The wave links the two pages and is the lab's signature.
 
 - On **index** it is a quiet contour field (`ambient-field.js`): single hue, slow, low contrast.
 - On **lab** it is the full expression (`lab/wave-scene.js`): three layers of frosted acrylic lit by daylight or moonlight, with transmission, bevels, edge highlights, layer shadows, and a liquid pointer response.
-- `FIG. 005 / Ambient field` in the lab explicitly credits the index contour field as part of the same family, and `FIG. 004 / Acrylic wave` documents the hero itself. Keep that relationship visible.
+- The design study (`FIG. 004` acrylic wave / `FIG. 005` ambient field) presents both as one theme at two volumes: loud on the lab, quiet on the index. Keep that relationship visible.
 
 Rules for the wave:
 
@@ -43,8 +43,8 @@ Rules for the wave:
 | Components | Read host tokens (`--bg --ink --muted --line --accent --sans --serif --mono`) with their own defaults, so a component works in any page. |
 | Type | Serif italic (`<em>`) for the emotional half of a title ("Made out of *curiosity.*"). Sans for reading. Small uppercase mono labels (9–10px) for specimen metadata. |
 | Labels | Number everything: `FIG.`, `PLATE`, `001 /`, `I. II. III.`. It reinforces the lab-notebook feel. |
-| Surfaces | Frosted panels use translucent fills with small backdrop blur (3–5px), fine edge lines, and a moving reflection under the pointer (`[data-surface]`). |
-| Light | Prefer driving highlights and shadows from a light-direction variable (`--study-light`, `--study-key`, `--study-angle`) so objects respond together. |
+| Surfaces | Objects are sculpted out of the ground they sit on (soft neumorphism): `.acrylic` raises an object with a highlight on the lit side and a soft shadow on the far side, a faint frosted grain and a polished bevel hairline; `.recess` presses the same light into the surface (tracks, log panels, sockets). Keep it matte and physical, not glossy glass: no specular hotspot, no strong blur, generous but not bubbly radii. Floating UI over the wave still uses frosted panels and `[data-surface]`. |
+| Light | Drive highlights and shadows from one light direction so objects respond together: `--lx`/`--ly` (registered, −1…1) inside a `[data-light-field]`, which leans toward the pointer and eases back; `--study-light`, `--study-key`, `--study-angle` inside the light study. |
 | Icons and glyphs | Same rule as the index guide ([index.md](index.md)): no Unicode arrows or symbol glyphs (`→ ↓ ↑ ↗ ↺ ＋ ↳ ◐ ▷ Ⅱ`) as icons or in labels, including text set from JavaScript (`lab.js` swaps pause/play as SVG). Use inline SVG `.i-arrow` (16×16 viewBox, 1.5px stroke, `currentColor`, `.86em`; `.i-fill` for solid shapes). `light-study.css` carries its own copy of the rule so the component stays portable. All lab markup follows this today; keep it that way. |
 | Themes | Light (day) and dark (moon) are both first-class. Check every new object in both. |
 
@@ -58,7 +58,7 @@ The lab is allowed more motion than the index, but it follows a clear vocabulary
 4. **Scroll.** Hero copy drifts up and fades via CSS scroll-driven animation (compositor only, no JS; unsupported browsers stay still). Layers below the hero translate only, they do not fade, so frosted glass keeps working.
 5. **Theme change is an event.** A circular View Transition opens from the toggle button. The wave jumps to the new palette while the reveal acts as the transition, and is paused during it. Falls back to a colour cross-fade.
 6. **Pointer responses are local.** Only the surface under the pointer lights up; the featured file lifts slightly. Nothing animates on its own except designed ambient loops.
-7. **Ambient loops run only while visible.** Experiment thumbnails (`.in-view`), the optical study float (11s, about 6px) and the wave pause when off-screen or when the tab is hidden.
+7. **Ambient loops run only while visible.** Experiment art and `[data-ambient]` figures (`.in-view`: packet flow on routes, injection pulses, status lights, the open-PR ring), the light-study float and the wave pause when off-screen or when the tab is hidden. Loops move inside fixed geometry (dashes along a path, a pulse along a connector); they never translate an object across a neighbouring line.
 8. **The visitor can stop it.** A visible Pause motion control sets `.motion-paused` on `<html>`, which every ambient effect must honour, alongside `prefers-reduced-motion`.
 9. **Interaction beats ambience.** Dragging the light, choosing a specimen and pointer tilt are always available, even when ambient motion is paused or reduced.
 
@@ -68,7 +68,7 @@ The lab is also a component testbed. Components should be copyable into another 
 
 ### Light study (`light-study.css` / `light-study.js`)
 
-A display case with swappable specimens (Lens, Layers, Prism), a light-angle slider, and an editorial index. Full contract in [docs/discovery/lab-light-study-pattern.md](../docs/discovery/lab-light-study-pattern.md). Key points:
+A display case with swappable specimens, a light-angle slider, and an editorial index. Its built-in Lens, Layers and Prism specimens stay in the CSS for reuse; on the page it hosts the design study (`data-study-art="acrylic"` and `"contour"`, specimen styles in `lab.css`) rather than a section of its own. Full contract in [docs/discovery/lab-light-study-pattern.md](../docs/discovery/lab-light-study-pattern.md). Key points:
 
 - All copy lives in HTML; JS contains no text. Specimens are `data-study-art="key"` containers matched to `data-study-choice="key"` buttons.
 - Layout follows the block's own width via container queries, not the viewport.
@@ -80,13 +80,21 @@ A display case with swappable specimens (Lens, Layers, Prism), a light-angle sli
 
 `createAcrylicPainter(canvas)` is the painter (also used to export posters at a fixed phase); `createWaveScene(canvas, stage, options)` adds the loop, pointer, theme and lifecycle. It exposes `setTheme`, `setPaused`, `dispose`, and an `onFallback` hook.
 
-### Stack figure and ledger (`lab.css`)
+### Switch (`switcher.js`)
 
-The homelab pattern: a sticky `figure.experiment-art.stack-figure` of frosted `.stack-plate`s (one per layer, `--layer` sets height) with `.stack-tag` labels, beside `.layer` articles that hold a `dl.ledger` (name / description / `ledger-run` mono status). Matching `data-layer` values let a hovered or focused layer light its plate through `:has()`, with no JavaScript; the figure is decorative and the ledger carries every fact. `.ledger-compact` is the narrow variant (used for the pull request list). Plates float only while `.in-view`, never after Pause or with reduced motion.
+Generic tabs: `[data-switch]` root with `data-active`, a hidden `[data-switch-tabs]` list (optional `[data-switch-indicator]` that slides under the active tab), `[data-switch-tab="key"]` buttons and `[data-switch-panel="key"]` panels; `[data-switch-stagger]` children settle in one after another on change. Without JavaScript every panel shows in order. Nested switches are independent (the homelab tabs hold the network scenario switch). `enhanceSwitches(root)` / `createSwitch(el)`, `dispose()`.
 
-### Diagram figures (`.diagram-art`)
+### Homelab panels and ledger (`lab.css`)
 
-Inline SVG on the art ground with thin accent strokes and mono labels (FIG. 002 injection layer, FIG. 003 pull requests). Text in these figures is decorative (`aria-hidden`); the copy beside them says the same thing. Small ambient loops reuse `contour-drift` and `quiet-breath` and follow the same `.in-view` / `.motion-paused` gates.
+Each tab is a `.layer-panel`: a decorative `.lab-figure` (sculpted objects, `aria-hidden`) beside a `dl.ledger` (name / description / `ledger-run` mono status) that carries every fact. The network figure is a fixed-ratio map: HTML nodes positioned in the SVG's 640×400 space, routes as `.route.dns` / `.route.web` with a `.flow` dash that travels along the path, shown per scenario with `in-home` / `in-away` / `in-exit` classes. `.ledger-compact` is the narrow variant (the pull request list).
+
+### Diagram figures
+
+FIG. 002 is HTML (sculpted tiles with SVG icons, an engraved proxy line, the host plate), FIG. 003 is inline SVG with mono labels. Figure text is decorative (`aria-hidden`); the copy beside says the same thing. Icons are 16×16 `.i-arrow` SVGs, never text abbreviations.
+
+### Loupe (`loupe.js`)
+
+A draggable magnifier over real HTML content: `[data-loupe]` root (focusable, arrow keys move the lens, Shift for larger steps), `[data-loupe-source]`, and a hidden `[data-loupe-lens]` holding `.loupe-view`, which receives a scaled copy. Options: `data-loupe-zoom`, `data-loupe-start="x,y"`. Used on the router log, where the copy highlights the key lines. Without JavaScript the content reads as it is.
 
 ### Field note figures and limits
 
@@ -144,10 +152,9 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 | Section | Content | Pattern |
 | --- | --- | --- |
 | Hero | Theme line, wave, featured link to the homelab | Wave scene, featured file |
-| 01 / The homelab | Hardware, services, network as three layers | Stack figure and ledger |
-| 02 / Builds and studies | FIG. 002 extension layer, FIG. 003 open-source PRs, FIG. 004 acrylic wave, FIG. 005 ambient field | `.experiment` with diagram or poster art |
-| Interlude | Optical studies | Light study |
-| 03 / Field notes | Incidents and decisions, newest first, each with limits | `.note` list with figures |
+| 01 / The homelab | (tabs) hardware, services, network with Home / Away / Public Wi-Fi scenarios | Switch, sculpted figures, ledger |
+| 02 / Builds and studies | FIG. 002 extension layer, FIG. 003 open-source PRs, FIG. 004–005 design study | `.experiment`; light study for the design study |
+| 03 / Field notes | Incidents and decisions, newest first, each with limits; figures count up on arrival | `.note` list with figures, loupe |
 | 04 / Open items | Known gaps and the next step for each | Three-column grid |
 | About | Who and why | About block |
 
@@ -161,7 +168,9 @@ Adding an entry: give it the next `FIG.` number, a status, a plain summary, tags
 | `lab/lab.css` | Page styles, tokens, motion vocabulary, surfaces, arrivals. |
 | `lab/lab.js` | Theme (View Transition reveal), pause control, wave lifecycle, surfaces, arrivals. |
 | `lab/wave-scene.js` | Acrylic painter and wave scene (canvas 2D). |
-| `lab/light-study.css`, `lab/light-study.js` | Reusable optical display case. |
+| `lab/light-study.css`, `lab/light-study.js` | Reusable display case (design study). |
+| `lab/switcher.js` | Reusable tabs (homelab layers, network scenarios). |
+| `lab/loupe.js` | Reusable magnifier (router log). |
 | `lab/assets/` | Wave posters used as fallback and first paint. |
 | `scripts/check-lab.cjs`, `scripts/check-light-study.cjs`, `scripts/bench-wave.cjs` | Playwright checks and render benchmark. |
 | `docs/discovery/` | Plans, implementation notes, performance and motion records. |

@@ -1,4 +1,6 @@
 import { enhanceLightStudies } from './light-study.js';
+import { enhanceSwitches } from './switcher.js';
+import { enhanceLoupes } from './loupe.js';
 
 const root = document.documentElement;
 const stage = document.querySelector('.wave-stage');
@@ -78,7 +80,7 @@ motionButton.addEventListener('click', () => {
   userPaused = !userPaused;
   scene?.setPaused(userPaused);
   updateMotionControls();
-  if (userPaused) resetSurface();
+  if (userPaused) { resetSurface(); resetLight(); }
 });
 
 async function enhanceWave() {
@@ -144,22 +146,67 @@ for (const item of surfaces) {
   item.addEventListener('pointerleave', () => resetSurface(item));
   item.addEventListener('pointercancel', () => resetSurface(item));
 }
-window.addEventListener('blur', () => resetSurface());
+window.addEventListener('blur', () => { resetSurface(); resetLight(); });
 finePointer.addEventListener('change', () => resetSurface());
 reducedMotion.addEventListener('change', () => resetSurface());
 document.addEventListener('visibilitychange', () => { if (document.hidden) resetSurface(); });
+
+// Light fields ([data-light-field]): acrylic objects inside share one light direction (--lx, --ly,
+// −1…1) that leans toward the pointer and eases back when it leaves (registered properties).
+const lightFields = [...document.querySelectorAll('[data-light-field]')];
+let lightFrame = 0, lightTarget = null, lightX = 0, lightY = 0;
+function resetLight(target = null) {
+  if (!target || target === lightTarget) { cancelAnimationFrame(lightFrame); lightFrame = 0; }
+  for (const field of target ? [target] : lightFields) { field.style.removeProperty('--lx'); field.style.removeProperty('--ly'); }
+}
+for (const field of lightFields) {
+  field.addEventListener('pointermove', event => {
+    if (!finePointer.matches || reducedMotion.matches || userPaused || event.pointerType === 'touch') return;
+    const rect = field.getBoundingClientRect();
+    lightTarget = field;
+    lightX = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
+    lightY = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1));
+    if (lightFrame) return;
+    lightFrame = requestAnimationFrame(() => {
+      lightFrame = 0;
+      lightTarget.style.setProperty('--lx', lightX.toFixed(3));
+      lightTarget.style.setProperty('--ly', lightY.toFixed(3));
+    });
+  }, { passive: true });
+  field.addEventListener('pointerleave', () => resetLight(field));
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden) resetLight(); });
 
 // Ambient experiment art only animates while it is on screen.
 const artObserver = new IntersectionObserver(entries => {
   for (const entry of entries) entry.target.classList.toggle('in-view', entry.isIntersecting);
 }, { rootMargin: '80px 0px' });
-document.querySelectorAll('.experiment-art').forEach(art => artObserver.observe(art));
+document.querySelectorAll('.experiment-art, [data-ambient]').forEach(art => artObserver.observe(art));
+
+// Figures in field notes count up once when they arrive. The final value is already in the HTML.
+const counted = new WeakSet();
+function countUp(scope) {
+  if (reducedMotion.matches || userPaused) return;
+  for (const element of scope.querySelectorAll('[data-count]')) {
+    if (counted.has(element)) continue;
+    counted.add(element);
+    const target = Number(element.dataset.count), format = new Intl.NumberFormat('en-AU');
+    const start = performance.now(), duration = 1400;
+    const step = now => {
+      const t = Math.min(1, (now - start) / duration);
+      element.textContent = format.format(Math.round(target * (1 - (1 - t) ** 4)));
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+}
 
 const arrivals = document.querySelectorAll('[data-arrival]');
 const arrivalObserver = new IntersectionObserver(entries => {
   for (const entry of entries) {
     if (!entry.isIntersecting) continue;
     entry.target.classList.add('arrival-visible');
+    countUp(entry.target);
     arrivalObserver.unobserve(entry.target);
   }
 }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
@@ -192,3 +239,5 @@ window.addEventListener('pageshow', event => { if (event.persisted) enhanceWave(
 
 // Independent reusable blocks: no animation loop or renderer dependency.
 enhanceLightStudies(document);
+enhanceSwitches(document);
+enhanceLoupes(document);

@@ -11,14 +11,14 @@ let browser;
  const page=await browser.newPage({viewport:{width:1440,height:1000},colorScheme:'light'});const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto(baseURL+'/lab/');const study=page.locator('[data-light-study]');await page.waitForSelector('.study-enhanced');await study.scrollIntoViewIfNeeded();await page.waitForTimeout(400);
  assert.equal(await study.getAttribute('data-observing'),'true');
- for(const name of ['lens','layers','prism']){
+ for(const name of ['acrylic','contour']){
   await study.locator(`[data-study-choice=${name}]`).click();await page.waitForTimeout(550);
   assert.equal(await study.getAttribute('data-specimen'),name);
   assert.equal(await study.locator(`[data-study-art=${name}]`).isVisible(),true);
   await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(0,0);await page.waitForTimeout(250);await study.screenshot({path:out+`/light-study-${name}-light.png`});
  }
- await study.locator('[data-study-choice=prism]').press('Home');assert.equal(await study.getAttribute('data-specimen'),'lens');
- await study.locator('[data-study-choice=lens]').press('ArrowDown');assert.equal(await study.getAttribute('data-specimen'),'layers');
+ await study.locator('[data-study-choice=contour]').press('Home');assert.equal(await study.getAttribute('data-specimen'),'acrylic');
+ await study.locator('[data-study-choice=acrylic]').press('ArrowDown');assert.equal(await study.getAttribute('data-specimen'),'contour');
  await study.locator('[data-study-light]').focus();await page.keyboard.press('End');
  assert.equal(await study.locator('[data-study-light]').inputValue(),'45');
  assert.equal(await study.locator('[data-study-angle]').textContent(),'+45°');
@@ -53,12 +53,12 @@ let browser;
  assert.equal(await touchPage.locator('[data-light-study]').evaluate(e=>e.classList.contains('study-dragging')),false);
  await touchPage.close();
  await page.locator('.theme-toggle').click();await study.scrollIntoViewIfNeeded();await page.waitForTimeout(500);
- for(const name of ['lens','layers','prism']){await study.locator(`[data-study-choice=${name}]`).click();await page.waitForTimeout(500);await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(0,0);await page.waitForTimeout(250);await study.screenshot({path:out+`/light-study-${name}-dark.png`});}
+ for(const name of ['acrylic','contour']){await study.locator(`[data-study-choice=${name}]`).click();await page.waitForTimeout(500);await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(0,0);await page.waitForTimeout(250);await study.screenshot({path:out+`/light-study-${name}-dark.png`});}
  for(const width of [1440,1024,760,700,390,375,320]){await page.setViewportSize({width,height:900});await study.scrollIntoViewIfNeeded();assert(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),`overflow ${width}`);}
  await page.setViewportSize({width:390,height:844});await study.scrollIntoViewIfNeeded();await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(0,0);await page.waitForTimeout(250);await study.screenshot({path:out+'/light-study-mobile-dark.png'});
  await page.locator('.theme-toggle').click();await study.scrollIntoViewIfNeeded();await page.waitForTimeout(400);await page.evaluate(()=>document.activeElement?.blur());await page.mouse.move(0,0);await page.waitForTimeout(250);await study.screenshot({path:out+'/light-study-mobile-light.png'});
  // Reuse a second instance, with fresh accessible identities and independent state.
- const reuse=await page.evaluate(async()=>{const original=document.querySelector('[data-light-study]');const clone=original.cloneNode(true);clone.removeAttribute('id');document.querySelector('main').append(clone);const {createLightStudy}=await import('/lab/light-study.js');const api=createLightStudy(clone);const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);const duplicates=ids.filter((id,i)=>ids.indexOf(id)!==i);const originalState=original.dataset.specimen;clone.querySelector('[data-study-choice=lens]').click();const independent=original.dataset.specimen===originalState;api.dispose();clone.remove();return {duplicates,independent};});
+ const reuse=await page.evaluate(async()=>{const original=document.querySelector('[data-light-study]');const clone=original.cloneNode(true);clone.removeAttribute('id');document.querySelector('main').append(clone);const {createLightStudy}=await import('/lab/light-study.js');const api=createLightStudy(clone);const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);const duplicates=ids.filter((id,i)=>ids.indexOf(id)!==i);const originalState=original.dataset.specimen;clone.querySelector('[data-study-choice=contour]').click();const independent=original.dataset.specimen===originalState;api.dispose();clone.remove();return {duplicates,independent};});
  assert.deepEqual(reuse.duplicates,[]);assert.equal(reuse.independent,true);
  // Reuse contract: layout follows the block's own width, copy comes from HTML, range comes from the input.
  await page.setViewportSize({width:1440,height:1000});
@@ -74,9 +74,9 @@ let browser;
   host.append(clone);const api=createLightStudy(clone);
   const layout=getComputedStyle(clone.querySelector('.study-layout')).display;
   const scene=clone.querySelector('.study-scene').getBoundingClientRect();
-  const plates=[...clone.querySelectorAll('.optic-plate')];clone.querySelector('[data-study-choice=layers]').click();
+  const plates=[...clone.querySelectorAll('.specimen')];clone.querySelector('[data-study-choice=contour]').click();
   const sceneBox=clone.querySelector('.study-scene').getBoundingClientRect();
-  const platesInside=plates.every(p=>{const r=p.getBoundingClientRect();return r.left>=sceneBox.left-1&&r.right<=sceneBox.right+1});
+  const platesInside=plates.filter(p=>p.offsetParent).every(p=>{const r=p.getBoundingClientRect();return r.left>=sceneBox.left-1&&r.right<=sceneBox.right+1});
   const result={layout,sceneWidth:Math.round(scene.width),overflow:clone.scrollWidth>clone.clientWidth,platesInside,
    hint:clone.querySelector('[data-study-hint]').textContent,angle:clone.querySelector('[data-study-angle]').textContent,
    progress:clone.style.getPropertyValue('--study-progress'),still:clone.dataset.still,
@@ -88,13 +88,13 @@ let browser;
  assert.equal(contract.hint,'CUSTOM HINT');assert.equal(contract.angle,'10 deg');assert.equal(contract.progress,'50%');
  assert.equal(contract.still,'true');assert.equal(contract.ink,'#e1eaf4');assert.equal(contract.titleBreaks,0);
  await page.setViewportSize({width:1440,height:1000});await page.locator('.motion-toggle').click();await study.scrollIntoViewIfNeeded();
- assert.equal(await study.locator('[data-study-art=prism] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'paused');
- await page.emulateMedia({reducedMotion:'reduce'});await study.locator('[data-study-choice=lens]').click();
- assert.equal(await study.locator('[data-study-art=lens] .study-object').evaluate(e=>getComputedStyle(e).animationName),'none');
+ assert.equal(await study.locator('[data-study-art=contour] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'paused');
+ await page.emulateMedia({reducedMotion:'reduce'});await study.locator('[data-study-choice=acrylic]').click();
+ assert.equal(await study.locator('[data-study-art=acrylic] .study-object').evaluate(e=>getComputedStyle(e).animationName),'none');
  await page.emulateMedia({reducedMotion:'no-preference'});await page.locator('.motion-toggle').click();await study.scrollIntoViewIfNeeded();await page.waitForTimeout(100);
- assert.equal(await study.locator('[data-study-art=lens] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'running');
+ assert.equal(await study.locator('[data-study-art=acrylic] .study-object').evaluate(e=>getComputedStyle(e).animationPlayState),'running');
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.waitForTimeout(100);assert.equal(await study.getAttribute('data-observing'),'false');
- const staticPage=await browser.newPage({javaScriptEnabled:false});await staticPage.goto(baseURL+'/lab/');assert.equal(await staticPage.locator('[data-study-art=lens]').isVisible(),true);assert.equal(await staticPage.locator('[data-study-choices]').isVisible(),false);
+ const staticPage=await browser.newPage({javaScriptEnabled:false});await staticPage.goto(baseURL+'/lab/');assert.equal(await staticPage.locator('[data-study-art=acrylic]').isVisible(),true);assert.equal(await staticPage.locator('[data-study-choices]').isVisible(),false);
  assert.deepEqual(errors,[]);console.log('reuse contract (container layout, HTML copy, input range, forced theme, per-block pause), choices, keyboard, slider/reset, multi-instance IDs, themes, responsive, pause/reduced motion, offscreen, mouse/touch dragging, vertical touch scrolling and no JS: passed');
  await browser.close();
 })().catch(async e=>{console.error(e);await browser?.close();process.exitCode=1;});
