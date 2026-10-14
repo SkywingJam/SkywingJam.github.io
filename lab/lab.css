@@ -76,7 +76,15 @@
 
 html {
   scroll-behavior:smooth;
-  scroll-padding-top:32px
+  scroll-padding-top:32px;
+  /* iOS would otherwise inflate small text (the 8px router log) and break its layout. */
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%
+}
+
+/* Belt and braces: nothing inside the page may widen it sideways on touch devices. */
+main {
+  overflow-x:clip
 }
 
 body {
@@ -2367,7 +2375,8 @@ a.interest:after {
 
 .inject-stack {
   position:absolute;
-  inset:14% 12% 14%;
+  --drop:7cqw;
+  inset:max(14%,60px) 12% max(14%,48px);
   display:flex;
   flex-direction:column;
   justify-content:center
@@ -2394,7 +2403,7 @@ a.interest:after {
   position:absolute;
   top:100%;
   left:50%;
-  height:var(--drop,7cqw);
+  height:var(--drop);
   border-left:1px dashed color-mix(in srgb,var(--accent) 55%,transparent)
 }
 
@@ -2417,12 +2426,12 @@ a.interest:after {
 @keyframes inject-pulse {
   0% {opacity:0;transform:translateY(0)}
   15% {opacity:1}
-  55% {opacity:1;transform:translateY(calc(7cqw - 4px))}
-  70%,100% {opacity:0;transform:translateY(calc(7cqw - 4px))}
+  55% {opacity:1;transform:translateY(calc(var(--drop) - 4px))}
+  70%,100% {opacity:0;transform:translateY(calc(var(--drop) - 4px))}
 }
 
 .inject-proxy {
-  margin-top:7cqw;
+  margin-top:var(--drop);
   border-top:1px solid color-mix(in srgb,var(--ink) 22%,transparent);
   box-shadow:0 1px 0 rgba(255,255,255,.75);
   padding-top:7px;
@@ -2436,7 +2445,7 @@ a.interest:after {
 }
 
 .inject-host {
-  margin-top:7cqw;
+  margin-top:var(--drop);
   height:18%;
   min-height:44px;
   border-radius:12px;
@@ -2829,6 +2838,17 @@ a.interest:after {
   cursor:grabbing
 }
 
+/* WebKit does not clip transformed children with overflow + border-radius alone, so the
+   magnified copy sits in its own circular clip. */
+.loupe-clip {
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  overflow:hidden;
+  clip-path:circle(50%);
+  -webkit-mask-image:radial-gradient(circle,#000 99%,transparent 100%)
+}
+
 .loupe-view {
   position:absolute;
   top:0;
@@ -3020,7 +3040,7 @@ a.interest:after {
     font-size:19px
   }
   .inject-stack {
-    inset:15% 8% 21%
+    inset:max(15%,52px) 8% max(21%,44px)
   }
   .loupe-lens {
     width:108px;
@@ -3081,5 +3101,35 @@ a.interest:after {
   .pr-track {
     left:13%;
     right:13%
+  }
+}
+
+/* Narrow FIG. 002: the stack would outgrow the figure, so tighten the drops, the host and
+   the side margins to keep it between the label above and the caption below. */
+@container (max-width:460px) {
+  .inject-stack {
+    --drop:4.5cqw;
+    inset:44px 16% 36px
+  }
+  .inject-tiles {
+    gap:2.2cqw
+  }
+  .inject-host {
+    height:auto;
+    min-height:30px;
+    padding:0 12px
+  }
+  .inject-proxy {
+    padding-top:4px
+  }
+}
+
+@container (max-width:300px) {
+  .inject-stack {
+    --drop:3.5cqw;
+    inset:42px 18% 32px
+  }
+  .inject-host {
+    min-height:26px
   }
 }
