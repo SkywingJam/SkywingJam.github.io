@@ -239,6 +239,19 @@ a,button {
   color:var(--accent)
 }
 
+.nav-home .nav-arrow,.footer a[href="#main"]>span {
+  display:inline-block;
+  transition:transform .2s var(--ease-settle)
+}
+
+.nav-home:hover .nav-arrow,.nav-home:focus-visible .nav-arrow {
+  transform:translate(2px,-2px)
+}
+
+.footer a[href="#main"]:hover>span,.footer a[href="#main"]:focus-visible>span {
+  transform:translateY(-2px)
+}
+
 .icon-button {
   -webkit-user-select:none;
   user-select:none;
@@ -1287,6 +1300,7 @@ h1 em {
     transform:none
   }
   .featured-file.surface-active,.theme-toggle>span,
+  .nav-home .nav-arrow,.footer a[href="#main"]>span,
   .scroll-cue:hover>span:last-child,.icon-button:active,.motion-toggle:active {
     transform:none!important
   }
