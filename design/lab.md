@@ -132,7 +132,7 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 - Keep components independent of the page: host tokens in, no hard-coded copy in JS.
 - Before merging, check that no Unicode arrow or symbol glyph slipped in: `grep -nP "[↑↓←→↗↘↔↵↺↳›＋◐▷Ⅱ]" lab/index.html lab/*.js`.
 - Test in light and dark, at 320 / 480 / 1100 / 1440px, with pause on and off.
-- Run `node scripts/check-lab.cjs` and `node scripts/check-light-study.cjs` against `python3 server.py` before merging lab work.
+- Run `node scripts/check-lab.cjs` and `node scripts/check-light-study.cjs` against `python3 server.py` before merging lab work. Any Chromium works as the browser: `BROWSER_EXECUTABLE="/Applications/Brave Browser.app/Contents/MacOS/Brave Browser"`, with `PLAYWRIGHT_MODULE` pointing at an existing Playwright install if it is not resolvable from the repo.
 - Write up significant decisions and measurements in `docs/discovery/`.
 
 ## 8. Don't
