@@ -1891,6 +1891,46 @@ a.interest:after {
   --edge:rgba(255,255,255,.9)
 }
 
+/* The T7 keeps its real finish too: titanium grey metal, darker than the Mac mini, so it
+   stands off both grounds. The top face catches the light; the front face sits in shadow. */
+.acrylic.hw-drive-top {
+  --art:#6c727a;
+  --face-lit:#a4abb3;
+  --face-far:#4b5157;
+  --edge:rgba(255,255,255,.55)
+}
+
+.acrylic.hw-drive-front {
+  --art:#454a50;
+  --face-lit:#5d636a;
+  --face-far:#2a2e32;
+  --edge:rgba(255,255,255,.35)
+}
+
+.dark-mode .acrylic.hw-drive-top {
+  --art:#5a6168;
+  --face-lit:#8d959e;
+  --face-far:#373c42;
+  --edge:rgba(225,235,245,.45)
+}
+
+.dark-mode .acrylic.hw-drive-front {
+  --art:#363b40;
+  --face-lit:#4c5258;
+  --face-far:#1d2024;
+  --edge:rgba(225,235,245,.28)
+}
+
+.hw-drive-mark {
+  color:rgba(255,255,255,.5);
+  text-shadow:0 -1px 0 rgba(0,0,0,.35)
+}
+
+.hw-bezel {
+  background:linear-gradient(#1f2226,#34383d);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.55),0 1px 0 rgba(255,255,255,.18)
+}
+
 /* At night the same aluminium sits in low, cool light: darker overall and with more
    contrast between lit and far edges, so it reads as metal rather than white ceramic. */
 .dark-mode .acrylic.hw-mini {
