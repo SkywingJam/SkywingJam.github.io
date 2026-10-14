@@ -2,7 +2,7 @@
 
 This document captures the design thinking behind the lab (`lab/`) and the rules for extending it. It is the counterpart to [index.md](index.md): the index page is a calm gallery, the lab is a workshop with the lights on. Read both, because the two pages share one thread, the wave.
 
-> **Status.** The lab is unpublished. `lab` is listed in `_config.yml` `exclude` and its nav link is commented out in `index.html`. Copy is real content as of October 2026 (homelab, builds, field notes, open items); facts are kept in a local reference file that is not committed. The page also grows a set of reusable components.
+> **Status.** The lab is unpublished. `lab` is listed in `_config.yml` `exclude` and its nav link is commented out in `index.html`. Copy is real content as of October 2026 (homelab, builds, field notes, trade-offs); facts are kept in a local reference file that is not committed. The page also grows a set of reusable components.
 
 ## 1. Core idea: a personal lab
 
@@ -16,7 +16,7 @@ The lab is where personal engineering and hobby work lives: the homelab, small l
 - **Technique is allowed to be expensive, within reason.** The lab may use canvas rendering, backdrop blur, layered gradients, View Transitions and scroll-driven animation where they make the material convincing. It should not be held back by "what is cheapest" as the first question. It must still be usable (see section 6).
 - **Honest approximation.** Materials are artistic approximations (CSS gradients, SVG, 2D canvas), not physical simulations. Do not claim or chase physical accuracy; chase the feeling of a lit object.
 - **Personal, a little less polished.** Copy is first person and plain.
-- **Honest about limits.** Every claim is something observed or done, dated where possible. Figures are labelled as observations, not benchmarks. Field notes end with a `LIMITS` line saying what the evidence does not show, and unfinished work goes in Open items rather than being implied as done. Never publish addresses, credentials, endpoints, private media or personal paths.
+- **Honest about limits.** Every claim is something observed or done, dated where possible. Figures are labelled as observations, not benchmarks. Field notes end with a `LIMITS` line saying what the evidence does not show, and limits go in Trade-offs, split into accepted on purpose, deferred, and not yet proven, rather than being implied as solved. Never publish addresses, credentials, endpoints, private media or personal paths.
 
 ## 2. Wave: the thread through index and lab
 
@@ -155,10 +155,10 @@ The lab may spend more than the index (canvas blur layers, backdrop filters, lar
 | 01 / The homelab | (tabs) hardware, services, network with Home / Away / Public Wi-Fi scenarios | Switch, sculpted figures, ledger |
 | 02 / Builds and studies | FIG. 002 extension layer, FIG. 003 open-source PRs, FIG. 004–005 design study | `.experiment`; light study for the design study |
 | 03 / Field notes | Incidents and decisions, newest first, each with limits; figures count up on arrival | `.note` list with figures, loupe |
-| 04 / Open items | Known gaps and the next step for each | Three-column grid |
+| 04 / Trade-offs | Limits accepted on purpose, deferred, and not yet proven | Three-column grid |
 | About | Who and why | About block |
 
-Adding an entry: give it the next `FIG.` number, a status, a plain summary, tags and links; write what was learned and what is not claimed. Status that changes (pull requests, open items) carries an "as of" date in the copy; update it rather than letting it go stale.
+Adding an entry: give it the next `FIG.` number, a status, a plain summary, tags and links; write what was learned and what is not claimed. Status that changes (pull requests, trade-offs) carries an "as of" date in the copy; update it rather than letting it go stale.
 
 ## 10. Where things live
 
