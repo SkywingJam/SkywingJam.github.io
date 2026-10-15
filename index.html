@@ -440,14 +440,15 @@ section { padding:85px 0; }
 .contact-wave { transition:transform 1.6s var(--ease); }
 .contact-panel:hover .contact-wave { transform:rotate(-28deg) translate(-8px,6px); }
 
-/* Lab teaser: a framed window onto the lab. The still is the lab's own wave poster, swapped
+/* Lab teaser: a framed window onto the lab. The still is the lab's own wave poster, crossfaded
    with the theme; the copy is a short index of what is inside. Same frame, hover and arrival
    as the project cards. */
 .lab-teaser { display:grid; grid-template-columns:1.1fr 1fr; background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; }
 .lab-window { position:relative; display:block; min-height:340px; background:var(--tag-bg); border-right:1px solid var(--line); overflow:hidden; }
 .lab-poster { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center 62%; transition:transform .9s var(--ease); }
-.lab-poster-dark,html.dark-mode .lab-poster-light { display:none; }
-html.dark-mode .lab-poster-dark { display:block; }
+.lab-poster-dark { opacity:0; }
+html.dark-mode .lab-poster-dark { opacity:1; }
+html.theme-ready .lab-poster-dark { transition:transform .9s var(--ease),opacity .45s ease-in-out; }
 .lab-window-label { position:absolute; left:22px; bottom:18px; font-family:monospace; font-size:.6rem; letter-spacing:.06em; color:var(--text-secondary); }
 .lab-teaser-copy { padding:44px; display:flex; flex-direction:column; }
 .lab-teaser-copy h3 { font-size:clamp(1.6rem,2.2vw,2rem); font-weight:550; line-height:1.2; letter-spacing:-.8px; margin:22px 0 22px; }

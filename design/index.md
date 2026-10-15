@@ -152,7 +152,7 @@ Several featured projects may each have a looping diagram, so loops follow these
 
 A single framed piece between Credentials and Contact that points to the lab. It follows the gallery rules rather than the lab's: one `article.lab-teaser` with the same frame, radius, hover and arrival as the project cards.
 
-- **Media**: the lab's own wave poster (`lab/assets/wave-poster-light.webp` / `-dark.webp`), swapped with the theme, in a window with a small monospace wall label. It is a still, so it costs nothing and keeps the index quiet; the live wave belongs to the lab.
+- **Media**: the lab's own wave poster (`lab/assets/wave-poster-light.webp` / `-dark.webp`), in a window with a small monospace wall label. Keep the light poster opaque underneath and fade the dark poster over it using the theme's `.45s ease-in-out` timing, so the window never fades through its background. Enable the fade only after `theme-ready` to preserve the initial theme; reduced motion switches immediately. Both posters retain the hover zoom. These are still images that keep the index quiet; the live wave belongs to the lab.
 - **Copy**: topline, a one-line title taken from the lab's theme, and a short numbered index of what is inside (Homelab, Builds, Field notes), then one `.action-btn` to the lab. Keep the index to three rows and in step with the lab's sections.
 - **Navigation**: the section is in the active-section list with no nav target, so no nav item lights up while it is in view; the nav's "Lab" link leaves the page.
 
