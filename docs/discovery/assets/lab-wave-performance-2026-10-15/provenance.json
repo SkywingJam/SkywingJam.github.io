@@ -1,0 +1,6 @@
+{
+  "baseline_commit": "a0e0b62",
+  "before_wave_sha256": "13277b848ccbae92f8f483b555512a269a387d61da61cfd91ab29129201f30b1",
+  "after_wave_sha256": "4ae906acdd525d885b68bfebc9e91bc5a43add05e5e30d02d7c8855ebf008465",
+  "note": "Performance and image sampling were separate. Images compare fixed-phase painter output within each engine; do not infer screenshot evidence for the live Safari backdrop bug."
+}

@@ -67,6 +67,9 @@ export function createAcrylicPainter(canvas) {
   // already low-frequency, so blurring before upscaling matches the old full-resolution blur.
   const blurred = document.createElement('canvas');
   const blurCtx = blurred.getContext('2d');
+  // Only the soft halo is rasterised here; the edge itself stays at canvas resolution.
+  const glow = document.createElement('canvas');
+  const glowCtx = glow.getContext('2d');
   // Backdrop (sky, sun, window light) depends only on size, theme and pointer, never on time.
   const backdrop = document.createElement('canvas');
   const backdropCtx = backdrop.getContext('2d', { alpha: false });
@@ -81,10 +84,37 @@ export function createAcrylicPainter(canvas) {
     soft.width = Math.max(1, Math.ceil(width / (quality ? 4 : 2)));
     soft.height = Math.max(1, Math.ceil(height / (quality ? 4 : 2)));
     if (blurCtx) { blurred.width = soft.width; blurred.height = soft.height; }
+    if (glowCtx) { glow.width = soft.width; glow.height = soft.height; }
     if (backdropCtx) { backdrop.width = canvas.width; backdrop.height = canvas.height; backdropCtx.setTransform(dpr, 0, 0, dpr, 0, 0); }
     backdropKey = pendingKey = '';
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.imageSmoothingEnabled = softCtx.imageSmoothingEnabled = true;
+  }
+
+  function edgeGradient(context, tilt, stops) {
+    const gradient = context.createLinearGradient(width * tilt * .045, 0, width * (1 + tilt * .045), 0);
+    for (const [position, shade] of stops) gradient.addColorStop(position, shade);
+    return gradient;
+  }
+
+  function paintGlow(edge, tilt, stops, lineWidth, radius, shade, offsetY = 0) {
+    if (!glowCtx) return;
+    const sx = glow.width / width, sy = glow.height / height;
+    glowCtx.setTransform(1, 0, 0, 1, 0, 0);
+    glowCtx.clearRect(0, 0, glow.width, glow.height);
+    // Move the source stroke outside the buffer, but put its shadow back in place.
+    // This avoids upscaling a second, coarse copy of the crisp edge.
+    const displacement = glow.width + 128;
+    glowCtx.save();
+    glowCtx.setTransform(sx, 0, 0, sy, -displacement, offsetY * sy);
+    glowCtx.strokeStyle = edgeGradient(glowCtx, tilt, stops);
+    glowCtx.lineWidth = lineWidth;
+    glowCtx.shadowOffsetX = displacement;
+    glowCtx.shadowColor = shade;
+    glowCtx.shadowBlur = radius * sx;
+    glowCtx.stroke(edge);
+    glowCtx.restore();
+    ctx.drawImage(glow, 0, 0, width, height);
   }
 
   // layers: optional per-layer { tilt, lift, stir } from the scene; posters omit it.
@@ -258,17 +288,15 @@ export function createAcrylicPainter(canvas) {
         ctx.lineTo(q.x, q.y + depth); ctx.lineTo(p.x, p.y + depth); ctx.closePath(); ctx.fill();
       }
       // A restrained reflection inside the bevel, strongest on the light-facing crest.
-      const glint = ctx.createLinearGradient(width * tilt * .045, 0, width * (1 + tilt * .045), 0);
-      glint.addColorStop(0, color('rim', 0));
-      glint.addColorStop(.18, color('rim', mix(.12, .045, night)));
-      glint.addColorStop(.3, color('rim', mix(.85, .32, night)));
-      glint.addColorStop(.43, color('rim', mix(.1, .03, night)));
-      glint.addColorStop(.65, color('rim', 0));
-      glint.addColorStop(.84, color('rim', mix(.18, .09, night)));
-      glint.addColorStop(1, color('rim', 0));
+      const glintStops = [[0, color('rim', 0)], [.18, color('rim', mix(.12, .045, night))],
+        [.3, color('rim', mix(.85, .32, night))], [.43, color('rim', mix(.1, .03, night))],
+        [.65, color('rim', 0)], [.84, color('rim', mix(.18, .09, night))], [1, color('rim', 0)]];
+      paintGlow(edge, tilt, glintStops, 2.2 + index * .4, 9, color('light', .4), 5 + index * 1.5);
+      const glint = edgeGradient(ctx, tilt, glintStops);
       ctx.save(); ctx.translate(0, 5 + index * 1.5);
       ctx.strokeStyle = glint; ctx.lineWidth = 2.2 + index * .4;
-      ctx.shadowBlur = 9 * dpr; ctx.shadowColor = color('light', .4); ctx.stroke(edge);
+      if (!glowCtx) { ctx.shadowBlur = 9 * dpr; ctx.shadowColor = color('light', .4); }
+      ctx.stroke(edge);
       ctx.restore();
       // Cached static microtexture, never animated noise.
       ctx.globalAlpha = mix(.08, .035, night); ctx.fillStyle = texture;
@@ -293,19 +321,18 @@ export function createAcrylicPainter(canvas) {
         ctx.strokeStyle = spectral; ctx.lineWidth = 1.35 + index * .25; ctx.stroke(edge); ctx.restore();
       }
       ctx.restore();
-      const rim = ctx.createLinearGradient(0, 0, width, 0);
-      rim.addColorStop(0, color('rim', mix(.3, .13, night)));
-      rim.addColorStop(.23, color('rim', mix(.95, .58, night)));
-      rim.addColorStop(.42, color('rim', mix(.5, .22, night)));
-      rim.addColorStop(.66, color('rim', mix(.2, .08, night)));
-      rim.addColorStop(.84, color('rim', mix(.7, .31, night)));
-      rim.addColorStop(1, color('rim', mix(.25, .13, night)));
+      const rimStops = [[0, color('rim', mix(.3, .13, night))], [.23, color('rim', mix(.95, .58, night))],
+        [.42, color('rim', mix(.5, .22, night))], [.66, color('rim', mix(.2, .08, night))],
+        [.84, color('rim', mix(.7, .31, night))], [1, color('rim', mix(.25, .13, night))]];
+      // The neutral rim's gradient does not lean with the key light.
+      paintGlow(edge, 0, rimStops, 1 + index * .35, 6 + index * 2, color('rim', mix(.5, .2, night)));
+      const rim = edgeGradient(ctx, 0, rimStops);
       ctx.save(); ctx.strokeStyle = rim; ctx.lineWidth = 1 + index * .35;
-      ctx.shadowColor = color('rim', mix(.5, .2, night)); ctx.shadowBlur = (6 + index * 2) * dpr;
+      if (!glowCtx) { ctx.shadowColor = color('rim', mix(.5, .2, night)); ctx.shadowBlur = (6 + index * 2) * dpr; }
       ctx.stroke(edge); ctx.restore();
     }
   }
-  return { resize, paint, dispose() { soft.width = soft.height = grain.width = grain.height = blurred.width = blurred.height = backdrop.width = backdrop.height = 1; } };
+  return { resize, paint, dispose() { soft.width = soft.height = grain.width = grain.height = blurred.width = blurred.height = glow.width = glow.height = backdrop.width = backdrop.height = 1; } };
 }
 
 export function createWaveScene(canvas, stage, { dark = false, paused = false, onFallback } = {}) {
@@ -313,7 +340,8 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   let disposed = false, visible = stage.getBoundingClientRect().bottom > 0;
   let frame = 0, last = 0, time = 0, night = Number(dark), targetNight = night;
   let tilt = 0, targetTilt = 0, tiltVelocity = 0, lift = 0, targetLift = 0, liftVelocity = 0;
-  let spread = 0, quality = 0, slowFrames = 0;
+  let spread = 0, quality = 0, pressureTime = 0, deliveryAverage = 0;
+  let deadline = 0, frameInterval = 0;
   let mobile = false, width = 0, height = 0, renderAverage = 0, reported = 0;
   // Ambient drift moves well under half a pixel per frame at 30fps, so it is drawn at 30fps.
   // Pointer response, theme fades and scroll easing run at up to 60fps; 120Hz displays
@@ -336,6 +364,7 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   function report(now = performance.now()) {
     reported = now;
     stage.dataset.renderMs = renderAverage.toFixed(1);
+    stage.dataset.frameMs = (deliveryAverage * 1000).toFixed(1);
     stage.dataset.phase = time.toFixed(3);
     stage.dataset.tilt = tilt.toFixed(3);
     stage.dataset.lift = lift.toFixed(3);
@@ -363,7 +392,20 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     if (disposed || document.hidden || !visible) { last = 0; return; }
     const elapsed = last ? (now - last) / 1000 : 1 / 60;
     const minFrame = mobile || settled() ? AMBIENT_FRAME : ACTIVE_FRAME;
-    if (last && elapsed < minFrame - .002) { frame = requestAnimationFrame(tick); return; }
+    if (frameInterval !== minFrame) {
+      frameInterval = minFrame;
+      deadline = last ? last + minFrame * 1000 : now;
+      deliveryAverage = 0; pressureTime = 0;
+    }
+    if (last && now < deadline - .5) { frame = requestAnimationFrame(tick); return; }
+    // Keep the scheduling remainder: e.g. 100 Hz must not round 30/60 down to 25/50.
+    // Skip missed deadlines after a stall instead of issuing a burst of catch-up draws.
+    const intervalMs = minFrame * 1000;
+    deadline += (Math.floor(Math.max(0, now - deadline) / intervalMs) + 1) * intervalMs;
+    if (last) {
+      const delivered = Math.min(elapsed, .2);
+      deliveryAverage = deliveryAverage ? mix(deliveryAverage, delivered, .08) : delivered;
+    }
     const dt = Math.min(elapsed, .05); last = now;
     const blend = 1 - Math.exp(-dt * 5);
     if (canMove()) {
@@ -382,11 +424,13 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
     night += (targetNight - night) * (1 - Math.exp(-dt * 8));
     if (Math.abs(night - targetNight) < .002) night = targetNight;
     try { draw(); } catch { fallback(); return; }
-    // Degrade only after sustained rendering cost, not idle time or a background-tab gap.
+    // Canvas work can finish asynchronously after paint() returns. Include sustained
+    // delivery pressure, relative to the intentional idle/active cap, not just JS time.
     if (canMove()) {
-      slowFrames = renderAverage > (mobile ? 28 : 19) ? slowFrames + 1 : Math.max(0, slowFrames - 1);
-      if (slowFrames > 100) {
-        slowFrames = 0;
+      const pressured = renderAverage > (mobile ? 28 : 19) || deliveryAverage > minFrame * 1.8;
+      pressureTime = pressured ? pressureTime + Math.min(elapsed, .2) : Math.max(0, pressureTime - dt * 2);
+      if (pressureTime > 4) {
+        pressureTime = 0; deliveryAverage = 0;
         if (quality === 2) { fallback(); return; }
         quality++; renderAverage = 0; resize(); return;
       }
@@ -396,6 +440,7 @@ export function createWaveScene(canvas, stage, { dark = false, paused = false, o
   }
   function sync() {
     cancelAnimationFrame(frame); frame = 0; last = 0;
+    deadline = 0; frameInterval = 0; deliveryAverage = 0; pressureTime = 0;
     if (disposed) return;
     report();
     stage.dataset.state = !visible || document.hidden ? 'idle' : paused ? 'paused' : 'running';

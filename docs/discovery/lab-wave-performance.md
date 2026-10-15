@@ -41,3 +41,5 @@ rm lab/wave-scene.ref.js
 `AMBIENT_FRAME` 与 `ACTIVE_FRAME` 是两个可调常量。若希望进一步省电，环境帧可尝试 1/24；若交互需要 120 Hz 的跟手感，可将 `ACTIVE_FRAME` 设为 0。
 
 未采用：仅对细描边光晕做低分辨率绘制。软件渲染下没有收益，暂不引入。
+
+2026-10-15 补充：上面的未采用结论限于当时的软件渲染测量。原生 Safari 后续测到高分辨率光晕的明显成本，本轮已改为只在小缓冲中生成光晕、保留清晰描边；Chromium／WebKit 前后性能及固定相位像素对照见 [Safari 波浪性能与画面取舍](lab-safari-wave-performance.md)。

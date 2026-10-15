@@ -88,7 +88,7 @@ async function enhanceWave() {
   loading = true;
   const generation = ++loadGeneration;
   try {
-    const { createWaveScene } = await import('./wave-scene.js');
+    const { createWaveScene } = await import('./wave-scene.js?v=4ae906acdd52');
     if (generation !== loadGeneration || reducedMotion.matches) return;
     scene = createWaveScene(document.querySelector('.wave-canvas'), stage, {
       dark: root.classList.contains('dark-mode'), paused: userPaused,

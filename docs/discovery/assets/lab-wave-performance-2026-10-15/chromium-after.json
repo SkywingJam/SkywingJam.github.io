@@ -1,0 +1,164 @@
+{
+  "id": "chromium-after-final",
+  "effects": "normal",
+  "layer": "on",
+  "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36",
+  "viewport": [
+    1920,
+    1003
+  ],
+  "dpr": 2,
+  "filter": true,
+  "phases": {
+    "idle": {
+      "duration": 8001.699999988079,
+      "raf": {
+        "n": 799,
+        "mean": 10.005381727158948,
+        "p50": 10,
+        "p95": 10.5,
+        "max": 11.100000000000364
+      },
+      "rafOver25": 0,
+      "rafOver50": 0,
+      "drawCost": {
+        "n": 240,
+        "mean": 2.065000000720223,
+        "p50": 2,
+        "p95": 2.7000000178813934,
+        "max": 4.200000017881393
+      },
+      "drawIntervals": {
+        "n": 239,
+        "mean": 33.36945606687079,
+        "p50": 30.100000023841858,
+        "p95": 40.30000001192093,
+        "max": 44.69999998807907
+      },
+      "drawFPS": 29.993626354444377,
+      "begin": {
+        "quality": "full",
+        "state": "running",
+        "phase": "3.203",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "end": {
+        "quality": "full",
+        "state": "running",
+        "phase": "11.207",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "hiddenSamples": 0
+    },
+    "pointer": {
+      "duration": 10001.40000000596,
+      "raf": {
+        "n": 999,
+        "mean": 10.005305305305304,
+        "p50": 10,
+        "p95": 10.299999999999272,
+        "max": 11.100000000002183
+      },
+      "rafOver25": 0,
+      "rafOver50": 0,
+      "drawCost": {
+        "n": 599,
+        "mean": 1.77629382278963,
+        "p50": 1.7999999821186066,
+        "p95": 2,
+        "max": 2.699999988079071
+      },
+      "drawIntervals": {
+        "n": 598,
+        "mean": 16.697826086976455,
+        "p50": 19.899999976158142,
+        "p95": 20.200000017881393,
+        "max": 30.200000017881393
+      },
+      "drawFPS": 59.891615173839966,
+      "begin": {
+        "quality": "full",
+        "state": "running",
+        "phase": "11.207",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "end": {
+        "quality": "full",
+        "state": "running",
+        "phase": "21.162",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "hiddenSamples": 0
+    },
+    "paused": {
+      "duration": 4000.7000000178814,
+      "raf": {
+        "n": 399,
+        "mean": 10.005513784461154,
+        "p50": 10,
+        "p95": 10.899999999997817,
+        "max": 11.099999999998545
+      },
+      "rafOver25": 0,
+      "rafOver50": 0,
+      "drawCost": {
+        "n": 0,
+        "mean": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "drawIntervals": {
+        "n": 0,
+        "mean": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "drawFPS": 0,
+      "begin": {
+        "quality": "full",
+        "state": "running",
+        "phase": "21.162",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "end": {
+        "quality": "full",
+        "state": "paused",
+        "phase": "21.392",
+        "canvas": [
+          2880,
+          1337
+        ],
+        "hidden": false,
+        "focus": true
+      },
+      "hiddenSamples": 0
+    }
+  }
+}
