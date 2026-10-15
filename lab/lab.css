@@ -1717,56 +1717,46 @@ h1 em {
   border-radius:20%
 }
 
-/* The round inlay on top: a flat black mirror set flush into the lid. Its light is drawn in
-   the lid's coordinates, not its own: each layer is sized to the whole lid (100% / 26%) and
-   centred, so the inlay shows only the middle slice of one lid-wide reflection. That keeps
-   the gradient shallow and unrelated to the circle's edge, and the hard-edged diagonal band
-   (which slides with the light) can only be read as a reflection on a flat surface. */
-.hw-lens {
+/* The lid's dark Apple inlay keeps the shallow reflection of the old mirror, now
+   clipped to the mark. Light stays in lid coordinates rather than hugging the logo. */
+.hw-apple {
   position:absolute;
   left:50%;
-  top:50%;
+  /* Lift the bounds slightly: the leaf leaves the body's visual weight below centre. */
+  top:47.5%;
   width:26%;
-  aspect-ratio:1;
-  border-radius:50%;
+  aspect-ratio:384 / 448;
   transform:translate(-50%,-50%);
   background:
     linear-gradient(104deg,transparent calc(41% + var(--lx) * 10%),rgba(255,255,255,.15) calc(41% + var(--lx) * 10%),rgba(255,255,255,.15) calc(47% + var(--lx) * 10%),transparent calc(47% + var(--lx) * 10%)),
     linear-gradient(180deg,#44484b 0%,#1e2123 50%,#0a0b0c 100%);
-  background-size:384.6% 384.6%;
-  background-position:50% 50%
+  background-size:384.6% 329.7%;
+  background-position:50% 50%;
+  -webkit-mask:url("./assets/apple-mark.svg") center / contain no-repeat;
+  mask:url("./assets/apple-mark.svg") center / contain no-repeat
 }
 
-.dark-mode .hw-lens {
+.dark-mode .hw-apple {
   background:
     linear-gradient(104deg,transparent calc(41% + var(--lx) * 10%),rgba(190,220,250,.12) calc(41% + var(--lx) * 10%),rgba(190,220,250,.12) calc(47% + var(--lx) * 10%),transparent calc(47% + var(--lx) * 10%)),
     linear-gradient(180deg,#2c3238 0%,#121619 50%,#050607 100%);
-  background-size:384.6% 384.6%;
+  background-size:384.6% 329.7%;
   background-position:50% 50%
 }
 
-/* Engraved edge: a hairline ring just outside the inlay, as if it sits in a shallow cut. With
-   light from above, the cut's upper wall is in shadow and its lower lip catches the light; the
-   split turns a little with the light's left/right lean. */
-.hw-lens:before {
-  content:'';
-  position:absolute;
-  inset:-1.5px;
-  padding:1.5px;
-  border-radius:50%;
-  pointer-events:none;
-  background:linear-gradient(calc(180deg + var(--lx) * 28deg),rgba(0,0,0,.42) 0%,rgba(0,0,0,.18) 38%,rgba(255,255,255,.55) 62%,rgba(255,255,255,.95) 100%);
-  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
-  -webkit-mask-composite:xor;
-  mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0)
+/* Daylit silver: a restrained white highlight, a silver midtone and a cooler far edge. */
+.acrylic.hw-mini {
+  --art:#c9cdd1;
+  --face-lit:#eceef0;
+  --face-far:#9ba3ab;
+  --edge:rgba(255,255,255,.9)
 }
 
-/* The Mac mini is silver aluminium in both themes; only the ground around it changes. */
-.acrylic.hw-mini {
-  --art:#d6d9dc;
-  --face-lit:#f3f4f5;
-  --face-far:#aab0b5;
-  --edge:rgba(255,255,255,.9)
+/* Reduce the chalky white grain and warm halo on the daylight aluminium only. */
+html:not(.dark-mode) .acrylic.hw-mini {
+  --hi:rgba(255,255,255,.68);
+  --lo:rgba(58,65,72,.28);
+  background-blend-mode:soft-light,normal
 }
 
 /* The T7 keeps its real finish too: titanium grey metal, darker than the Mac mini, so it
@@ -1868,7 +1858,8 @@ h1 em {
   bottom:22%;
   border-radius:999px;
   background:linear-gradient(var(--face-far),var(--art));
-  box-shadow:inset 0 1px 2px var(--lo),0 1px 0 var(--hi)
+  /* Keep the lower lip inside the recess; the ambient outer highlight read as a gap. */
+  box-shadow:inset 0 1px 2px var(--lo),inset 0 -1px 0 color-mix(in srgb,var(--edge) 35%,transparent)
 }
 
 .hw-led {

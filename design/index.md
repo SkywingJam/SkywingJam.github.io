@@ -53,6 +53,7 @@ Motion on this page is **short arrivals and slow ambient cycles**. It should fee
 7. **Only animate cheap properties.** `opacity`, `transform`, `translate`, and registered colour variables. Never animate layout (`width`, `height`, `top`, `margin`).
 8. **Content is visible by default.** Anything already in view on load is never hidden for an animation. Pending states apply only to off-screen elements.
 9. **Always respect reduced motion.** The `prefers-reduced-motion` block removes transitions, animations, and hover movement. New motion must be covered by it.
+10. **Mobile navigation enters and leaves as a pair.** Fade and move the panel 8px over `.35s` with the shared easing in both directions. Hide it only after the closing transition, disable pointer interaction as closing starts, and allow quick toggles to reverse the current transition. Desktop navigation stays visible; reduced motion opens and closes immediately.
 
 ## 5. Do
 
