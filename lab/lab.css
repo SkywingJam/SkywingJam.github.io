@@ -372,6 +372,8 @@ h1 em {
 
 .wave-canvas {
   display:block;
+  /* Keep Canvas updates flowing into Safari's backdrop-filter sampling. */
+  transform:translateZ(0);
   opacity:0;
   transition:opacity .7s
 }
